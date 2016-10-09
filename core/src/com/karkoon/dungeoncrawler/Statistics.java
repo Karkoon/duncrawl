@@ -3,7 +3,8 @@ package com.karkoon.dungeoncrawler;
 import java.util.EnumMap;
 
 /**
- * Created by Roksana on 03.09.2016.
+ * Created by Karkoon on 03.09.2016.
+ * Gives access to a map of common attributes. Used by Character and Item types.
  */
 public class Statistics {
 
@@ -19,14 +20,14 @@ public class Statistics {
         statMap.put(AttributeType.WISDOM, new Attribute("Wisdom", wisdom));
     }
 
-    public void combineWith(Statistics stats) {
+    public void add(Statistics stats) {
         statMap.replaceAll((attributeType, attribute) -> {
             attribute.setValue(attribute.getValue() + stats.get(attributeType).getValue());
             return attribute;
         });
     }
 
-    public void substract(Statistics stats) {
+    public void subtract(Statistics stats) {
         statMap.replaceAll((attributeType, attribute) -> {
             attribute.setValue(attribute.getValue() - stats.get(attributeType).getValue());
             return attribute;

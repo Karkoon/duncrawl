@@ -36,7 +36,7 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
         setPosition(startingPosition);
         this.baseStats = statistics;
         this.currentStats = new Statistics(0, 0, 0, 0, 0, 0, 0);
-        currentStats.combineWith(baseStats);
+        currentStats.add(baseStats);
     }
 
     public AnimatedDecal getDecal() {
@@ -130,11 +130,11 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
     }
 
     public void putToUsedItems(Item item) {
-        getStatistics().combineWith(item.getStats());
+        getStatistics().add(item.getStats());
     }
 
     public void removeFromUsedItems(Item item) {
-        getStatistics().substract(item.getStats());
+        getStatistics().subtract(item.getStats());
     }
 
     public void setMoveRate(float x, float z) {
