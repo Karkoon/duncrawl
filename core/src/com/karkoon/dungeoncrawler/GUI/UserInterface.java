@@ -1,6 +1,7 @@
 package com.karkoon.dungeoncrawler.GUI;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.karkoon.dungeoncrawler.Characters.Character;
 import com.karkoon.dungeoncrawler.Dungeon;
@@ -21,54 +24,65 @@ import com.karkoon.dungeoncrawler.Dungeon;
  * Created by @Karkoon on 2016-08-29.
  */
 
-public class UserInterface extends Stage {
+public class UserInterface {
 
     private Character player;
     private Camera camera;
-    private CharacterInsterfaceDialog inventory;
+    private CharacterInterfaceDialog inventory;
+    private Stage stage;
 
-    public UserInterface(Character player, Camera camera) {
-        super(new ScreenViewport(new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight())));
+    private float buttonSize = 50f;
+
+    public UserInterface(Character player, Camera cameraToBeControlled) {
+        this.stage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()));
         this.player = player;
-        this.camera = camera;
+        this.camera = cameraToBeControlled;
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-        generateFont(skin, 32, "default-font");
-        this.addActor(createControls(skin));
-        inventory = new CharacterInsterfaceDialog(player, skin);
+        generateFont(skin, 16, "default-font");
+        stage.addActor(createControls(skin));
+        inventory = new CharacterInterfaceDialog(player, skin, stage.getWidth(), stage.getHeight());
     }
 
     private Group createControls(Skin skin) {
+        float xPosition = 10f;
+        float yPosition = 10f;
         Group group = new Group();
-        group.addActor(createButton(skin, 10, 10, new ClickListener() {
+        group.addActor(createButton(skin, xPosition, yPosition, new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 player.rotateLeft();
             }
         }));
-        group.addActor(createButton(skin, 110, 10, new ClickListener() {
+
+        xPosition += buttonSize;
+        group.addActor(createButton(skin, xPosition, yPosition, new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 player.moveBack();
                 // todo introduce touch input, which changes viewVector of player
             }
         }));
-        group.addActor(createButton(skin, 210, 10, new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                player.rotateRight();
-            }
-        }));
-        group.addActor(createButton(skin, 110, 110, new ClickListener() {
+        yPosition += buttonSize;
+        group.addActor(createButton(skin, xPosition, yPosition, new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 player.moveToward();
             }
         }));
-        group.addActor(createButton(skin, 400, 10, new ClickListener() {
+        yPosition -= buttonSize;
+        xPosition += buttonSize;
+        group.addActor(createButton(skin, xPosition, yPosition, new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                player.rotateRight();
+            }
+        }));
+        xPosition += 2 * buttonSize;
+        group.addActor(createButton(skin, xPosition, yPosition, new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 inventory.update();
-                inventory.show(UserInterface.this);
+                inventory.show(stage);
             }
         }));
         return group;
@@ -77,7 +91,7 @@ public class UserInterface extends Stage {
     private Button createButton(Skin skin, float x, float y, EventListener listener) {
         Button button = new Button(skin);
         button.setPosition(x, y);
-        button.setSize(100, 100);
+        button.setSize(buttonSize, buttonSize);
         button.addListener(listener);
         return button;
     }
@@ -92,11 +106,19 @@ public class UserInterface extends Stage {
         skin.add(name, fontData, BitmapFont.class);
     }
 
-    @Override
-    public void act() {
-        super.act();
+    public void step() {
+        stage.act();
         camera.position.set(player.getDecal().getPosition().x, Dungeon.DungeonSection.WIDTH * 0.75f, player.getDecal().getPosition().z);
         camera.direction.lerp(player.getDirection(), 0.1f);
         camera.update();
+        stage.draw();
+    }
+
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height);
+    }
+
+    public InputProcessor getInputProcessor() {
+        return stage;
     }
 }

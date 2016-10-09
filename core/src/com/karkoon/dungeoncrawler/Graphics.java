@@ -43,7 +43,7 @@ public class Graphics {
         initializeFBO();
     }
 
-    public void doItsThing() {
+    public void step() {
         fbo.begin();
         clearScreen();
         render();
