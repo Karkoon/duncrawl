@@ -50,7 +50,9 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
         this.decal.setKeepSize(true);
     }
 
-    protected abstract int getMaxItems();
+    public abstract int getMaxItems();
+
+    public abstract int getMaxUsedItems();
 
     @Override
     abstract public void processTurn();

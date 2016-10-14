@@ -100,7 +100,7 @@ class CharacterInterfaceDialog extends Dialog {
 
     private Table createUsedItemsTable() {
         Table table = new Table(skin);
-        for (int i = 0; i < Player.MAX_USED_ITEMS; i++) {
+        for (int i = 0; i < player.getMaxUsedItems(); i++) {
             Slot slot = new Slot(Items.baseTypes[i]);
             dnd.addSource(new UsedItemSlotSource(slot));
             dnd.addTarget(new UsedItemSlotTarget(slot));
@@ -113,7 +113,7 @@ class CharacterInterfaceDialog extends Dialog {
 
     private Table createInventoryTable(final Skin skin, DragAndDrop dnd) {
         Table table = new Table(skin);
-        for (int i = 1; i <= Player.MAX_ITEMS; i++) {
+        for (int i = 1; i <= player.getMaxItems(); i++) {
             Slot slot = new Slot(Item.class);
             dnd.addSource(new ItemSlotSource(slot));
             dnd.addTarget(new ItemSlotTarget(slot));
