@@ -165,7 +165,7 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
     @Override
     public void dropItem(Item item, Dungeon.DungeonSection position) {
         items.remove(item);
-        Container.super.dropItem(item, position);
+        item.drop(position);
     }
 
     @Override

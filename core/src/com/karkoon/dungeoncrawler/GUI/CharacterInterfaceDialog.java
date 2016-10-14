@@ -23,7 +23,6 @@ import com.karkoon.dungeoncrawler.Statistics.AttributeType;
 
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 /**
  * Created by Pc on 2016-09-09.
@@ -78,23 +77,24 @@ class CharacterInterfaceDialog extends Dialog {
     }
 
     void update() {
-        Stack<Item> newItems = player.getItems().stream()
-                .filter(item -> !oldItems.contains(item))
-                .collect(Collectors.toCollection(Stack::new));
+        Stack<Item> newItems = new Stack<>();
+        for (Item item : player.getItems()) {
+            if (!oldItems.contains(item)) newItems.add(item);
+        }
         addNewItemsToInventory(newItems);
     }
 
     private void addNewItemsToInventory(Stack<Item> newItems) {
         if (!newItems.isEmpty()) {
-            slots.getCells().forEach(cell -> {
-                Container<Image> slot = (Container<Image>) cell.getActor();
-                boolean slotIsOccupied = slot.hasChildren();
-                if (!slotIsOccupied && !newItems.isEmpty()) {
-                    Item item = newItems.pop();
-                    oldItems.add(item);
-                    slot.setActor(createImage(item.getDecal().getTextureRegion(), item));
-                }
-            });
+           for (Cell cell : slots.getCells()) {
+               Container<Image> slot = (Container<Image>) cell.getActor();
+               boolean slotIsOccupied = slot.hasChildren();
+               if (!slotIsOccupied && !newItems.isEmpty()) {
+                   Item item = newItems.pop();
+                   oldItems.add(item);
+                   slot.setActor(createImage(item.getDecal().getTextureRegion(), item));
+               }
+           }
         }
     }
 
@@ -278,7 +278,7 @@ class CharacterInterfaceDialog extends Dialog {
 
     }
 
-    private class Slot extends Container<Image> {
+    private static class Slot extends Container<Image> {
 
         Class<Item> slotType;
 
@@ -289,7 +289,7 @@ class CharacterInterfaceDialog extends Dialog {
         }
     }
 
-    private class StatsTable extends Table {
+    private static class StatsTable extends Table {
 
         StatsTable(Statistics statistics, Skin skin) {
             super(skin);
@@ -305,15 +305,18 @@ class CharacterInterfaceDialog extends Dialog {
         }
 
         private void updateStatLabels() {
-            getCells().forEach(cell -> ((StatLabel) cell.getActor()).update());
+            for (Cell cell : getCells()) {
+                ((StatLabel) cell.getActor()).update();
+            }
         }
 
-        private class StatLabel extends Label {
+        private static class StatLabel extends Label {
 
             private Statistics.Attribute attribute;
 
             StatLabel(Skin skin, Statistics.Attribute attribute) {
                 super("", skin, "default-font", Color.LIGHT_GRAY);
+                super.setFontScale(0.5f);
                 this.attribute = attribute;
                 update();
             }

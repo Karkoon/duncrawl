@@ -13,8 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.karkoon.dungeoncrawler.Characters.Character;
 import com.karkoon.dungeoncrawler.Dungeon;
@@ -34,11 +32,11 @@ public class UserInterface {
     private float buttonSize = 50f;
 
     public UserInterface(Character player, Camera cameraToBeControlled) {
-        this.stage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()));
+        this.stage = new Stage(new ScreenViewport(new OrthographicCamera()));
         this.player = player;
         this.camera = cameraToBeControlled;
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-        generateFont(skin, 16, "default-font");
+        generateFont(skin, 64, "default-font");
         stage.addActor(createControls(skin));
         inventory = new CharacterInterfaceDialog(player, skin, stage.getWidth(), stage.getHeight());
     }

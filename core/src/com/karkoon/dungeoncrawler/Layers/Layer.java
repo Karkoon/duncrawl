@@ -41,7 +41,7 @@ public abstract class Layer implements Drawable, Updateable, TurnSupport {
 
     @Override
     public void processTurn() {
-        turnSupporting.forEach(TurnSupport::processTurn);
+        for (TurnSupport turnSupport : turnSupporting) turnSupport.processTurn();
     }
 
     public void addNPC(Character npc) {

@@ -1,5 +1,6 @@
 package com.karkoon.dungeoncrawler;
 
+import java.util.Collections;
 import java.util.EnumMap;
 
 /**
@@ -21,17 +22,15 @@ public class Statistics {
     }
 
     public void add(Statistics stats) {
-        statMap.replaceAll((attributeType, attribute) -> {
-            attribute.setValue(attribute.getValue() + stats.get(attributeType).getValue());
-            return attribute;
-        });
+        for (AttributeType type : AttributeType.values()) {
+            statMap.get(type).setValue(statMap.get(type).value + stats.get(type).value);
+        }
     }
 
     public void subtract(Statistics stats) {
-        statMap.replaceAll((attributeType, attribute) -> {
-            attribute.setValue(attribute.getValue() - stats.get(attributeType).getValue());
-            return attribute;
-        });
+        for (AttributeType type : AttributeType.values()) {
+            statMap.get(type).setValue(statMap.get(type).value - stats.get(type).value);
+        }
     }
 
     public Attribute get(AttributeType attributeType) {
@@ -44,7 +43,7 @@ public class Statistics {
 
     }
 
-    public class Attribute {
+    public static class Attribute {
 
         private final String name;
         private int value;

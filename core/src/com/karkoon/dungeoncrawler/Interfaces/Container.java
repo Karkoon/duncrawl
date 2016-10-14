@@ -35,9 +35,8 @@ public interface Container {
      * @param position is the section of the dungeon where the item is going to be dropped.
      * @implSpec All references to the item by the container should be removed.
      */
-    default void dropItem(Item item, Dungeon.DungeonSection position) {
-        item.drop(position);
-    }
+    void dropItem(Item item, Dungeon.DungeonSection position);
+
 
     /**
      * Returns a Collection of all the items in the container.
