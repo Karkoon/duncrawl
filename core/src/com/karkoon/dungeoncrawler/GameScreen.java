@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.karkoon.dungeoncrawler.Characters.Character;
 import com.karkoon.dungeoncrawler.GUI.UserInterface;
-import com.karkoon.dungeoncrawler.Interfaces.Renderable;
+import com.karkoon.dungeoncrawler.Interfaces.Cacheable;
 import com.karkoon.dungeoncrawler.Layers.CharacterLayer;
 import com.karkoon.dungeoncrawler.Layers.ItemLayer;
 import com.karkoon.dungeoncrawler.Layers.Layer;
@@ -18,9 +18,9 @@ import java.util.Random;
 public class GameScreen implements Screen {
 
     private Graphics graphics;
-    private ArrayList<com.karkoon.dungeoncrawler.Interfaces.Renderable> renderables = new ArrayList<Renderable>();
-    private ArrayList<com.karkoon.dungeoncrawler.Interfaces.Drawable> drawables = new ArrayList<com.karkoon.dungeoncrawler.Interfaces.Drawable>();
-    private ArrayList<Layer> layers = new ArrayList<Layer>();
+    private ArrayList<Cacheable> cacheables = new ArrayList<>();
+    private ArrayList<com.karkoon.dungeoncrawler.Interfaces.Drawable> drawables = new ArrayList<>();
+    private ArrayList<Layer> layers = new ArrayList<>();
     private UserInterface userInterface;
 
     @Override
@@ -30,9 +30,9 @@ public class GameScreen implements Screen {
         Character player = characterLayer.getMainCharacter();
         layers.add(characterLayer);
         layers.add(new ItemLayer(dungeon));
-        renderables.add(dungeon);
+        cacheables.add(dungeon);
         drawables.addAll(layers);
-        graphics = new Graphics(renderables, drawables);
+        graphics = new Graphics(cacheables, drawables);
         userInterface = new UserInterface(player, graphics.getCamera());
         Gdx.input.setInputProcessor(userInterface.getInputProcessor()); // todo input multiplexer of userInterface and some sort of camera control.
     }

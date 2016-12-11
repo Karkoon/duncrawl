@@ -21,7 +21,7 @@ public class Player extends Character {
     private Layer layer;
 
     public Player(Dungeon.DungeonSection startingPosition, Layer layer) {
-        super(startingPosition, new Statistics(10, 10, 0, 0, 5, 5, 5),
+        super(startingPosition, new Statistics(10, 10, 0, 30, 5, 5, 5),
                 new TextureRegion(new Texture(Gdx.files.internal("badlogic.jpg"))));
         this.layer = layer;
     }

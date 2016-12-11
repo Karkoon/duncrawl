@@ -106,7 +106,7 @@ public class UserInterface {
 
     public void step() {
         stage.act();
-        camera.position.set(player.getDecal().getPosition().x, Dungeon.DungeonSection.WIDTH * 0.75f, player.getDecal().getPosition().z);
+        camera.position.set(player.getDecal().getPosition().x, Dungeon.DungeonSection.SIZE * 0.75f, player.getDecal().getPosition().z);
         camera.direction.lerp(player.getDirection(), 0.1f);
         camera.update();
         stage.draw();
