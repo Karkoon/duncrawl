@@ -16,7 +16,7 @@ import java.util.Random;
  */
 public final class Items {
 
-    public static Class[] baseTypes = {Ring.class, Armor.class, Boots.class, Gloves.class, Helmet.class, Pendant.class, Trousers.class};
+    public final static Class[] baseTypes = {Ring.class, Armor.class, Boots.class, Gloves.class, Helmet.class, Pendant.class, Trousers.class};
 
     private Items() {
     }

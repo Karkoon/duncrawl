@@ -15,13 +15,13 @@ import com.karkoon.dungeoncrawler.Statistics;
  */
 public class Player extends Character {
 
-    public static int MAX_ITEMS = 16;
-    public static int MAX_USED_ITEMS = 6;
+    public int maxItems = 16;
+    public int maxUsedItems = 6;
 
     private Layer layer;
 
     public Player(Dungeon.DungeonSection startingPosition, Layer layer) {
-        super(startingPosition, new Statistics(10, 10, 0, 0, 5, 5, 5),
+        super(startingPosition, new Statistics(10, 10, 0, 30, 5, 5, 5),
                 new TextureRegion(new Texture(Gdx.files.internal("badlogic.jpg"))));
         this.layer = layer;
     }
@@ -32,17 +32,22 @@ public class Player extends Character {
 
     public void putToUsedItems(Item item) {
         super.putToUsedItems(item);
-        MAX_ITEMS++;
+        maxItems++;
     }
 
     public void removeFromUsedItems(Item item) {
         super.removeFromUsedItems(item);
-        MAX_ITEMS--;
+        maxItems--;
     }
 
     @Override
-    protected int getMaxItems() {
-        return MAX_ITEMS;
+    public int getMaxItems() {
+        return maxItems;
+    }
+
+    @Override
+    public int getMaxUsedItems() {
+        return maxUsedItems;
     }
 
     @Override

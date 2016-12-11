@@ -10,6 +10,7 @@ import com.karkoon.dungeoncrawler.Statistics;
  */
 public abstract class Enemy extends Character {
 
+    private int maxItems = 1;
 
     public Enemy(Dungeon.DungeonSection startingPosition, Statistics stats, Item item, TextureRegion... regions) {
         super(startingPosition, stats, regions);
@@ -17,8 +18,13 @@ public abstract class Enemy extends Character {
     }
 
     @Override
-    protected int getMaxItems() {
-        return 1;
+    public int getMaxItems() {
+        return maxItems;
+    }
+
+    @Override
+    public int getMaxUsedItems() {
+        return getMaxItems();
     }
 
     @Override

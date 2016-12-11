@@ -23,17 +23,18 @@ import com.karkoon.dungeoncrawler.Statistics.AttributeType;
 
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 /**
  * Created by Pc on 2016-09-09.
  */
-class CharacterInsterfaceDialog extends Dialog {
+class CharacterInterfaceDialog extends Dialog {
 
     private final static String TITLE = "Inventory";
     private final static NinePatchDrawable slotBg = new NinePatchDrawable(new NinePatch(new Texture(Gdx.files.internal("slotbg.9.png")))); //temporary
     private final static TextureRegionDrawable trashSlotBg = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("trash.png")))); //temporary
-    private final float SLOT_SIZE = 100;
+    private final float SLOT_SIZE;
+    private final float RETURN_BUTTON_WIDTH;
+    private final float RETURN_BUTTON_HEIGHT;
     private final Skin skin;
     private Character player;
     private Table slots;
@@ -41,10 +42,13 @@ class CharacterInsterfaceDialog extends Dialog {
     private StatsTable statsTable;
 
     private ArrayList<Item> oldItems = new ArrayList<>();
-    private DragAndDrop dnd = new DragAndDrop();
+    private DragAndDrop dnd;
 
-    CharacterInsterfaceDialog(Character player, final Skin skin) {
+    CharacterInterfaceDialog(Character player, final Skin skin, float viewportWidth, float viewportHeight) {
         super(TITLE, skin);
+        SLOT_SIZE = viewportWidth / 20f;
+        RETURN_BUTTON_HEIGHT = SLOT_SIZE / 2f;
+        RETURN_BUTTON_WIDTH = SLOT_SIZE * 2f;
         setUpDragAndDrop();
         this.skin = skin;
         this.player = player;
@@ -53,9 +57,9 @@ class CharacterInsterfaceDialog extends Dialog {
         slots = createInventoryTable(skin, dnd);
         getContentTable().add(usedSlots);
         final Image image = new Image(new Texture(Gdx.files.internal("skelly.png")));
-        getContentTable().add(image).size(400, 400);
+        getContentTable().add(image).size(viewportWidth / 4f, viewportHeight / 3f);
         getContentTable().add(statsTable);
-        getContentTable().add(createTrashSlot()).size(128, 128).pad(20);
+        getContentTable().add(createTrashSlot()).size(SLOT_SIZE, SLOT_SIZE).pad(10f);
         getContentTable().row();
         getContentTable().add(slots).colspan(3);
         getButtonTable().add(createButton(new ClickListener() {
@@ -64,41 +68,43 @@ class CharacterInsterfaceDialog extends Dialog {
                 hide();
                 remove();
             }
-        })).size(200, 20);
+        })).size(RETURN_BUTTON_WIDTH, RETURN_BUTTON_HEIGHT);
     }
 
     private void setUpDragAndDrop() {
+        dnd = new DragAndDrop();
         dnd.setDragTime(0);
     }
 
     void update() {
-        Stack<Item> newItems = player.getItems().stream()
-                .filter(item -> !oldItems.contains(item))
-                .collect(Collectors.toCollection(Stack::new));
+        Stack<Item> newItems = new Stack<>();
+        for (Item item : player.getItems()) {
+            if (!oldItems.contains(item)) newItems.add(item);
+        }
         addNewItemsToInventory(newItems);
     }
 
     private void addNewItemsToInventory(Stack<Item> newItems) {
         if (!newItems.isEmpty()) {
-            slots.getCells().forEach(cell -> {
-                Container<Image> slot = (Container<Image>) cell.getActor();
-                boolean slotIsOccupied = slot.hasChildren();
-                if (!slotIsOccupied && !newItems.isEmpty()) {
-                    Item item = newItems.pop();
-                    oldItems.add(item);
-                    slot.setActor(createImage(item.getDecal().getTextureRegion(), item));
-                }
-            });
+           for (Cell cell : slots.getCells()) {
+               Container<Image> slot = (Container<Image>) cell.getActor();
+               boolean slotIsOccupied = slot.hasChildren();
+               if (!slotIsOccupied && !newItems.isEmpty()) {
+                   Item item = newItems.pop();
+                   oldItems.add(item);
+                   slot.setActor(createImage(item.getDecal().getTextureRegion(), item));
+               }
+           }
         }
     }
 
     private Table createUsedItemsTable() {
         Table table = new Table(skin);
-        for (int i = 0; i < Player.MAX_USED_ITEMS; i++) {
+        for (int i = 0; i < player.getMaxUsedItems(); i++) {
             Slot slot = new Slot(Items.baseTypes[i]);
             dnd.addSource(new UsedItemSlotSource(slot));
             dnd.addTarget(new UsedItemSlotTarget(slot));
-            table.add(slot).size(SLOT_SIZE, SLOT_SIZE).pad(10);
+            table.add(slot).size(SLOT_SIZE, SLOT_SIZE).pad(5f);
             table.row();
         }
         table.pack();
@@ -107,11 +113,11 @@ class CharacterInsterfaceDialog extends Dialog {
 
     private Table createInventoryTable(final Skin skin, DragAndDrop dnd) {
         Table table = new Table(skin);
-        for (int i = 1; i <= Player.MAX_ITEMS; i++) {
+        for (int i = 1; i <= player.getMaxItems(); i++) {
             Slot slot = new Slot(Item.class);
             dnd.addSource(new ItemSlotSource(slot));
             dnd.addTarget(new ItemSlotTarget(slot));
-            table.add(slot).size(SLOT_SIZE, SLOT_SIZE).pad(10);
+            table.add(slot).size(SLOT_SIZE, SLOT_SIZE).pad(5f);
             if (i % 8 == 0) {
                 table.row();
             }
@@ -272,7 +278,7 @@ class CharacterInsterfaceDialog extends Dialog {
 
     }
 
-    private class Slot extends Container<Image> {
+    private static class Slot extends Container<Image> {
 
         Class<Item> slotType;
 
@@ -283,7 +289,7 @@ class CharacterInsterfaceDialog extends Dialog {
         }
     }
 
-    private class StatsTable extends Table {
+    private static class StatsTable extends Table {
 
         StatsTable(Statistics statistics, Skin skin) {
             super(skin);
@@ -299,15 +305,18 @@ class CharacterInsterfaceDialog extends Dialog {
         }
 
         private void updateStatLabels() {
-            getCells().forEach(cell -> ((StatLabel) cell.getActor()).update());
+            for (Cell cell : getCells()) {
+                ((StatLabel) cell.getActor()).update();
+            }
         }
 
-        private class StatLabel extends Label {
+        private static class StatLabel extends Label {
 
             private Statistics.Attribute attribute;
 
             StatLabel(Skin skin, Statistics.Attribute attribute) {
                 super("", skin, "default-font", Color.LIGHT_GRAY);
+                super.setFontScale(0.5f);
                 this.attribute = attribute;
                 update();
             }
