@@ -71,6 +71,12 @@ class CharacterInterfaceDialog extends Dialog {
         })).size(RETURN_BUTTON_WIDTH, RETURN_BUTTON_HEIGHT);
     }
 
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        statsTable.update();
+    }
+
     private void setUpDragAndDrop() {
         dnd = new DragAndDrop();
         dnd.setDragTime(0);
@@ -315,8 +321,8 @@ class CharacterInterfaceDialog extends Dialog {
             private Statistics.Attribute attribute;
 
             StatLabel(Skin skin, Statistics.Attribute attribute) {
-                super("", skin, "default-font", Color.LIGHT_GRAY);
-                super.setFontScale(0.5f);
+                super("", skin);
+                super.setFontScale(1f);
                 this.attribute = attribute;
                 update();
             }

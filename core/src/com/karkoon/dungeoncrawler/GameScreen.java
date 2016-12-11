@@ -25,7 +25,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        Dungeon dungeon = DungeonRetriever.getNewDungeonWithHTTP(new Random().nextInt(), 64, 8);
+        Dungeon dungeon = DungeonRetriever.getNewDungeonWithHTTP(new Random().nextInt(), 256, 32);
         CharacterLayer characterLayer = new CharacterLayer(dungeon);
         Character player = characterLayer.getMainCharacter();
         layers.add(characterLayer);

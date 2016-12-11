@@ -96,11 +96,11 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
     @Override
     public final void damage(int damageValue) {
         Statistics.Attribute armor = currentStats.get(Statistics.AttributeType.ARMOR);
-        Statistics.Attribute health = currentStats.get(Statistics.AttributeType.MAX_HEALTH);
+        Statistics.Attribute health = currentStats.get(Statistics.AttributeType.CURRENT_HEALTH);
         int givenDamage = damageValue - armor.getValue();
         if (givenDamage > 0) {
             health.setValue(health.getValue() - givenDamage);
-            Gdx.app.log("damaged, current health", Integer.toString(health.getValue()));
+            Gdx.app.log(this.toString()+ " damaged, current health", Integer.toString(health.getValue()));
         }
         if (health.getValue() <= 0) die();
     }
