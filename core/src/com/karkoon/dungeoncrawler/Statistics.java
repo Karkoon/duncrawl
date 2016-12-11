@@ -1,6 +1,5 @@
 package com.karkoon.dungeoncrawler;
 
-import java.util.Collections;
 import java.util.EnumMap;
 
 /**
@@ -11,13 +10,15 @@ public class Statistics {
 
     private EnumMap<AttributeType, Attribute> statMap = new EnumMap<>(AttributeType.class);
 
-    public Statistics(int maxHealth, int mana, int armor, int baseDamage, int strength, int dexternity, int wisdom) {
-        statMap.put(AttributeType.MAX_HEALTH, new Attribute("Health", maxHealth));
-        statMap.put(AttributeType.MAX_MANA, new Attribute("Mana", mana));
+    public Statistics(int maxHealth, int maxMana, int armor, int baseDamage, int strength, int dexternity, int wisdom) {
+        statMap.put(AttributeType.MAX_HEALTH, new Attribute("Max Health", maxHealth));
+        statMap.put(AttributeType.MAX_MANA, new Attribute("Mana", maxMana));
+        statMap.put(AttributeType.CURRENT_HEALTH, new Attribute("Current Health", maxHealth));
+        statMap.put(AttributeType.CURRENT_MANA, new Attribute("Current Mana", maxMana));
         statMap.put(AttributeType.ARMOR, new Attribute("Armor", armor));
         statMap.put(AttributeType.BASE_DAMAGE, new Attribute("Damage", baseDamage));
         statMap.put(AttributeType.STRENGTH, new Attribute("Strength", strength));
-        statMap.put(AttributeType.DEXTERNITY, new Attribute("Dexternity", dexternity));
+        statMap.put(AttributeType.DEXTERITY, new Attribute("Dexterity", dexternity));
         statMap.put(AttributeType.WISDOM, new Attribute("Wisdom", wisdom));
     }
 
@@ -39,7 +40,7 @@ public class Statistics {
 
     public enum AttributeType {
 
-        MAX_HEALTH, MAX_MANA, ARMOR, BASE_DAMAGE, STRENGTH, DEXTERNITY, WISDOM
+        MAX_HEALTH, MAX_MANA, CURRENT_HEALTH, CURRENT_MANA, ARMOR, BASE_DAMAGE, STRENGTH, DEXTERITY, WISDOM
 
     }
 

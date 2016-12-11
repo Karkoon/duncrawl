@@ -27,18 +27,20 @@ public class UserInterface {
     private Character player;
     private Camera camera;
     private CharacterInterfaceDialog inventory;
+    private HealthBar healthBar;
     private Stage stage;
 
-    private float buttonSize = 50f;
+    private float buttonSize = 100f;
 
     public UserInterface(Character player, Camera cameraToBeControlled) {
         this.stage = new Stage(new ScreenViewport(new OrthographicCamera()));
         this.player = player;
         this.camera = cameraToBeControlled;
-        Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-        generateFont(skin, 64, "default-font");
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
         stage.addActor(createControls(skin));
         inventory = new CharacterInterfaceDialog(player, skin, stage.getWidth(), stage.getHeight());
+        healthBar = new HealthBar(player, skin);
+        stage.addActor(healthBar);
     }
 
     private Group createControls(Skin skin) {
