@@ -19,7 +19,11 @@ public class DungeonRetriever {
     private DungeonRetriever() {
     }
 
-    static Dungeon getNewDungeonWithHTTP(int seed, int size, int rooms) {
+    static Dungeon getNewDungeon(int seed, int size, int rooms) {
+        return getNewDungeonWithHTTP(seed, size, rooms);
+    }
+
+    private static Dungeon getNewDungeonWithHTTP(int seed, int size, int rooms) {
         Dungeon dungeon = null;
         try {
             URL url = new URL("https://procedural-service.herokuapp.com/dungeon/generate?size=" + size + "&rooms=" + rooms + "&seed=" + seed);
