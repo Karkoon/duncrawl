@@ -4,13 +4,15 @@ import java.util.EnumMap;
 
 /**
  * Created by Karkoon on 03.09.2016.
- * Gives access to a map of common attributes. Used by Character and Item types.
+ * Gives access to a map of common game object attributes.
  */
+
 public class Statistics {
 
-    private EnumMap<AttributeType, Attribute> statMap = new EnumMap<>(AttributeType.class);
+    private EnumMap<AttributeType, Attribute> statMap;
 
     public Statistics(int maxHealth, int maxMana, int armor, int baseDamage, int strength, int dexternity, int wisdom) {
+        statMap = new EnumMap<>(AttributeType.class);
         statMap.put(AttributeType.MAX_HEALTH, new Attribute("Max Health", maxHealth));
         statMap.put(AttributeType.MAX_MANA, new Attribute("Mana", maxMana));
         statMap.put(AttributeType.CURRENT_HEALTH, new Attribute("Current Health", maxHealth));
@@ -20,6 +22,10 @@ public class Statistics {
         statMap.put(AttributeType.STRENGTH, new Attribute("Strength", strength));
         statMap.put(AttributeType.DEXTERITY, new Attribute("Dexterity", dexternity));
         statMap.put(AttributeType.WISDOM, new Attribute("Wisdom", wisdom));
+    }
+
+    public Attribute get(AttributeType attributeType) {
+        return statMap.get(attributeType);
     }
 
     public void add(Statistics stats) {
@@ -32,10 +38,6 @@ public class Statistics {
         for (AttributeType type : AttributeType.values()) {
             statMap.get(type).setValue(statMap.get(type).value - stats.get(type).value);
         }
-    }
-
-    public Attribute get(AttributeType attributeType) {
-        return statMap.get(attributeType);
     }
 
     public enum AttributeType {

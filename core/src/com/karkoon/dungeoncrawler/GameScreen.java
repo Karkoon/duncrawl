@@ -23,9 +23,10 @@ public class GameScreen implements Screen {
     private ArrayList<Layer> layers = new ArrayList<>();
     private UserInterface userInterface;
 
+
     @Override
     public void show() {
-        Dungeon dungeon = DungeonRetriever.getNewDungeonWithHTTP(new Random().nextInt(), 256, 32);
+        Dungeon dungeon = DungeonRetriever.getNewDungeon(new Random().nextInt(), 256, 32);
         CharacterLayer characterLayer = new CharacterLayer(dungeon);
         Character player = characterLayer.getMainCharacter();
         layers.add(characterLayer);
@@ -42,7 +43,7 @@ public class GameScreen implements Screen {
         for (Layer layer : layers) {
             layer.update(Gdx.graphics.getDeltaTime());
         }
-        graphics.step();
+        graphics.update();
         userInterface.step();
     }
 

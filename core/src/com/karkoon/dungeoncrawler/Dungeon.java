@@ -23,8 +23,6 @@ public class Dungeon implements Json.Serializable, Cacheable {
 
     private int width;
     private int height;
-    private Model dungeonModel;
-    private ModelBuilder builder = new ModelBuilder();
     private ArrayList<DungeonSection> grid;
 
     @Override
@@ -39,11 +37,9 @@ public class Dungeon implements Json.Serializable, Cacheable {
         width = json.readValue("width", int.class, jsonData);
         height = json.readValue("height", int.class, jsonData);
         grid = json.readValue("grid", ArrayList.class, DungeonSection.class, jsonData);
-        builder.begin();
         for (DungeonSection section : grid) {
             section.setDungeon(this);
         }
-        dungeonModel = builder.end();
     }
 
     @Override
@@ -83,8 +79,8 @@ public class Dungeon implements Json.Serializable, Cacheable {
         private static Model wallModel = builder.createRect(0, 0, 0, SIZE, 0, 0, SIZE, HEIGHT, 0, 0, HEIGHT, 0, 0, 0, 1,
                 new Material(ColorAttribute.createDiffuse(Color.GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal); //// TODO: 2016-09-01 change to meshpartbuilder
         public Vector2 point; //used by json thing
-        private ArrayList<Vector2> next; //used by json thing
         public ArrayList<Object> occupyingObject;
+        private ArrayList<Vector2> next; //used by json thing
         private Dungeon dungeon;
 //        private ArrayList<ModelInstance> instances = new ArrayList<>();
         private ArrayList<ModelInstance> instances = new ArrayList<>();
