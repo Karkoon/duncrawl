@@ -107,7 +107,7 @@ class Graphics {
         cache = new ModelCache();
         cache.begin();
         for (Cacheable cacheable : cacheables) {
-            cacheable.cache(cache, environment);
+            cacheable.cacheModel(cache, environment);
         }
         cache.end();
     }
