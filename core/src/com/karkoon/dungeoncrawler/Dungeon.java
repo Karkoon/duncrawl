@@ -145,5 +145,6 @@ public class Dungeon implements Json.Serializable, Cacheable {
                 modelInstance = new ModelInstance(themedModels.get(Assets.WallType.CORNER), new Vector3(point.x, 0, point.y));
             }
         }*/
+        }
     }
 }

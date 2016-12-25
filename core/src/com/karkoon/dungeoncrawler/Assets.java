@@ -9,6 +9,10 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.*;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Random;
@@ -39,17 +43,14 @@ public class Assets {
             }
         } else {
             Array<Theme> themes = new Array<>();
-            themes.add(new Theme("gray", Color.GRAY, 100, 0, 5));
-            EnumMap<WallType, Model> themedModels = createThemedWallModelsModels(new Theme("gray", Color.GRAY, 100, 0, 5));
+            EnumMap<WallType, Model> themedModels;
             // @todo create a default theme to return and create some different ones to save. And backup. And use them.
-            Json writer = new Json();
-            for (Theme theme : themes) {
-                writer.writeValue(theme.name, theme, Theme.class);
-            }
+            Json json = new Json();
         }
+        return null;
     }
 
-
+/*
     private static EnumMap<WallType, Model> createThemedWallModelsModels(Theme theme) {
         return createWalls(theme);
     }
@@ -58,12 +59,13 @@ public class Assets {
         EnumMap<WallType, Model> models = new EnumMap<>(WallType.class);
         ModelBuilder builder = new ModelBuilder();
         builder.begin();
-        builder.part("floor", GL20.GL_TRIANGLES, Usage.Normal | Usage.Position, new Material(ColorAttribute.createDiffuse(theme.color))).rect(0, 0, 0, SIZE, 0, 0, SIZE, 0, SIZE, 0, 0, SIZE, 0, -1, 0);
+        builder.part("floor", GL20.GL_TRIANGLES, Usage.Normal | Usage.Position,
+                new Material(ColorAttribute.createDiffuse(theme.color))).rect(0, 0, 0, SIZE, 0, 0, SIZE, 0, SIZE, 0, 0, SIZE, 0, -1, 0);
         builder.part("wall", GL20.GL_TRIANGLES, Usage.Normal | Usage.Position, new Material(ColorAttribute.createDiffuse(theme.color))).rect(0, 0, 0, SIZE, 4, 0, SIZE, 0, SIZE, 0, 3, SIZE, 0, -1, 0);
         models.put(WallType.ONE_SIDE, builder.end());
         return models;
         //@todo use this class for getting models to Dungeon, likea you have to.
-    }
+    }*/
 
     /*
     public static class DungeonSection implements Json.Serializable, Cacheable {
@@ -176,6 +178,7 @@ public class Assets {
      */
 
     public enum WallType {
+
         TWO_SIDES(), CORNER(), ONE_SIDE(), NO_SIDES;
 
         WallType(Vector2... emptySpaces) {
@@ -185,7 +188,7 @@ public class Assets {
         Vector2[] emptySpace;
     }
 
-    public static class Theme implements Json.Serializable {
+    public static class Theme {
 
         public final static int NEVER = 0;
         public final static int START = 0;
@@ -203,22 +206,5 @@ public class Assets {
         int chanceOfAppearing;
         int startLevel;
         int endLevel;
-
-
-        @Override
-        public void write(Json json) {
-            json.writeValue(color, Color.class);
-            json.writeValue(chanceOfAppearing);
-            json.writeValue(startLevel);
-            json.writeValue(endLevel);
         }
-
-        @Override
-        public void read(Json json, JsonValue jsonData) {
-            color = json.readValue(Color.class, jsonData);
-            chanceOfAppearing = json.readValue(Integer.class, jsonData);
-            startLevel = json.readValue(Integer.class, jsonData);
-            endLevel = json.readValue(Integer.class, jsonData);
-        }
-    }
 }
