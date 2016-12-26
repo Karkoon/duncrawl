@@ -1,13 +1,14 @@
 package com.karkoon.dungeoncrawler;
 
-import com.badlogic.gdx.graphics.g3d.*;
+import com.badlogic.gdx.graphics.g3d.ModelCache;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.karkoon.dungeoncrawler.Interfaces.Cacheable;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.Random;
 
 /**
@@ -39,9 +40,9 @@ public class Dungeon implements Json.Serializable, Cacheable {
     }
 
     @Override
-    public void cacheModel(ModelCache cache, Environment environment) {
+    public void cacheModel(ModelCache cache) {
         for (DungeonSection section : grid) {
-            section.cacheModel(cache, environment);
+            section.cacheModel(cache);
         }
     }
 
@@ -66,8 +67,11 @@ public class Dungeon implements Json.Serializable, Cacheable {
      */
     public static class DungeonSection implements Json.Serializable, Cacheable {
 
+        private static WallModels models = Assets.getWallModels();
         public Vector2 point; //used by json thing
+        public Vector2 correction;
         public ArrayList<Object> occupyingObject;
+        float rotation = 0;
         private ArrayList<Vector2> next; //used by json thing
         private Dungeon dungeon;
         private ModelInstance modelInstance;
@@ -86,16 +90,16 @@ public class Dungeon implements Json.Serializable, Cacheable {
         public void read(Json json, JsonValue jsonData) {
             point = json.readValue("point", Vector2.class, jsonData);
             next = json.readValue("next", ArrayList.class, Vector2.class, jsonData);
-            point = new Vector2(point.x, point.y);
+            point = new Vector2(point.x * 10, point.y * 10);
             for (Vector2 vector2 : next) {
-                vector2.set(vector2.x, vector2.y);
+                vector2.set(vector2.x * 10, vector2.y * 10);
             }
             occupyingObject = new ArrayList<>();
-
+            modelInstance = createModelInstance();
         }
 
         @Override
-        public void cacheModel(ModelCache cache, Environment environment) {
+        public void cacheModel(ModelCache cache) {
             cache.add(modelInstance);
         }
 
@@ -107,7 +111,16 @@ public class Dungeon implements Json.Serializable, Cacheable {
             this.dungeon = dungeon;
         }
 
-        private void determineSectionType() {
+        private ModelInstance createModelInstance() {
+            correction = new Vector2(0, 0);
+            ModelInstance instance = new ModelInstance(models.get(determineSectionType()));
+            instance.transform.translate(point.x - 5 - correction.x, 0, point.y - 5 - correction.y);
+            instance.transform.rotate(Vector3.Y, rotation);
+            rotation = 0;
+            return instance;
+        }
+
+        private WallModels.WallType determineSectionType() {
             boolean hasNorthBorder = true;
             boolean hasSouthBorder = true;
             boolean hasWestBorder = true;
@@ -115,36 +128,56 @@ public class Dungeon implements Json.Serializable, Cacheable {
 
             for (Vector2 nextSection : next) {
                 Vector2 differenceBetweenSectionPositionAndNextSectionPosition = point.cpy().sub(nextSection);
-                if (differenceBetweenSectionPositionAndNextSectionPosition.x == 1) {
+                if (differenceBetweenSectionPositionAndNextSectionPosition.x == 10) {
                     hasWestBorder = false;
-                } else if (differenceBetweenSectionPositionAndNextSectionPosition.x == -1) {
+                } else if (differenceBetweenSectionPositionAndNextSectionPosition.x == -10) {
                     hasEastBorder = false;
-                } else if (differenceBetweenSectionPositionAndNextSectionPosition.y == 1) {
+                } else if (differenceBetweenSectionPositionAndNextSectionPosition.y == 10) {
                     hasNorthBorder = false;
-                } else if (differenceBetweenSectionPositionAndNextSectionPosition.y == -1) {
+                } else if (differenceBetweenSectionPositionAndNextSectionPosition.y == -10) {
                     hasSouthBorder = false;
                 }
             }
 
-            EnumMap<Assets.WallType, Model> themedModels = Assets.getWallModels();
-
-       /*     if (hasEastBorder && hasNorthBorder && hasSouthBorder && hasWestBorder) {
-                modelInstance = new ModelInstance(themedModels.get(Assets.WallType.NO_SIDES), new Vector3(point.x, 0, point.y));
-            } else if (!hasNorthBorder && !hasSouthBorder && !hasEastBorder && hasWestBorder
-                    || !hasNorthBorder && !hasSouthBorder && hasEastBorder && !hasWestBorder
-                    || !hasNorthBorder && hasSouthBorder && !hasEastBorder && !hasWestBorder
-                    || hasNorthBorder && !hasSouthBorder && !hasEastBorder && !hasWestBorder) {
-                modelInstance = new ModelInstance(themedModels.get(Assets.WallType.ONE_SIDE), new Vector3(point.x, 0, point.y));
-            } else if (!hasNorthBorder && !hasSouthBorder && hasEastBorder
-                    || hasNorthBorder && hasSouthBorder && !hasEastBorder && !hasWestBorder) {
-                modelInstance = new ModelInstance(themedModels.get(Assets.WallType.TWO_SIDES), new Vector3(point.x, 0, point.y));
-            } else if (!hasNorthBorder && hasSouthBorder && !hasEastBorder
-                    || !hasNorthBorder && hasSouthBorder && !hasWestBorder
-                    || hasNorthBorder && !hasSouthBorder && !hasEastBorder
-                    || hasNorthBorder && !hasSouthBorder && !hasWestBorder) {
-                modelInstance = new ModelInstance(themedModels.get(Assets.WallType.CORNER), new Vector3(point.x, 0, point.y));
+            if (!hasNorthBorder && !hasSouthBorder && !hasEastBorder && hasWestBorder) {
+                rotation = 90;
+                correction.y = -10;
+                return WallModels.WallType.ONE_SIDE;
+            } else if (!hasNorthBorder && !hasSouthBorder && hasEastBorder && !hasWestBorder) {
+                correction.x = -10;
+                rotation = -90;
+                return WallModels.WallType.ONE_SIDE;
+            } else if (!hasNorthBorder && hasSouthBorder && !hasEastBorder && !hasWestBorder) {
+                correction.y = -10;
+                correction.x = -10;
+                rotation = 180;
+                return WallModels.WallType.ONE_SIDE;
+            } else if (hasNorthBorder && !hasSouthBorder && !hasEastBorder && !hasWestBorder) {
+                correction.y = 0;
+                return WallModels.WallType.ONE_SIDE;
+            } else if (!hasNorthBorder && !hasSouthBorder && hasEastBorder && hasWestBorder) {
+                rotation = 90;
+                correction.y = -10;
+                return WallModels.WallType.TWO_SIDES;
+            } else if (hasNorthBorder && hasSouthBorder && !hasEastBorder && !hasWestBorder) {
+                return WallModels.WallType.TWO_SIDES;
+            } else if (!hasNorthBorder && hasSouthBorder && hasWestBorder && !hasEastBorder) {
+                correction.y = -10;
+                rotation = 90;
+                return WallModels.WallType.CORNER;
+            } else if (!hasNorthBorder && hasSouthBorder && !hasWestBorder && hasEastBorder) {
+                correction.x = -10;
+                correction.y = -10;
+                rotation = 180;
+                return WallModels.WallType.CORNER;
+            } else if (hasNorthBorder && !hasSouthBorder && hasWestBorder && !hasEastBorder) {
+                return WallModels.WallType.CORNER;
+            } else if (hasNorthBorder && !hasSouthBorder && !hasWestBorder && hasEastBorder) {
+                correction.x = -10;
+                rotation = 270;
+                return WallModels.WallType.CORNER;
             }
-        }*/
+            return WallModels.WallType.NO_SIDES;
         }
     }
 }

@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.karkoon.dungeoncrawler.Characters.Character;
-import com.karkoon.dungeoncrawler.Dungeon;
+import com.karkoon.dungeoncrawler.WallModels;
 
 
 /**
@@ -108,7 +108,7 @@ public class UserInterface {
 
     public void step() {
         stage.act();
-        camera.position.set(player.getDecal().getPosition().x, Dungeon.DungeonSection.SIZE * 0.75f, player.getDecal().getPosition().z);
+        camera.position.set(player.getDecal().getPosition().x, WallModels.HEIGHT * 0.5f, player.getDecal().getPosition().z);
         camera.direction.lerp(player.getDirection(), 0.1f);
         camera.update();
         stage.draw();
