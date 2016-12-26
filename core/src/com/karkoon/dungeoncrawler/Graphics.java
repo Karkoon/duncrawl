@@ -107,13 +107,13 @@ class Graphics {
         cache = new ModelCache();
         cache.begin();
         for (Cacheable cacheable : cacheables) {
-            cacheable.cache(cache, environment);
+            cacheable.cacheModel(cache);
         }
         cache.end();
     }
 
     private void clearScreen() {
-        Gdx.gl20.glClearColor(88 / 255f, 88 / 255f, 88 / 255f, 1);
+        Gdx.gl20.glClearColor(255f, 88 / 255f, 88 / 255f, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
     }
 

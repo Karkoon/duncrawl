@@ -11,6 +11,7 @@ import com.karkoon.dungeoncrawler.Dungeon;
 import com.karkoon.dungeoncrawler.Interfaces.*;
 import com.karkoon.dungeoncrawler.Items.Item;
 import com.karkoon.dungeoncrawler.Statistics;
+import com.karkoon.dungeoncrawler.WallModels;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +36,7 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
         this.baseStats = statistics;
         this.currentStats = new Statistics(0, 0, 0, 0, 0, 0, 0);
         currentStats.add(baseStats);
-        moveRate = new Vector3(0, 0, Dungeon.DungeonSection.SIZE);
+        moveRate = new Vector3(0, 0, WallModels.SIZE);
         direction = new Vector3(0, 0, 90);
         items = new ArrayList<>(getMaxItems());
     }
@@ -44,16 +45,16 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
         return decal;
     }
 
+    private void setDecal(TextureRegion... textureRegions) {
+        if (textureRegions == null) throw new NullPointerException("TextureRegions can't be null");
+        this.decal = AnimatedDecal.newAnimatedDecal(WallModels.SIZE,
+                WallModels.SIZE, new Animation(1, textureRegions), true);
+        this.decal.setKeepSize(true);
+    }
+
     public abstract int getMaxItems();
 
     public abstract int getMaxUsedItems();
-
-    private void setDecal(TextureRegion... textureRegions) {
-        if (textureRegions == null) throw new NullPointerException("TextureRegions can't be null");
-        this.decal = AnimatedDecal.newAnimatedDecal(Dungeon.DungeonSection.SIZE,
-                Dungeon.DungeonSection.SIZE, new Animation(1, textureRegions), true);
-        this.decal.setKeepSize(true);
-    }
 
     public void setPosition(Dungeon.DungeonSection section) {
         if (section != null) {
@@ -88,7 +89,7 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
 
     @Override
     public void update(float delta) {
-        float yHeight = Dungeon.DungeonSection.SIZE / 2f;
+        float yHeight = WallModels.SIZE / 2f;
         decal.getPosition().lerp(new Vector3(position.point.x, yHeight, position.point.y), 0.1f);
         decal.update(delta);
     }

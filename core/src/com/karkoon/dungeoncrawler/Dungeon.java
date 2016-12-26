@@ -1,10 +1,7 @@
 package com.karkoon.dungeoncrawler;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.*;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.g3d.ModelCache;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
@@ -43,9 +40,9 @@ public class Dungeon implements Json.Serializable, Cacheable {
     }
 
     @Override
-    public void cache(ModelCache cache, Environment environment) {
+    public void cacheModel(ModelCache cache) {
         for (DungeonSection section : grid) {
-            section.cache(cache, environment);
+            section.cacheModel(cache);
         }
     }
 
@@ -70,26 +67,20 @@ public class Dungeon implements Json.Serializable, Cacheable {
      */
     public static class DungeonSection implements Json.Serializable, Cacheable {
 
-        private static final int SCALE = 10;
-        public static final float SIZE = 1f * SCALE; //square
-        public static final float HEIGHT = 1.25f * SCALE;
-        private static ModelBuilder builder = new ModelBuilder();
-        private static Model floorModel = builder.createRect(0, 0, 0, SIZE, 0, 0, SIZE, 0, SIZE, 0, 0, SIZE, 0, -1, 0,
-                new Material(ColorAttribute.createDiffuse(Color.GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        private static Model wallModel = builder.createRect(0, 0, 0, SIZE, 0, 0, SIZE, HEIGHT, 0, 0, HEIGHT, 0, 0, 0, 1,
-                new Material(ColorAttribute.createDiffuse(Color.GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal); //// TODO: 2016-09-01 change to meshpartbuilder
+        private static WallModels models = Assets.getWallModels();
         public Vector2 point; //used by json thing
+        public Vector2 correction;
         public ArrayList<Object> occupyingObject;
+        float rotation = 0;
         private ArrayList<Vector2> next; //used by json thing
         private Dungeon dungeon;
-//        private ArrayList<ModelInstance> instances = new ArrayList<>();
-        private ArrayList<ModelInstance> instances = new ArrayList<>();
+        private ModelInstance modelInstance;
 
         @Override
         public void write(Json json) {
-            point = new Vector2(point.x / SCALE, point.y / SCALE);
+            point = new Vector2(point.x, point.y);
             for (Vector2 vector2 : next) {
-                vector2.set(vector2.x / SCALE, vector2.y / SCALE);
+                vector2.set(vector2.x, vector2.y);
             }
             json.writeValue(point);
             json.writeValue(next);
@@ -99,19 +90,17 @@ public class Dungeon implements Json.Serializable, Cacheable {
         public void read(Json json, JsonValue jsonData) {
             point = json.readValue("point", Vector2.class, jsonData);
             next = json.readValue("next", ArrayList.class, Vector2.class, jsonData);
-            point = new Vector2(point.x * SCALE, point.y * SCALE);
+            point = new Vector2(point.x * 10, point.y * 10);
             for (Vector2 vector2 : next) {
-                vector2.set(vector2.x * SCALE, vector2.y * SCALE);
+                vector2.set(vector2.x * 10, vector2.y * 10);
             }
             occupyingObject = new ArrayList<>();
-            constructWallSection();
+            modelInstance = createModelInstance();
         }
 
         @Override
-        public void cache(ModelCache cache, Environment environment) {
-            for (ModelInstance modelInstance : instances) {
-                cache.add(modelInstance);
-            }
+        public void cacheModel(ModelCache cache) {
+            cache.add(modelInstance);
         }
 
         public Dungeon getDungeon() {
@@ -122,57 +111,73 @@ public class Dungeon implements Json.Serializable, Cacheable {
             this.dungeon = dungeon;
         }
 
-        private void constructWallSection() { // used because of deserialization and errors with creating a proper constructWallSection
-            ModelInstance floor = new ModelInstance(floorModel);
-            floor.transform.translate(point.x - SIZE / 2f, 0, point.y + SIZE / 2f);
-            floor.transform.rotate(Vector3.X, 180);
-            instances.add(floor);
-            assembleWalls(determineWallCoords());
-        }
-
-
-        private ArrayList<Vector2> determineWallCoords() {
-            ArrayList<Vector2> possibleWallCoords = new ArrayList<Vector2>();
-            possibleWallCoords.add(point.cpy().add(-SIZE, 0));
-            possibleWallCoords.add(point.cpy().add(SIZE, 0));
-            possibleWallCoords.add(point.cpy().add(0, -SIZE));
-            possibleWallCoords.add(point.cpy().add(0, SIZE));
-            ArrayList<Vector2> wallCoords = new ArrayList<Vector2>(possibleWallCoords);
-            for (Vector2 possibleCoord : possibleWallCoords) {
-                for (Vector2 nextCoord : next) {
-                    if (possibleCoord.equals(nextCoord)) wallCoords.remove(possibleCoord);
-                }
-            }
-            return wallCoords;
-        }
-
-        private void assembleWalls(ArrayList<Vector2> wallCoords) {
-            for (Vector2 coord : wallCoords) {
-                // TODO: 2016-08-27 **make me prettier**
-                Vector2 differenceBetweenPointPosAndWallPos = point.cpy().sub(coord);
-                float rotation = 0;
-                if (differenceBetweenPointPosAndWallPos.x == SIZE) {
-                    rotation = 90;
-                    coord.add(SIZE / 2f, SIZE / 2f);
-                } else if (differenceBetweenPointPosAndWallPos.x == -SIZE) {
-                    rotation = -90;
-                    coord.add(-SIZE / 2f, -SIZE / 2f);
-                } else if (differenceBetweenPointPosAndWallPos.y == SIZE) {
-                    rotation = 0;
-                    coord.add(-SIZE / 2f, SIZE / 2f);
-                } else if (differenceBetweenPointPosAndWallPos.y == -SIZE) {
-                    rotation = 180;
-                    coord.add(SIZE / 2f, -SIZE / 2f);
-                }
-                putWallAt(coord, rotation);
-            }
-        }
-
-        private void putWallAt(Vector2 coord, float rotation) {
-            ModelInstance instance = new ModelInstance(wallModel);
-            instance.transform.translate(coord.x, 0, coord.y);
+        private ModelInstance createModelInstance() {
+            correction = new Vector2(0, 0);
+            ModelInstance instance = new ModelInstance(models.get(determineSectionType()));
+            instance.transform.translate(point.x - 5 - correction.x, 0, point.y - 5 - correction.y);
             instance.transform.rotate(Vector3.Y, rotation);
-            instances.add(instance);
+            rotation = 0;
+            return instance;
+        }
+
+        private WallModels.WallType determineSectionType() {
+            boolean hasNorthBorder = true;
+            boolean hasSouthBorder = true;
+            boolean hasWestBorder = true;
+            boolean hasEastBorder = true;
+
+            for (Vector2 nextSection : next) {
+                Vector2 differenceBetweenSectionPositionAndNextSectionPosition = point.cpy().sub(nextSection);
+                if (differenceBetweenSectionPositionAndNextSectionPosition.x == 10) {
+                    hasWestBorder = false;
+                } else if (differenceBetweenSectionPositionAndNextSectionPosition.x == -10) {
+                    hasEastBorder = false;
+                } else if (differenceBetweenSectionPositionAndNextSectionPosition.y == 10) {
+                    hasNorthBorder = false;
+                } else if (differenceBetweenSectionPositionAndNextSectionPosition.y == -10) {
+                    hasSouthBorder = false;
+                }
+            }
+
+            if (!hasNorthBorder && !hasSouthBorder && !hasEastBorder && hasWestBorder) {
+                rotation = 90;
+                correction.y = -10;
+                return WallModels.WallType.ONE_SIDE;
+            } else if (!hasNorthBorder && !hasSouthBorder && hasEastBorder && !hasWestBorder) {
+                correction.x = -10;
+                rotation = -90;
+                return WallModels.WallType.ONE_SIDE;
+            } else if (!hasNorthBorder && hasSouthBorder && !hasEastBorder && !hasWestBorder) {
+                correction.y = -10;
+                correction.x = -10;
+                rotation = 180;
+                return WallModels.WallType.ONE_SIDE;
+            } else if (hasNorthBorder && !hasSouthBorder && !hasEastBorder && !hasWestBorder) {
+                correction.y = 0;
+                return WallModels.WallType.ONE_SIDE;
+            } else if (!hasNorthBorder && !hasSouthBorder && hasEastBorder && hasWestBorder) {
+                rotation = 90;
+                correction.y = -10;
+                return WallModels.WallType.TWO_SIDES;
+            } else if (hasNorthBorder && hasSouthBorder && !hasEastBorder && !hasWestBorder) {
+                return WallModels.WallType.TWO_SIDES;
+            } else if (!hasNorthBorder && hasSouthBorder && hasWestBorder && !hasEastBorder) {
+                correction.y = -10;
+                rotation = 90;
+                return WallModels.WallType.CORNER;
+            } else if (!hasNorthBorder && hasSouthBorder && !hasWestBorder && hasEastBorder) {
+                correction.x = -10;
+                correction.y = -10;
+                rotation = 180;
+                return WallModels.WallType.CORNER;
+            } else if (hasNorthBorder && !hasSouthBorder && hasWestBorder && !hasEastBorder) {
+                return WallModels.WallType.CORNER;
+            } else if (hasNorthBorder && !hasSouthBorder && !hasWestBorder && hasEastBorder) {
+                correction.x = -10;
+                rotation = 270;
+                return WallModels.WallType.CORNER;
+            }
+            return WallModels.WallType.NO_SIDES;
         }
     }
 }

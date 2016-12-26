@@ -11,6 +11,7 @@ import com.karkoon.dungeoncrawler.Characters.Character;
 import com.karkoon.dungeoncrawler.Dungeon;
 import com.karkoon.dungeoncrawler.Interfaces.Drawable;
 import com.karkoon.dungeoncrawler.Statistics;
+import com.karkoon.dungeoncrawler.WallModels;
 
 /**
  * Created by Roksana on 03.09.2016.
@@ -23,7 +24,7 @@ public abstract class Item implements Drawable {
     private Dungeon.DungeonSection position;
     private Decal decal;
     private Statistics stats;
-    private float height = Dungeon.DungeonSection.HEIGHT / 2f;
+    private float height = WallModels.HEIGHT / 2f;
     private float speed = 0.2f;
     private float originalHeight = height;
 
