@@ -94,6 +94,7 @@ public class Dungeon implements Json.Serializable, Cacheable {
             for (Vector2 vector2 : next) {
                 vector2.set(vector2.x * 10, vector2.y * 10);
             }
+
             occupyingObject = new ArrayList<>();
             modelInstance = createModelInstance();
         }

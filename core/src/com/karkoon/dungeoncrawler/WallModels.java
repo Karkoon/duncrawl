@@ -34,7 +34,7 @@ public class WallModels {
         long attributes = VertexAttributes.Usage.Normal | VertexAttributes.Usage.Position;
         Material wall = new Material(ColorAttribute.createDiffuse(theme.color));
         Material floor = new Material(ColorAttribute.createDiffuse(theme.color));
-        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.color));
+        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.color.mul(1.5f)));
 
         models.put(WallType.ONE_SIDE, createOneSide(builder, attributes, floor, ceiling, wall));
         models.put(WallType.CORNER, createCorner(builder, attributes, floor, ceiling, wall));
