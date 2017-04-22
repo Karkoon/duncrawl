@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
@@ -23,9 +23,9 @@ public class NPCRenderingSystem extends IteratingSystem {
 
     private DecalBatch batch;
 
-    public NPCRenderingSystem(Family family, Camera camera) {
+    public NPCRenderingSystem(Family family, DecalBatch batch) {
         super(family);
-        batch = new DecalBatch(new CameraGroupStrategy(camera));
+        this.batch = batch;
     }
 
     @Override
@@ -36,12 +36,6 @@ public class NPCRenderingSystem extends IteratingSystem {
         Vector3 position = positionMapper.get(entity).getPosition();
         updateAnimationPosition(decal, position);
         batch.add(decal);
-    }
-
-    @Override
-    public void update(float deltaTime) {
-        super.update(deltaTime);
-        batch.flush();
     }
 
     private void updateAnimationPosition(Decal decal, Vector3 position) {
