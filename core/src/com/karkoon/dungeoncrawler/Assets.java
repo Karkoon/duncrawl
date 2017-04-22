@@ -3,7 +3,7 @@ package com.karkoon.dungeoncrawler;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.karkoon.dungeoncrawler.WallModels.Theme;
+import com.karkoon.dungeoncrawler.WallModelsAccessor.Theme;
 
 import java.io.File;
 import java.util.Random;
@@ -15,9 +15,9 @@ import java.util.Random;
  */
 public class Assets {
 
-    private static ObjectMap<Theme, WallModels> themedModels = new ObjectMap<>();
+    private static ObjectMap<Theme, WallModelsAccessor> themedModels = new ObjectMap<>();
 
-    public static WallModels getWallModels() {
+    public static WallModelsAccessor getWallModelsAccessor() {
         if (themedModels.size > 0) {
             ObjectMap.Keys<Theme> themes = themedModels.keys();
             int sum = 0;
@@ -36,7 +36,7 @@ public class Assets {
         } else {
             populateThemedModels();
         }
-        return getWallModels();
+        return getWallModelsAccessor();
     }
 
     private static void populateThemedModels() {
@@ -44,7 +44,7 @@ public class Assets {
         File themeDir = new File("themes/");
         for (File themeFile : themeDir.listFiles()) {
             Theme theme = json.fromJson(Theme.class, new FileHandle(themeFile));
-            themedModels.put(theme, new WallModels(theme));
+            themedModels.put(theme, new WallModelsAccessor(theme, DungeonSection.getSize(), DungeonSection.getHeight()));
         }
     }
 }

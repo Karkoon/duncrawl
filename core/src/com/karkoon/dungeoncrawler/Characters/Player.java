@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.karkoon.dungeoncrawler.Dungeon;
+import com.karkoon.dungeoncrawler.DungeonSection;
 import com.karkoon.dungeoncrawler.Items.Item;
 import com.karkoon.dungeoncrawler.Layers.Layer;
 import com.karkoon.dungeoncrawler.Statistics;
@@ -20,7 +21,7 @@ public class Player extends Character {
 
     private Layer layer;
 
-    public Player(Dungeon.DungeonSection startingPosition, Layer layer) {
+    public Player(DungeonSection startingPosition, Layer layer) {
         super(startingPosition, new Statistics(10, 10, 0, 30, 5, 5, 5),
                 new TextureRegion(new Texture(Gdx.files.internal("badlogic.jpg"))));
         this.layer = layer;
@@ -56,15 +57,15 @@ public class Player extends Character {
     }
 
     @Override
-    public Dungeon.DungeonSection moveToward() {
-        Dungeon.DungeonSection section = super.moveToward();
+    public DungeonSection moveToward() {
+        DungeonSection section = super.moveToward();
         processTurn();
         return section;
     }
 
     @Override
-    public Dungeon.DungeonSection moveBack() {
-        Dungeon.DungeonSection section = super.moveBack();
+    public DungeonSection moveBack() {
+        DungeonSection section = super.moveBack();
         processTurn();
         return section;
     }

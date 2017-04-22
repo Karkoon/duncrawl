@@ -1,17 +1,14 @@
 package com.karkoon.dungeoncrawler.Characters;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.karkoon.dungeoncrawler.AnimatedDecal;
-import com.karkoon.dungeoncrawler.Dungeon;
+import com.badlogic.gdx.utils.Array;
+import com.karkoon.dungeoncrawler.*;
 import com.karkoon.dungeoncrawler.Interfaces.*;
 import com.karkoon.dungeoncrawler.Items.Item;
-import com.karkoon.dungeoncrawler.Statistics;
-import com.karkoon.dungeoncrawler.WallModels;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,43 +19,37 @@ import java.util.Collection;
  */
 public abstract class Character implements Drawable, Updateable, TurnSupport, Container, Damageable {
 
-    private Statistics baseStats;
     private Statistics currentStats;
-    private Dungeon.DungeonSection position;
-    private AnimatedDecal decal;
+    private DungeonSection position;
+    private CharacterAnimations decalAnimation;
     private Vector3 moveRate;
     private Vector3 direction;
     private ArrayList<Item> items;
 
-    Character(Dungeon.DungeonSection startingPosition, Statistics statistics, TextureRegion... textureRegions) {
-        setDecal(textureRegions);
+    Character(DungeonSection startingPosition, Statistics statistics, TextureRegion... textureRegions) {
+        setDecalAnimation(textureRegions);
         setPosition(startingPosition);
-        this.baseStats = statistics;
-        this.currentStats = new Statistics(0, 0, 0, 0, 0, 0, 0);
-        currentStats.add(baseStats);
-        moveRate = new Vector3(0, 0, WallModels.SIZE);
+        currentStats = statistics;
+        moveRate = new Vector3(0, 0, DungeonSection.getSize());
         direction = new Vector3(0, 0, 90);
         items = new ArrayList<>(getMaxItems());
     }
 
-    public AnimatedDecal getDecal() {
-        return decal;
-    }
-
-    private void setDecal(TextureRegion... textureRegions) {
-        if (textureRegions == null) throw new NullPointerException("TextureRegions can't be null");
-        this.decal = AnimatedDecal.newAnimatedDecal(WallModels.SIZE,
-                WallModels.SIZE, new Animation(1, textureRegions), true);
-        this.decal.setKeepSize(true);
+    private void setDecalAnimation(TextureRegion... textureRegions) {
+        if (textureRegions == null) {
+            throw new NullPointerException("TextureRegions can't be null");
+        } else  {
+            decalAnimation = new CharacterAnimations(new Array<>(textureRegions));
+        }
     }
 
     public abstract int getMaxItems();
 
     public abstract int getMaxUsedItems();
 
-    public void setPosition(Dungeon.DungeonSection section) {
+    public void setPosition(DungeonSection section) {
         if (section != null) {
-            ArrayList<Object> occupyingObjectCopy = new ArrayList<>(section.occupyingObject);
+            ArrayList<Object> occupyingObjectCopy = new ArrayList<>(section.getOccupyingObjects());
             for (Object object : occupyingObjectCopy) {
                 if (object instanceof Damageable) {
                     attack((Damageable) object);
@@ -70,28 +61,26 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
                 }
             }
 
-            if (this.position != null) this.position.occupyingObject.remove(this);
+            if (this.position != null) this.position.getOccupyingObjects().remove(this);
             this.position = section;
-            section.occupyingObject.add(this);
+            section.getOccupyingObjects().add(this);
         }
     }
 
-    public Dungeon.DungeonSection getPositionSection() {
+    public DungeonSection getPositionSection() {
         return position;
     }
 
     @Override
     public void draw(DecalBatch batch, Vector3 lookAt) {
-        decal.lookAt(lookAt, Vector3.Y);
-        decal.update(0);
-        batch.add(decal);
+        decalAnimation.draw(batch, lookAt);
     }
 
     @Override
     public void update(float delta) {
-        float yHeight = WallModels.SIZE / 2f;
-        decal.getPosition().lerp(new Vector3(position.point.x, yHeight, position.point.y), 0.1f);
-        decal.update(delta);
+        float yHeight = DungeonSection.getSize() / 2f;
+        decalAnimation.setPosition(new Vector3(position.getPoint().x, yHeight, position.getPoint().y));
+        decalAnimation.update(delta);
     }
 
     @Override
@@ -114,9 +103,10 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
     @Override
     abstract public void processTurn();
 
-    public Dungeon.DungeonSection moveToward() {
-        Vector2 possibleNextPosition = getPositionSection().point.cpy().add(getMoveRate().x, getMoveRate().z);
-        Dungeon.DungeonSection possibleNextSection = getPositionSection().getDungeon().getDungeonSectionAt(possibleNextPosition);
+    public DungeonSection moveToward() {
+        DungeonSection position = getPositionSection();
+        Vector2 possibleNextPosition = position.getPoint().cpy().add(getMoveRate().x, getMoveRate().z);
+        DungeonSection possibleNextSection = position.getDungeon().getDungeonSectionAt(possibleNextPosition);
         if (possibleNextSection != null) {
             setPosition(possibleNextSection);
             return possibleNextSection;
@@ -124,9 +114,9 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
         return null;
     }
 
-    public Dungeon.DungeonSection moveBack() {
-        Vector2 possibleNextPosition = getPositionSection().point.cpy().sub(getMoveRate().x, getMoveRate().z);
-        Dungeon.DungeonSection possibleNextSection = getPositionSection().getDungeon().getDungeonSectionAt(possibleNextPosition);
+    public DungeonSection moveBack() {
+        Vector2 possibleNextPosition = getPositionSection().getPoint().cpy().sub(getMoveRate().x, getMoveRate().z);
+        DungeonSection possibleNextSection = getPositionSection().getDungeon().getDungeonSectionAt(possibleNextPosition);
         if (possibleNextSection != null) {
             setPosition(possibleNextSection);
             return possibleNextSection;
@@ -184,7 +174,7 @@ public abstract class Character implements Drawable, Updateable, TurnSupport, Co
     }
 
     @Override
-    public void dropItem(Item item, Dungeon.DungeonSection position) {
+    public void dropItem(Item item, DungeonSection position) {
         items.remove(item);
         item.drop(position);
     }

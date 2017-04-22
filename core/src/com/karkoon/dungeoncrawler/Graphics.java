@@ -84,7 +84,7 @@ class Graphics {
     private void setUpViewport() {
         PerspectiveCamera camera = new PerspectiveCamera(67, 300, 300);
         camera.near = 1f;
-        camera.far = 400f;
+        camera.far = 1000f;
         viewport = new ExtendViewport(300, 300, camera);
     }
 

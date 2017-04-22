@@ -1,8 +1,8 @@
 {
 name: yellow
 color: {
-	r: 1.0
-	g: 1.0
+	r: 0.8
+	g: 0.8
 	b: 0.0
 	a: 1
 }

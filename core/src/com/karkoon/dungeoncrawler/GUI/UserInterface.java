@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,7 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.karkoon.dungeoncrawler.Characters.Character;
-import com.karkoon.dungeoncrawler.WallModels;
+import com.karkoon.dungeoncrawler.DungeonSection;
+import com.karkoon.dungeoncrawler.WallModelsAccessor;
 
 
 /**
@@ -108,7 +110,7 @@ public class UserInterface {
 
     public void step() {
         stage.act();
-        camera.position.set(player.getDecal().getPosition().x, WallModels.HEIGHT * 0.5f, player.getDecal().getPosition().z);
+        camera.position.lerp(new Vector3(player.getPositionSection().getPoint().x, DungeonSection.getHeight() * 0.5f, player.getPositionSection().getPoint().y), 0.1f);
         camera.direction.lerp(player.getDirection(), 0.1f);
         camera.update();
         stage.draw();

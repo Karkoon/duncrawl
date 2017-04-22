@@ -2,6 +2,7 @@ package com.karkoon.dungeoncrawler.Characters;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.karkoon.dungeoncrawler.Dungeon;
+import com.karkoon.dungeoncrawler.DungeonSection;
 import com.karkoon.dungeoncrawler.Items.Item;
 import com.karkoon.dungeoncrawler.Statistics;
 
@@ -12,7 +13,7 @@ public abstract class Enemy extends Character {
 
     private int maxItems = 1;
 
-    public Enemy(Dungeon.DungeonSection startingPosition, Statistics stats, Item item, TextureRegion... regions) {
+    public Enemy(DungeonSection startingPosition, Statistics stats, Item item, TextureRegion... regions) {
         super(startingPosition, stats, regions);
         putItem(item);
     }
@@ -44,7 +45,7 @@ public abstract class Enemy extends Character {
     }
 
     @Override
-    public void dropItem(Item item, Dungeon.DungeonSection position) {
+    public void dropItem(Item item, DungeonSection position) {
         super.dropItem(item, position);
         removeFromUsedItems(item);
     }

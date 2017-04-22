@@ -18,6 +18,8 @@ public final class Items {
 
     public final static Class[] baseTypes = {Ring.class, Armor.class, Boots.class, Gloves.class, Helmet.class, Pendant.class, Trousers.class}; // TODO: 2016-12-18 enum please
 
+
+
     private Items() {
     }
 

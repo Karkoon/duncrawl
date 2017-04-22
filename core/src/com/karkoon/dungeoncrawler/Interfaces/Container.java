@@ -1,6 +1,7 @@
 package com.karkoon.dungeoncrawler.Interfaces;
 
 import com.karkoon.dungeoncrawler.Dungeon;
+import com.karkoon.dungeoncrawler.DungeonSection;
 import com.karkoon.dungeoncrawler.Items.Item;
 
 import java.util.Collection;
@@ -35,7 +36,7 @@ public interface Container {
      * @param position is the section of the dungeon where the item is going to be dropped.
      * @implSpec All references to the item by the container should be removed.
      */
-    void dropItem(Item item, Dungeon.DungeonSection position);
+    void dropItem(Item item, DungeonSection position);
 
 
     /**

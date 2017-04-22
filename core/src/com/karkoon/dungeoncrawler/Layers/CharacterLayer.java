@@ -20,6 +20,18 @@ public class CharacterLayer extends Layer {
         addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
         addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
         addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
+        addNPC(new SkeletonTwo(dungeon.getRandomDungeonSection()));
         addMainCharacter(new Player(dungeon.getSpawnDungeonSection(), this));
        /* Timer.schedule(new Timer.Task() {
             @Override

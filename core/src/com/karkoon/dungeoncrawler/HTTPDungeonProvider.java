@@ -11,22 +11,21 @@ import java.net.URL;
 
 /**
  * Created by @Karkoon on 18.08.2016.
- * Retrieves dungeon in a form of a json from a third-party server, using a non-libgdx, non java, library.
+ * Provides dungeon in a form of a json from a third-party server (REST).
+ * https://aorioli.github.io/procedural/
  * Resulted from a session of blind programming and googling.
  */
-public class DungeonRetriever {
+public class HTTPDungeonProvider implements DungeonProvider{
 
-    private DungeonRetriever() {
-    }
-
-    static Dungeon getNewDungeon(int seed, int size, int rooms) {
+    public Dungeon getNewDungeon(int seed, int size, int rooms) {
         return getNewDungeonWithHTTP(seed, size, rooms);
     }
 
     private static Dungeon getNewDungeonWithHTTP(int seed, int size, int rooms) {
         Dungeon dungeon = null;
         try {
-            URL url = new URL("https://procedural-service.herokuapp.com/dungeon/generate?size=" + size + "&rooms=" + rooms + "&seed=" + seed);
+            URL url = new URL("https://procedural-service.herokuapp.com/dungeon/generate?size="
+                    + size + "&rooms=" + rooms + "&seed=" + seed);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
