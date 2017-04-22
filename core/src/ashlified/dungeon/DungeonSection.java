@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Created by karkoon on 01.02.17.
  */
 
-public class DungeonSection implements Json.Serializable, Cacheable {
+public class DungeonSection implements Json.Serializable {
 
     private static float scale = 10f;
     private static float size = 10f;
@@ -68,7 +68,6 @@ public class DungeonSection implements Json.Serializable, Cacheable {
 
     }
 
-    @Override
     public void cacheModel(ModelCache cache) {
         cache.add(modelInstance);
     }

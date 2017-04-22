@@ -14,6 +14,15 @@ public final class AnimationsComponent implements Component {
     private float time = 0;
     private EnumMap<AnimationState, Animation<Decal>> animations
             = new EnumMap<>(AnimationState.class);
+    private AnimationState currentState = AnimationState.IDLE;
+
+    public AnimationState getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(AnimationState currentState) {
+        this.currentState = currentState;
+    }
 
     public float getTime() {
         return time;
@@ -23,7 +32,7 @@ public final class AnimationsComponent implements Component {
         this.time = time;
     }
 
-    public EnumMap<AnimationState, Animation<Decal>> getAnimations() {
+    public EnumMap<AnimationState, Animation<Decal>> getAnimationsMap() {
         return animations;
     }
 
