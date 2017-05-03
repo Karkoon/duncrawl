@@ -8,13 +8,13 @@ import com.badlogic.gdx.math.Vector3;
  */
 public final class SpeedComponent implements Component {
 
-    private Vector3 moveRate;
+    private int speed;
 
-    public Vector3 getMoveRate() {
-        return moveRate;
+    public int getSpeed() {
+        return speed;
     }
 
-    public void setMoveRate(Vector3 moveRate) {
-        this.moveRate = moveRate;
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 }

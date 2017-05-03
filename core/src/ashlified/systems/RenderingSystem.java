@@ -21,13 +21,12 @@ public class RenderingSystem extends EntitySystem {
     private NPCRenderingSystem NPCRenderingSystem;
 
     private DecalBatch decalBatch;
-    private Viewport viewport;
 
-    public RenderingSystem() {
-        setUpViewport();
+
+    public RenderingSystem(Viewport viewport) {
         decalBatch = new DecalBatch(new CameraGroupStrategy(viewport.getCamera()));
         Family NPCs = Family.all(AnimationsComponent.class, PositionComponent.class).get();
-        NPCRenderingSystem = new NPCRenderingSystem(NPCs, decalBatch);
+        NPCRenderingSystem = new NPCRenderingSystem(NPCs, decalBatch, viewport.getCamera());
         Family droppedItems = Family.all(DecalComponent.class, PositionComponent.class).get();
         droppedItemsRenderingSystem = new DroppedItemsRenderingSystem(droppedItems, decalBatch);
     }
@@ -40,12 +39,6 @@ public class RenderingSystem extends EntitySystem {
         drawDecals();
     }
 
-    private void setUpViewport() {
-        PerspectiveCamera camera = new PerspectiveCamera(67, 300, 300);
-        camera.near = 1f;
-        camera.far = 1000f;
-        viewport = new ExtendViewport(300, 300, camera);
-    }
 
     private void drawDecals() {
         decalBatch.flush();

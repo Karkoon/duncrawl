@@ -28,12 +28,12 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
     private EnumMap<WallModelsAccessor.WallType, Model> createWallModels(WallModelsAccessor.Theme theme, float size, float height) {
         setHeight(height);
         setSize(size);
-        ModelBuilder builder = new ModelBuilder();
         long attributes = VertexAttributes.Usage.Normal | VertexAttributes.Usage.Position;
-        Material wall = new Material(ColorAttribute.createDiffuse(theme.color));
-        Material floor = new Material(ColorAttribute.createDiffuse(theme.color));
-        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.color.mul(1.2f)));
+        Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()));
+        Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()));
+        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor().mul(1.2f)));
 
+        ModelBuilder builder = new ModelBuilder();
         EnumMap<WallModelsAccessor.WallType, Model> models = new EnumMap<>(WallModelsAccessor.WallType.class);
         models.put(WallModelsAccessor.WallType.ONE_SIDE, createOneSide(builder, attributes, floor, ceiling, wall));
         models.put(WallModelsAccessor.WallType.CORNER, createCorner(builder, attributes, floor, ceiling, wall));

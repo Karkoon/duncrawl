@@ -2,15 +2,13 @@ package ashlified;
 
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.HTTPDungeonProvider;
+import ashlified.systems.RenderingSystem;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.karkoon.dungeoncrawler.Characters.Character;
-import com.karkoon.dungeoncrawler.GUI.UserInterface;
-import com.karkoon.dungeoncrawler.Layers.CharacterLayer;
-import com.karkoon.dungeoncrawler.Layers.ItemLayer;
-import com.karkoon.dungeoncrawler.Layers.Layer;
+import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 
-import java.util.ArrayList;
+
 import java.util.Random;
 
 /**
@@ -18,38 +16,28 @@ import java.util.Random;
  */
 public class GameScreen implements Screen {
 
-    private ArrayList<Cacheable> cacheables = new ArrayList<>();
-    private ArrayList<com.karkoon.dungeoncrawler.Interfaces.Drawable> drawables = new ArrayList<>();
-    private ArrayList<Layer> layers = new ArrayList<>();
-    private UserInterface userInterface;
+    private Graphics graphics;
+    private Engine engine;
 
     @Override
     public void show() {
+        engine = new Engine();
         Dungeon dungeon = new HTTPDungeonProvider().getNewDungeon(new Random().nextInt(), 256, 32);
-        CharacterLayer characterLayer = new CharacterLayer(dungeon);
-        Character player = characterLayer.getMainCharacter();
-        layers.add(characterLayer);
-        layers.add(new ItemLayer(dungeon));
-        cacheables.add(dungeon);
-        drawables.addAll(layers);
-        graphics = new Graphics(cacheables, drawables);
-        userInterface = new UserInterface(player, graphics.getCamera());
-        Gdx.input.setInputProcessor(userInterface.getInputProcessor()); // todo input multiplexer of userInterface and some sort of camera control.
+        graphics = new Graphics(dungeon);
+        Gdx.input.setInputProcessor(new FirstPersonCameraController(graphics.getCamera()));// todo input multiplexer of userInterface and some sort of camera control.
     }
 
     @Override
     public void render(float delta) {
-        for (Layer layer : layers) {
-            layer.update(Gdx.graphics.getDeltaTime());
-        }
-        graphics.update();
-        userInterface.step();
+        graphics.begin();
+        engine.update(delta);
+        graphics.render(delta);
+        graphics.end();
     }
 
     @Override
     public void resize(int width, int height) {
         graphics.resizeViewport(width, height);
-        userInterface.resize(width, height);
     }
 
     @Override

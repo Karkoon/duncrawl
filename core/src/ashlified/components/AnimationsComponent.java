@@ -1,47 +1,46 @@
 package ashlified.components;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
-
-import java.util.EnumMap;
+import com.brashmonkey.spriter.Loader;
+import com.brashmonkey.spriter.Player;
 
 /**
  * Created by karkoon on 25.03.17.
  */
 public final class AnimationsComponent implements Component {
 
-    private float time = 0;
-    private EnumMap<AnimationState, Animation<Decal>> animations
-            = new EnumMap<>(AnimationState.class);
-    private AnimationState currentState = AnimationState.IDLE;
+    private Player player;
+    private Loader<Decal> loader;
 
-    public AnimationState getCurrentState() {
-        return currentState;
+    public Loader<Decal> getLoader() {
+        return loader;
     }
 
-    public void setCurrentState(AnimationState currentState) {
-        this.currentState = currentState;
+    public void setLoader(Loader<Decal> loader) {
+        this.loader = loader;
     }
 
-    public float getTime() {
-        return time;
+    public Player getPlayer() {
+        return player;
     }
 
-    public void setTime(float time) {
-        this.time = time;
-    }
-
-    public EnumMap<AnimationState, Animation<Decal>> getAnimationsMap() {
-        return animations;
-    }
-
-    public void setAnimations(EnumMap<AnimationState, Animation<Decal>> animations) {
-        this.animations = animations;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public enum AnimationState {
-        IDLE, ATTACK, DIE, DAMAGED
+        IDLE(0), ATTACK(1), DIE(2), DAMAGED(3);
+
+        private int id;
+
+        AnimationState(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
     }
 
 }

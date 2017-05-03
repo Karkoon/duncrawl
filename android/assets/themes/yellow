@@ -6,7 +6,7 @@ color: {
 	b: 0.0
 	a: 1
 }
-chanceOfAppearing: 100
+spawnRate: 100
 startLevel: 0
 endLevel: 5
 }

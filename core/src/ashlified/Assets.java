@@ -1,11 +1,11 @@
 package ashlified;
 
-import ashlified.dungeon.DungeonSection;
+import ashlified.dungeon.DungeonSectionModel;
 import ashlified.dungeon.WallModelsAccessor;
+import ashlified.dungeon.WallModelsAccessor.Theme;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.karkoon.dungeoncrawler.WallModelsAccessor.Theme;
 
 import java.io.File;
 import java.util.Random;
@@ -24,13 +24,13 @@ public class Assets {
             ObjectMap.Keys<Theme> themes = themedModels.keys();
             int sum = 0;
             for (Theme theme : themes) {
-                sum += theme.chanceOfAppearing;
+                sum += theme.getSpawnRate();
             }
             themes = themedModels.keys();
             int roll = new Random().nextInt(sum);
             int partial = 0;
             for (Theme theme : themes) {
-                partial += theme.chanceOfAppearing;
+                partial += theme.getSpawnRate();
                 if (roll <= partial) {
                     return themedModels.get(theme);
                 }
@@ -44,9 +44,13 @@ public class Assets {
     private static void populateThemedModels() {
         Json json = new Json();
         File themeDir = new File("themes/");
-        for (File themeFile : themeDir.listFiles()) {
-            Theme theme = json.fromJson(Theme.class, new FileHandle(themeFile));
-            themedModels.put(theme, new WallModelsAccessor(theme, DungeonSection.getSize(), DungeonSection.getHeight()));
+        File[] themeFiles = themeDir.listFiles();
+        if (themeFiles != null) {
+            for (File themeFile : themeFiles) {
+                Theme theme = json.fromJson(Theme.class, new FileHandle(themeFile));
+                themedModels.put(theme, new
+                        WallModelsAccessor(theme, DungeonSectionModel.getSize(), DungeonSectionModel.getHeight()));
+            }
         }
     }
 }

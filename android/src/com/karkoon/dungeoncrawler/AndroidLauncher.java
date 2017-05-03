@@ -2,6 +2,7 @@ package com.karkoon.dungeoncrawler;
 
 import android.os.Bundle;
 
+import ashlified.DungeonCrawler;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 

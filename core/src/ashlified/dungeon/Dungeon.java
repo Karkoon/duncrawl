@@ -1,10 +1,8 @@
 package ashlified.dungeon;
 
-import com.badlogic.gdx.graphics.g3d.ModelCache;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import com.karkoon.dungeoncrawler.Interfaces.Cacheable;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -14,11 +12,15 @@ import java.util.Random;
  * Class used for libGDX's deserialization from json files. Relevant fields are width, height, grid.
  * The rest is customizable.
  */
-public class Dungeon implements Json.Serializable, Cacheable {
+public class Dungeon implements Json.Serializable {
 
     private int width;
     private int height;
     private ArrayList<DungeonSection> grid;
+
+    public ArrayList<DungeonSection> getGrid() {
+        return grid;
+    }
 
     @Override
     public void write(Json json) {
@@ -34,13 +36,6 @@ public class Dungeon implements Json.Serializable, Cacheable {
         grid = json.readValue("grid", ArrayList.class, DungeonSection.class, jsonData);
         for (DungeonSection section : grid) {
             section.setDungeon(this);
-        }
-    }
-
-    @Override
-    public void cacheModel(ModelCache cache) {
-        for (DungeonSection section : grid) {
-            section.cacheModel(cache);
         }
     }
 

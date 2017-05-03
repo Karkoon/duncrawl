@@ -7,16 +7,16 @@ import com.badlogic.ashley.core.Component;
  */
 public final class StatsComponent implements Component {
 
-    private int strenght;
+    private int strength;
     private int dexterity;
     private int wisdom;
 
-    public int getStrenght() {
-        return strenght;
+    public int getStrength() {
+        return strength;
     }
 
-    public void setStrenght(int strenght) {
-        this.strenght = strenght;
+    public void setStrength(int strength) {
+        this.strength = strength;
     }
 
     public int getDexterity() {
