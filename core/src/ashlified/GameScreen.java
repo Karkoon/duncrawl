@@ -2,12 +2,10 @@ package ashlified;
 
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.HTTPDungeonProvider;
-import ashlified.systems.RenderingSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
-
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 
 import java.util.Random;
 
@@ -24,7 +22,7 @@ public class GameScreen implements Screen {
         engine = new Engine();
         Dungeon dungeon = new HTTPDungeonProvider().getNewDungeon(new Random().nextInt(), 256, 32);
         graphics = new Graphics(dungeon);
-        Gdx.input.setInputProcessor(new FirstPersonCameraController(graphics.getCamera()));// todo input multiplexer of userInterface and some sort of camera control.
+        Gdx.input.setInputProcessor(new CameraInputController(graphics.getCamera()));// todo input multiplexer of userInterface and some sort of camera control.
     }
 
     @Override

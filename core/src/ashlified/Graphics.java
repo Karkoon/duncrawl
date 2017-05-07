@@ -5,7 +5,6 @@ import ashlified.dungeon.DungeonSection;
 import ashlified.dungeon.DungeonSectionModel;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -13,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.ModelCache;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -35,6 +35,8 @@ public class Graphics {
         setUpViewport();
         setUpFrameBuffer();
         dungeonRenderer = new DungeonRenderer(dungeon, viewport.getCamera());
+        Vector2 point = dungeon.getSpawnDungeonSection().getPoint();
+        viewport.getCamera().position.set(point.x, DungeonSectionModel.getHeight() / 2f, point.y);
     }
 
     void resizeViewport(int screenWidth, int screenHeight) {
@@ -51,10 +53,6 @@ public class Graphics {
         frameBuffer.end();
         fboBatch.begin();
         fboBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight(), 0, 0, 1, 1);
-        Sprite sprite = new Sprite(new Texture(Gdx.files.internal("skelly.png")), 10,10);
-        sprite.setSize(10000, 10000);
-        sprite.setColor(Color.BLUE);
-        sprite.draw(fboBatch);
         fboBatch.end();
     }
 
@@ -68,7 +66,7 @@ public class Graphics {
     }
 
     private void setUpViewport() {
-        PerspectiveCamera camera = new PerspectiveCamera(67, 300, 300);
+        PerspectiveCamera camera = new PerspectiveCamera(90, 300, 300);
         camera.near = 1f;
         camera.far = 1000f;
         viewport = new ExtendViewport(300, 300, camera);
@@ -84,7 +82,7 @@ public class Graphics {
     }
 
     private void clearScreen() {
-        Gdx.gl20.glClearColor(50/255f, 50/255f, 50/255f, 1);
+        Gdx.gl20.glClearColor(50 / 255f, 50 / 255f, 50 / 255f, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
     }
 
