@@ -125,7 +125,7 @@ public class DecalLoader extends Loader<Decal> implements Disposable {
 
         for (FileReference ref : refs) {
             Pixmap pix = (Pixmap) this.pixmaps.get(ref);
-            this.pixmapsToDispose.put(pix, Boolean.valueOf(false));
+            this.pixmapsToDispose.put(pix, Boolean.FALSE);
             this.createSprite(ref, pix);
             if (this.packer != null) {
                 this.packer.pack(this.data.getFile(ref).name, pix);
@@ -146,7 +146,7 @@ public class DecalLoader extends Loader<Decal> implements Disposable {
         int height = (int) this.data.getFile(ref.folder, ref.file).size.height;
         TextureRegion texRegion = new TextureRegion(tex, width, height);
         super.resources.put(ref, Decal.newDecal(texRegion));
-        this.pixmapsToDispose.put(image, Boolean.valueOf(true));
+        this.pixmapsToDispose.put(image, Boolean.TRUE);
     }
 
     protected void disposePixmaps() {
@@ -159,9 +159,9 @@ public class DecalLoader extends Loader<Decal> implements Disposable {
             Pixmap pix = var2[var4];
 
             try {
-                while (((Boolean) this.pixmapsToDispose.get(pix)).booleanValue()) {
+                while (this.pixmapsToDispose.get(pix)) {
                     pix.dispose();
-                    this.pixmapsToDispose.put(pix, Boolean.valueOf(false));
+                    this.pixmapsToDispose.put(pix, Boolean.FALSE);
                 }
             } catch (GdxRuntimeException var7) {
                 System.err.println("Pixmap was already disposed!");

@@ -1,11 +1,12 @@
 package ashlified.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.utils.Pool;
 
 /**
  * Created by karkoon on 01.04.17.
  */
-public class SpawnRateComponent implements Component {
+public class SpawnRateComponent implements Component, Pool.Poolable {
 
     public final static int NEVER = 0;
     public final static int START = 0;
@@ -15,10 +16,6 @@ public class SpawnRateComponent implements Component {
     private int startLevel;
     private int endLevel;
     private String levelTheme;
-
-    public SpawnRateComponent(String levelTheme) {
-        this.levelTheme = levelTheme;
-    }
 
     public String getLevelTheme() {
         return levelTheme;
@@ -50,5 +47,13 @@ public class SpawnRateComponent implements Component {
 
     public void setEndLevel(int endLevel) {
         this.endLevel = endLevel;
+    }
+
+    @Override
+    public void reset() {
+        chanceOfAppearing = 0;
+        startLevel = 0;
+        endLevel = 0;
+        levelTheme = null;
     }
 }

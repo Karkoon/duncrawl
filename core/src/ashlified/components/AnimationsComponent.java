@@ -2,16 +2,27 @@ package ashlified.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
+import com.badlogic.gdx.utils.Pool;
+import com.brashmonkey.spriter.Drawer;
 import com.brashmonkey.spriter.Loader;
 import com.brashmonkey.spriter.Player;
 
 /**
  * Created by karkoon on 25.03.17.
  */
-public final class AnimationsComponent implements Component {
+public final class AnimationsComponent implements Component, Pool.Poolable {
 
     private Player player;
     private Loader<Decal> loader;
+    private Drawer<Decal> drawer;
+
+    public Drawer<Decal> getDrawer() {
+        return drawer;
+    }
+
+    public void setDrawer(Drawer<Decal> drawer) {
+        this.drawer = drawer;
+    }
 
     public Loader<Decal> getLoader() {
         return loader;
@@ -27,6 +38,13 @@ public final class AnimationsComponent implements Component {
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    @Override
+    public void reset() {
+        player = null;
+        loader = null;
+        drawer = null;
     }
 
     public enum AnimationState {

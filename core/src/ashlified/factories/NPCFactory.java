@@ -1,7 +1,11 @@
 package ashlified.factories;
 
 import ashlified.components.*;
+import ashlified.dungeon.Dungeon;
+import ashlified.dungeon.DungeonSection;
+import ashlified.spriterutils.DecalDrawer;
 import ashlified.spriterutils.DecalLoader;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
@@ -14,7 +18,6 @@ import com.brashmonkey.spriter.SCMLReader;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.nio.MappedByteBuffer;
 import java.util.*;
 
 /**
@@ -23,17 +26,16 @@ import java.util.*;
 public class NPCFactory {
 
     private final static int SPEED = 1;
-    private final static Vector3 DEFAULT_POSITION = new Vector3(0, 0, 0);
     private final PooledEngine engine;
     private ArrayList<EnemyNPCBlueprint> blueprints;
 
-    public NPCFactory(PooledEngine engine) {
-        this.engine = engine;
-        String dirPath = "./npcAnimations";
+    public NPCFactory(Engine engine) {
+        this.engine = (PooledEngine) engine;
+        String dirPath = "./npc";
         blueprints = new EnemyNPCBlueprintLoader().loadBlueprintsFromDirectory(dirPath);
     }
 
-    public Entity createEnemyNPC(String enemyNPCname) {
+    public Entity createEnemyNPC(String enemyNPCname, Dungeon dungeon) throws Exception {
         StatsComponent stats = engine.createComponent(StatsComponent.class);
         PositionComponent position = engine.createComponent(PositionComponent.class);
         SpeedComponent speed = engine.createComponent(SpeedComponent.class);
@@ -49,7 +51,9 @@ public class NPCFactory {
         for (EnemyNPCBlueprint blueprint : blueprints) {
             if (enemyNPCname.equals(blueprint.name)) {
                 name.setName(blueprint.name);
-                position.setPosition(DEFAULT_POSITION.cpy());
+                DungeonSection dungeonSection = dungeon.getRandomDungeonSection();
+                position.setPosition(new Vector3(dungeonSection.getPoint().x, 0, dungeonSection.getPoint().y));
+                position.setOccupiedSection(dungeonSection);
                 speed.setSpeed(SPEED);
                 stats.setDexterity(blueprint.dexterity);
                 stats.setStrength(blueprint.strength);
@@ -77,20 +81,25 @@ public class NPCFactory {
                 entity.add(name);
                 entity.add(spawnRateComponent);
                 entity.add(health);
+                engine.addEntity(entity);
             }
         }
-        return entity;
+        if (entity != null) {
+            return entity;
+        } else throw new Exception("Stuff happend");
     }
 
 
     private AnimationsComponent retrieveAnimation(EnemyNPCBlueprint blueprint) {
-        FileHandle handle = Gdx.files.internal(blueprint.scmlPath);
+        FileHandle handle = Gdx.files.internal("npc/" + blueprint.scmlPath);
         Data data = new SCMLReader(handle.read()).getData();
         DecalLoader loader = new DecalLoader(data);
         loader.load(handle.file());
+        DecalDrawer decalDrawer = new DecalDrawer(loader);
         AnimationsComponent animationsComponent = engine.createComponent(AnimationsComponent.class);
         animationsComponent.setPlayer(new Player(data.getEntity(0)));
         animationsComponent.setLoader(loader);
+        animationsComponent.setDrawer(decalDrawer);
         return animationsComponent;
     }
 
@@ -116,7 +125,7 @@ public class NPCFactory {
 
         ArrayList<EnemyNPCBlueprint> loadBlueprintsFromDirectory(String dirPath) {
             ArrayList<EnemyNPCBlueprint> blueprints = new ArrayList<>();
-            File[] files = getAnimationFiles(dirPath);
+            File[] files = getBlueprintFiles(dirPath);
             if (files != null) {
                 Json json = new Json();
                 for (File blueprintFile : files) {
@@ -128,12 +137,12 @@ public class NPCFactory {
             return blueprints;
         }
 
-        private File[] getAnimationFiles(String dirPath) {
+        private File[] getBlueprintFiles(String dirPath) {
             File dir = new File(dirPath);
             File[] files = dir.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
-                    return name.matches(".*\\.scml");
+                    return name.matches(".*\\.bp");
                 }
             });
             return files;

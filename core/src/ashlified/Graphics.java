@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelCache;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
@@ -28,6 +31,7 @@ public class Graphics {
     private Viewport viewport;
     private SpriteBatch fboBatch;
     private FrameBuffer frameBuffer;
+    private DecalBatch decalBatch;
 
     private DungeonRenderer dungeonRenderer;
 
@@ -37,6 +41,7 @@ public class Graphics {
         dungeonRenderer = new DungeonRenderer(dungeon, viewport.getCamera());
         Vector2 point = dungeon.getSpawnDungeonSection().getPoint();
         viewport.getCamera().position.set(point.x, DungeonSectionModel.getHeight() / 2f, point.y);
+        decalBatch = new DecalBatch(new CameraGroupStrategy(getCamera()));
     }
 
     void resizeViewport(int screenWidth, int screenHeight) {
@@ -47,6 +52,7 @@ public class Graphics {
 
     void begin() {
         frameBuffer.begin();
+        clearScreen();
     }
 
     void end() {
@@ -57,11 +63,15 @@ public class Graphics {
     }
 
     void render(float delta) {
-        clearScreen();
         dungeonRenderer.render(delta);
+        decalBatch.flush();
     }
 
-    Camera getCamera() {
+    public void addDecal(Decal decal) {
+        decalBatch.add(decal);
+    }
+
+    public Camera getCamera() {
         return viewport.getCamera();
     }
 
@@ -84,10 +94,7 @@ public class Graphics {
     private void clearScreen() {
         Gdx.gl20.glClearColor(50 / 255f, 50 / 255f, 50 / 255f, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-    }
 
-    public Viewport getViewport() {
-        return viewport;
     }
 
     /**

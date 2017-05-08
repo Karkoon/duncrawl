@@ -1,22 +1,41 @@
 package ashlified.systems;
 
 import ashlified.components.*;
+import ashlified.dungeon.Dungeon;
+import ashlified.factories.NPCFactory;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Gdx;
 
 /**
  * Created by karkoon on 25.03.17.
  */
 public class NPCSystem extends EntitySystem {
 
-    public NPCSystem(int priority) {
-        super(priority);
+    private Dungeon dungeon;
+
+    public NPCSystem(Dungeon dungeon) {
+        super();
+        this.dungeon = dungeon;
+    }
+
+    private void createNPCs() {
+        NPCFactory factory = new NPCFactory(getEngine());
+        for (int i = 0; i < 100; i++) {
+            try {
+                factory.createEnemyNPC("'Hell knight'", dungeon);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Gdx.app.exit();
+            }
+        }
     }
 
     @Override
     public void addedToEngine(Engine engine) {
         super.addedToEngine(engine);
+        createNPCs();
     }
 
     @Override
@@ -43,4 +62,5 @@ public class NPCSystem extends EntitySystem {
     public Engine getEngine() {
         return super.getEngine();
     }
+
 }

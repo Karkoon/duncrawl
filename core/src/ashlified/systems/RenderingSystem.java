@@ -1,5 +1,6 @@
 package ashlified.systems;
 
+import ashlified.Graphics;
 import ashlified.components.AnimationsComponent;
 import ashlified.components.DecalComponent;
 import ashlified.components.PositionComponent;
@@ -23,10 +24,10 @@ public class RenderingSystem extends EntitySystem {
     private DecalBatch decalBatch;
 
 
-    public RenderingSystem(Viewport viewport) {
-        decalBatch = new DecalBatch(new CameraGroupStrategy(viewport.getCamera()));
+    public RenderingSystem(Graphics graphics) {
+        decalBatch = new DecalBatch(new CameraGroupStrategy(graphics.getCamera()));
         Family NPCs = Family.all(AnimationsComponent.class, PositionComponent.class).get();
-        NPCRenderingSystem = new NPCRenderingSystem(NPCs, decalBatch, viewport.getCamera());
+        NPCRenderingSystem = new NPCRenderingSystem(NPCs, graphics);
         Family droppedItems = Family.all(DecalComponent.class, PositionComponent.class).get();
         droppedItemsRenderingSystem = new DroppedItemsRenderingSystem(droppedItems, decalBatch);
     }
