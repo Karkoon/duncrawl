@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -52,7 +53,6 @@ public class Graphics {
 
     void begin() {
         frameBuffer.begin();
-        clearScreen();
     }
 
     void end() {
@@ -63,6 +63,7 @@ public class Graphics {
     }
 
     void render(float delta) {
+        clearScreen();
         dungeonRenderer.render(delta);
         decalBatch.flush();
     }
@@ -78,7 +79,7 @@ public class Graphics {
     private void setUpViewport() {
         PerspectiveCamera camera = new PerspectiveCamera(90, 300, 300);
         camera.near = 1f;
-        camera.far = 1000f;
+        camera.far = 55f;
         viewport = new ExtendViewport(300, 300, camera);
     }
 
@@ -92,9 +93,7 @@ public class Graphics {
     }
 
     private void clearScreen() {
-        Gdx.gl20.glClearColor(50 / 255f, 50 / 255f, 50 / 255f, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
     }
 
     /**

@@ -1,7 +1,6 @@
 package ashlified.spriterutils;
 
 import ashlified.Graphics;
-import ashlified.dungeon.DungeonSection;
 import ashlified.dungeon.DungeonSectionModel;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,11 +25,10 @@ public class DecalDrawer extends Drawer<Decal> {
     @Override
     public void draw(Timeline.Key.Object object) {
         Decal decal = this.loader.get(object.ref);
-        decal.setPosition(object.position.x, DungeonSectionModel.getHeight()/2.05f, object.position.y);
+        decal.setPosition(object.position.x, DungeonSectionModel.getHeight() / 3f, object.position.y);
         decal.lookAt(graphics.getCamera().position, Vector3.Y);
-        //decal.rotateZ(object.angle);
         decal.setColor(1.0F, 1.0F, 1.0F, object.alpha);
-        decal.setScale(0.45f, 0.45f);
+        decal.setScale(0.35f, 0.35f);
         decal.setBlending(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         decal.getTextureRegion().getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         graphics.addDecal(decal);

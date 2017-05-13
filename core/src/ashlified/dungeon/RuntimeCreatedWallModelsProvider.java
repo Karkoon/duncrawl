@@ -1,13 +1,20 @@
 package ashlified.dungeon;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
 import java.util.EnumMap;
+
+import static com.badlogic.gdx.graphics.VertexAttributes.*;
 
 /**
  * Created by kacper on 25.01.17.
@@ -28,8 +35,10 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
     private EnumMap<WallModelsAccessor.WallType, Model> createWallModels(WallModelsAccessor.Theme theme, float size, float height) {
         setHeight(height);
         setSize(size);
-        long attributes = VertexAttributes.Usage.Normal | VertexAttributes.Usage.Position;
-        Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()));
+        long attributes = Usage.Normal | Usage.Position | Usage.TextureCoordinates;
+        Texture texture = new Texture(Gdx.files.internal("178.JPG"));
+        TextureRegion region = new TextureRegion(texture);
+        Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region));
         Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()));
         Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor().mul(1.2f)));
 

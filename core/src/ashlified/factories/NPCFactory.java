@@ -5,6 +5,7 @@ import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.DungeonSection;
 import ashlified.spriterutils.DecalDrawer;
 import ashlified.spriterutils.DecalLoader;
+import ashlified.util.RandomNumber;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
@@ -18,7 +19,7 @@ import com.brashmonkey.spriter.SCMLReader;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * Created by karkoon on 01.04.17.
@@ -89,7 +90,6 @@ public class NPCFactory {
         } else throw new Exception("Stuff happend");
     }
 
-
     private AnimationsComponent retrieveAnimation(EnemyNPCBlueprint blueprint) {
         FileHandle handle = Gdx.files.internal("npc/" + blueprint.scmlPath);
         Data data = new SCMLReader(handle.read()).getData();
@@ -97,7 +97,9 @@ public class NPCFactory {
         loader.load(handle.file());
         DecalDrawer decalDrawer = new DecalDrawer(loader);
         AnimationsComponent animationsComponent = engine.createComponent(AnimationsComponent.class);
-        animationsComponent.setPlayer(new Player(data.getEntity(0)));
+        Player player = new Player(data.getEntity(0));
+        player.setTime(RandomNumber.nextInt(5000));
+        animationsComponent.setPlayer(player);
         animationsComponent.setLoader(loader);
         animationsComponent.setDrawer(decalDrawer);
         return animationsComponent;
@@ -118,7 +120,6 @@ public class NPCFactory {
         private int maxItems;
         private int viewDistance;
         private String scmlPath;
-
     }
 
     private static class EnemyNPCBlueprintLoader {
