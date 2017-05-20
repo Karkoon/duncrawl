@@ -3,6 +3,7 @@ package ashlified;
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.DungeonSection;
 import ashlified.dungeon.DungeonSectionModel;
+import ashlified.dungeon.WallModelsAccessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,7 +15,6 @@ import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -118,9 +118,9 @@ public class Graphics {
 
         private void createDungeonSectionModels(Dungeon dungeon) {
             models = new ArrayList<>();
-            for (DungeonSection section :
-                    dungeon.getGrid()) {
-                models.add(new DungeonSectionModel(section));
+            WallModelsAccessor accessor = Assets.getWallModelsAccessor();
+            for (DungeonSection section : dungeon.getGrid()) {
+                models.add(new DungeonSectionModel(section, accessor));
             }
         }
 

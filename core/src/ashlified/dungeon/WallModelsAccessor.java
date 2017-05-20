@@ -13,9 +13,9 @@ public class WallModelsAccessor {
 
     private final EnumMap<WallType, Model> models;
 
-    public WallModelsAccessor(Theme theme, float size, float height) {
+    public WallModelsAccessor(Theme theme) {
         WallModelsProvider retriever = new RuntimeCreatedWallModelsProvider();
-        this.models = retriever.getNewModels(theme, size, height);
+        this.models = retriever.getNewModels(theme);
     }
 
     public Model get(WallType key) {
@@ -23,9 +23,7 @@ public class WallModelsAccessor {
     }
 
     public enum WallType {
-
         TWO_SIDES, CORNER, ONE_SIDE, NO_SIDES
-
     }
 
     /**

@@ -27,7 +27,7 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         engine = new PooledEngine();
-        Dungeon dungeon = new HTTPDungeonProvider().getNewDungeon(new Random().nextInt(), 100, 15);
+        Dungeon dungeon = new HTTPDungeonProvider().getNewDungeon(new Random().nextInt(), 200, 30);
         graphics = new Graphics(dungeon);
         Gdx.input.setInputProcessor(new InputAdapter() {
             Vector3 moveRate = new Vector3(0, 0, -10);

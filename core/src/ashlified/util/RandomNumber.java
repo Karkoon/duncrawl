@@ -34,6 +34,4 @@ public class RandomNumber {
     public static int nextInt(int bound) {
         return random.nextInt(bound);
     }
-
-
 }

@@ -3,9 +3,7 @@ package ashlified.dungeon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
@@ -122,7 +120,8 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
     }
 
     @Override
-    public EnumMap<WallModelsAccessor.WallType, Model> getNewModels(WallModelsAccessor.Theme theme, float size, float height) {
-        return createWallModels(theme, size, height);
+    public EnumMap<WallModelsAccessor.WallType, Model> getNewModels(WallModelsAccessor.Theme theme) {
+        return createWallModels(theme, DungeonSectionModel.getSize(), DungeonSectionModel.getHeight());
     }
+
 }

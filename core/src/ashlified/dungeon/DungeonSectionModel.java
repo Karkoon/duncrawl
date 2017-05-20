@@ -10,15 +10,14 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class DungeonSectionModel {
 
-    private final static float size = 10f;
-    private final static float height = 15f;
-    private static WallModelsAccessor models = Assets.getWallModelsAccessor();
+    private final static float SIZE = 10f;
+    private final static float HEIGHT = 15f;
     private ModelInstance modelInstance;
     private DungeonSection section;
     private float rotation = 0;
     private Vector2 correction;
 
-    public DungeonSectionModel(DungeonSection section) {
+    public DungeonSectionModel(DungeonSection section, WallModelsAccessor models) {
         this.section = section;
         correction = new Vector2(0, 0);
         modelInstance = new ModelInstance(models.get(determineSectionType()));
@@ -30,11 +29,11 @@ public class DungeonSectionModel {
     }
 
     public static float getHeight() {
-        return height;
+        return HEIGHT;
     }
 
     public static float getSize() {
-        return size;
+        return SIZE;
     }
 
     public ModelInstance getModelInstance() {
@@ -61,15 +60,15 @@ public class DungeonSectionModel {
 
         if (!hasNorthBorder && !hasSouthBorder && !hasEastBorder && hasWestBorder) {
             rotation = 90;
-            correction.y = -size;
+            correction.y = -SIZE;
             return WallModelsAccessor.WallType.ONE_SIDE;
         } else if (!hasNorthBorder && !hasSouthBorder && hasEastBorder && !hasWestBorder) {
-            correction.x = -size;
+            correction.x = -SIZE;
             rotation = -90;
             return WallModelsAccessor.WallType.ONE_SIDE;
         } else if (!hasNorthBorder && hasSouthBorder && !hasEastBorder && !hasWestBorder) {
-            correction.y = -size;
-            correction.x = -size;
+            correction.y = -SIZE;
+            correction.x = -SIZE;
             rotation = 180;
             return WallModelsAccessor.WallType.ONE_SIDE;
         } else if (hasNorthBorder && !hasSouthBorder && !hasEastBorder && !hasWestBorder) {
@@ -77,23 +76,23 @@ public class DungeonSectionModel {
             return WallModelsAccessor.WallType.ONE_SIDE;
         } else if (!hasNorthBorder && !hasSouthBorder && hasEastBorder && hasWestBorder) {
             rotation = 90;
-            correction.y = -size;
+            correction.y = -SIZE;
             return WallModelsAccessor.WallType.TWO_SIDES;
         } else if (hasNorthBorder && hasSouthBorder && !hasEastBorder && !hasWestBorder) {
             return WallModelsAccessor.WallType.TWO_SIDES;
         } else if (!hasNorthBorder && hasSouthBorder && hasWestBorder && !hasEastBorder) {
-            correction.y = -size;
+            correction.y = -SIZE;
             rotation = 90;
             return WallModelsAccessor.WallType.CORNER;
         } else if (!hasNorthBorder && hasSouthBorder && !hasWestBorder && hasEastBorder) {
-            correction.x = -size;
-            correction.y = -size;
+            correction.x = -SIZE;
+            correction.y = -SIZE;
             rotation = 180;
             return WallModelsAccessor.WallType.CORNER;
         } else if (hasNorthBorder && !hasSouthBorder && hasWestBorder && !hasEastBorder) {
             return WallModelsAccessor.WallType.CORNER;
         } else if (hasNorthBorder && !hasSouthBorder && !hasWestBorder && hasEastBorder) {
-            correction.x = -size;
+            correction.x = -SIZE;
             rotation = 270;
             return WallModelsAccessor.WallType.CORNER;
         }

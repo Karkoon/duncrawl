@@ -85,9 +85,7 @@ public class NPCFactory {
                 engine.addEntity(entity);
             }
         }
-        if (entity != null) {
-            return entity;
-        } else throw new Exception("Stuff happend");
+        return entity;
     }
 
     private AnimationsComponent retrieveAnimation(EnemyNPCBlueprint blueprint) {
@@ -126,26 +124,20 @@ public class NPCFactory {
 
         ArrayList<EnemyNPCBlueprint> loadBlueprintsFromDirectory(String dirPath) {
             ArrayList<EnemyNPCBlueprint> blueprints = new ArrayList<>();
-            File[] files = getBlueprintFiles(dirPath);
+            FileHandle[] files = getBlueprintFiles(dirPath);
             if (files != null) {
                 Json json = new Json();
-                for (File blueprintFile : files) {
-                    FileHandle handle = Gdx.files.internal(blueprintFile.getPath());
-                    EnemyNPCBlueprint blueprint = json.fromJson(EnemyNPCBlueprint.class, handle);
+                for (FileHandle blueprintFileHandle : files) {
+                    EnemyNPCBlueprint blueprint = json.fromJson(EnemyNPCBlueprint.class, blueprintFileHandle);
                     blueprints.add(blueprint);
                 }
             }
             return blueprints;
         }
 
-        private File[] getBlueprintFiles(String dirPath) {
-            File dir = new File(dirPath);
-            File[] files = dir.listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return name.matches(".*\\.bp");
-                }
-            });
+        private FileHandle[] getBlueprintFiles(String dirPath) {
+            FileHandle dir = Gdx.files.internal(dirPath);
+            FileHandle[] files = dir.list("bp");
             return files;
         }
     }
