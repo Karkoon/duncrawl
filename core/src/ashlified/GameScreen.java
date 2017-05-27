@@ -54,7 +54,8 @@ public class GameScreen implements Screen {
                 graphics.getCamera().update();
                 return true;
             }
-        });// todo input multiplexer of userIntwwerface and some sort of camera control.
+
+        });// todo input multiplexer of userInterface and some sort of camera control.
         engine.addSystem(new NPCSystem(dungeon));
         engine.addSystem(new NPCRenderingSystem(Family.all(AnimationsComponent.class, PositionComponent.class).get(), graphics));
     }

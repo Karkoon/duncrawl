@@ -1,20 +1,19 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package ashlified.spriterutils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.decals.Decal;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.brashmonkey.spriter.Data;
@@ -23,10 +22,12 @@ import com.brashmonkey.spriter.Loader;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Set;
 
-public class DecalLoader extends Loader<Decal> implements Disposable {
+public class PlaneLoader extends Loader<ModelInstance> implements Disposable {
+
+    private static Model model;
+    private static ModelBuilder builder = new ModelBuilder();
 
     public static int standardAtlasWidth = 2048;
     public static int standardAtlasHeight = 2048;
@@ -37,25 +38,37 @@ public class DecalLoader extends Loader<Decal> implements Disposable {
     private int atlasWidth;
     private int atlasHeight;
 
-    public DecalLoader(Data data) {
+    private void createModel() {
+        long attributes = VertexAttributes.Usage.Normal | VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates;
+        model = builder.createRect(
+                -5,0,0,
+                5,0,0,
+                5,10,0,
+                -5,10,0,
+                1, 0, 0,
+                new Material(new BlendingAttribute()), attributes);
+    }
+
+    public PlaneLoader(Data data) {
         this(data, true);
     }
 
-    public DecalLoader(Data data, boolean pack) {
+    public PlaneLoader(Data data, boolean pack) {
         this(data, standardAtlasWidth, standardAtlasHeight);
         this.pack = pack;
     }
 
-    public DecalLoader(Data data, int atlasWidth, int atlasHeight) {
+    public PlaneLoader(Data data, int atlasWidth, int atlasHeight) {
         super(data);
         this.pack = true;
         this.atlasWidth = atlasWidth;
         this.atlasHeight = atlasHeight;
         this.pixmaps = new HashMap();
         this.pixmapsToDispose = new HashMap();
+        createModel();
     }
 
-    protected Decal loadResource(FileReference ref) {
+    protected ModelInstance loadResource(FileReference ref) {
         String pathPrefix;
         if (super.root != null && !super.root.equals("")) {
             pathPrefix = super.root + File.separator;
@@ -77,7 +90,7 @@ public class DecalLoader extends Loader<Decal> implements Disposable {
             throw new GdxRuntimeException("Could not find file handle " + path + "! Please check your paths.");
         } else {
             if (this.packer == null && this.pack) {
-                this.packer = new PixmapPacker(this.atlasWidth, this.atlasHeight, Format.RGBA8888, 2, true);
+                this.packer = new PixmapPacker(this.atlasWidth, this.atlasHeight, Pixmap.Format.RGBA8888, 2, true);
             }
 
             Pixmap pix = new Pixmap(f);
@@ -86,37 +99,28 @@ public class DecalLoader extends Loader<Decal> implements Disposable {
         }
     }
 
-    protected void generatePackedSprites() {
+    protected void generatePackedModelInstances() {
         if (this.packer != null) {
-            TextureAtlas tex = this.packer.generateTextureAtlas(TextureFilter.Linear, TextureFilter.Linear, false);
+            TextureAtlas tex = this.packer.generateTextureAtlas(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest, false);
             Set<FileReference> keys = this.resources.keySet();
-            this.disposeNonPackedTextures();
 
             for (FileReference ref : keys) {
                 TextureRegion texReg = tex.findRegion(this.data.getFile(ref).name);
                 texReg.setRegionWidth((int) this.data.getFile(ref).size.width);
                 texReg.setRegionHeight((int) this.data.getFile(ref).size.height);
-                super.resources.put(ref, Decal.newDecal(texReg));
+
+                model.materials.first().set(TextureAttribute.createDiffuse(texReg));
+
+                super.resources.put(ref, new ModelInstance(model));
             }
 
         }
     }
 
-    private void disposeNonPackedTextures() {
-        for (Object o : super.resources.entrySet()) {
-            Entry<FileReference, Decal> entry = (Entry) o;
-            entry.getValue().getTextureRegion().getTexture().dispose();
-        }
-
-    }
-
     public void dispose() {
         if (this.pack && this.packer != null) {
             this.packer.dispose();
-        } else {
-            this.disposeNonPackedTextures();
         }
-
         super.dispose();
     }
 
@@ -124,28 +128,30 @@ public class DecalLoader extends Loader<Decal> implements Disposable {
         Set<FileReference> refs = this.resources.keySet();
 
         for (FileReference ref : refs) {
-            Pixmap pix = (Pixmap) this.pixmaps.get(ref);
+            Pixmap pix = this.pixmaps.get(ref);
             this.pixmapsToDispose.put(pix, Boolean.FALSE);
-            this.createSprite(ref, pix);
+            this.createPlaneModelInstance(ref, pix);
             if (this.packer != null) {
                 this.packer.pack(this.data.getFile(ref).name, pix);
             }
         }
 
         if (this.pack) {
-            this.generatePackedSprites();
+            this.generatePackedModelInstances();
         }
 
         this.disposePixmaps();
     }
 
-    protected void createSprite(FileReference ref, Pixmap image) {
+    protected void createPlaneModelInstance(FileReference ref, Pixmap image) {
         Texture tex = new Texture(image);
-        tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+        tex.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         int width = (int) this.data.getFile(ref.folder, ref.file).size.width;
         int height = (int) this.data.getFile(ref.folder, ref.file).size.height;
         TextureRegion texRegion = new TextureRegion(tex, width, height);
-        super.resources.put(ref, Decal.newDecal(texRegion));
+
+        model.materials.first().set(TextureAttribute.createDiffuse(texRegion));
+        super.resources.put(ref, new ModelInstance(model));
         this.pixmapsToDispose.put(image, Boolean.TRUE);
     }
 

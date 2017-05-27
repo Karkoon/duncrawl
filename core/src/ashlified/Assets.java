@@ -1,7 +1,7 @@
 package ashlified;
 
 import ashlified.dungeon.WallModelsAccessor;
-import ashlified.dungeon.WallModelsAccessor.Theme;
+import ashlified.dungeon.WallTheme;
 import ashlified.util.RandomNumber;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -15,18 +15,18 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 public class Assets {
 
-    private static ObjectMap<Theme, WallModelsAccessor> themedModels = populateThemedModels();
+    private static ObjectMap<WallTheme, WallModelsAccessor> themedModels = populateThemedModels();
 
     private Assets() { }
 
-    private static ObjectMap<Theme, WallModelsAccessor> populateThemedModels() {
-        ObjectMap<Theme, WallModelsAccessor> themedModels = new ObjectMap<>();
+    private static ObjectMap<WallTheme, WallModelsAccessor> populateThemedModels() {
+        ObjectMap<WallTheme, WallModelsAccessor> themedModels = new ObjectMap<>();
         Json json = new Json();
         FileHandle themeDir = Gdx.files.internal("themes/");
         FileHandle[] themeFiles = themeDir.list();
         if (themeFiles != null) {
             for (FileHandle themeFile : themeFiles) {
-                Theme theme = json.fromJson(Theme.class, themeFile);
+                WallTheme theme = json.fromJson(WallTheme.class, themeFile);
                 themedModels.put(theme,
                         new WallModelsAccessor(theme));
             }
@@ -35,16 +35,15 @@ public class Assets {
     }
 
     public static WallModelsAccessor getWallModelsAccessor() {
-        ObjectMap.Keys<Theme> themes = themedModels.keys();
+        ObjectMap.Keys<WallTheme> themes = themedModels.keys();
         int sum = 0;
-        for (Theme theme : themes) {
+        for (WallTheme theme : themes) {
             sum += theme.getSpawnRate();
         }
         themes = themedModels.keys();
         int roll = RandomNumber.nextInt(sum);
         int partial = 0;
-        Gdx.app.log("dadawdada", themes.toString());
-        for (Theme theme : themes) {
+        for (WallTheme theme : themes) {
             partial += theme.getSpawnRate();
             if (roll <= partial) {
                 return themedModels.get(theme);

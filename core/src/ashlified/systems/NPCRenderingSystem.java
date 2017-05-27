@@ -3,14 +3,12 @@ package ashlified.systems;
 import ashlified.Graphics;
 import ashlified.components.AnimationsComponent;
 import ashlified.components.PositionComponent;
-import ashlified.spriterutils.DecalDrawer;
+import ashlified.spriterutils.PlaneDrawer;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -32,7 +30,7 @@ public class NPCRenderingSystem extends IteratingSystem {
         super.addedToEngine(engine);
         for (Entity entity : engine.getEntitiesFor(getFamily())) {
             AnimationsComponent animComp = animationsMapper.get(entity);
-            ((DecalDrawer) animComp.getDrawer()).setGraphics(graphics);
+            ((PlaneDrawer) animComp.getDrawer()).setGraphics(graphics);
         }
     }
 
@@ -40,8 +38,8 @@ public class NPCRenderingSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         AnimationsComponent animComp = animationsMapper.get(entity);
         PositionComponent posComp = positionMapper.get(entity);
-        updateAnimationTime(animComp, deltaTime);
         updateAnimationPosition(animComp, posComp.getPosition());
+        updateAnimationTime(animComp, deltaTime);
         animComp.getDrawer().draw(animComp.getPlayer());
     }
 

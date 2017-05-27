@@ -2,25 +2,21 @@ package ashlified;
 
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.DungeonSection;
-import ashlified.dungeon.DungeonSectionModel;
+import ashlified.dungeon.DungeonSectionRepresentation;
 import ashlified.dungeon.WallModelsAccessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelCache;
+import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
-import com.badlogic.gdx.graphics.g3d.decals.Decal;
-import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Created by @Karkoon on 2016-08-24.
@@ -32,17 +28,17 @@ public class Graphics {
     private Viewport viewport;
     private SpriteBatch fboBatch;
     private FrameBuffer frameBuffer;
-    private DecalBatch decalBatch;
 
-    private DungeonRenderer dungeonRenderer;
+    private ModelInstanceRenderer modelInstanceRenderer;
 
     Graphics(Dungeon dungeon) {
         setUpViewport();
         setUpFrameBuffer();
-        dungeonRenderer = new DungeonRenderer(dungeon, viewport.getCamera());
+        modelInstanceRenderer = new ModelInstanceRenderer(viewport.getCamera());
+        modelInstanceRenderer.addToStaticCache(new DungeonRepresentation(dungeon));
         Vector2 point = dungeon.getSpawnDungeonSection().getPoint();
-        viewport.getCamera().position.set(point.x, DungeonSectionModel.getHeight() / 2f, point.y);
-        decalBatch = new DecalBatch(new CameraGroupStrategy(getCamera()));
+        viewport.getCamera().position.set(point.x, DungeonSectionRepresentation.getHeight() / 2f, point.y);
+        //decalBatch = new DecalBatch(new CameraGroupStrategy(getCamera()));
     }
 
     void resizeViewport(int screenWidth, int screenHeight) {
@@ -64,13 +60,9 @@ public class Graphics {
 
     void render(float delta) {
         clearScreen();
-        dungeonRenderer.render(delta);
-        decalBatch.flush();
+        modelInstanceRenderer.render();
     }
 
-    public void addDecal(Decal decal) {
-        decalBatch.add(decal);
-    }
 
     public Camera getCamera() {
         return viewport.getCamera();
@@ -79,7 +71,7 @@ public class Graphics {
     private void setUpViewport() {
         PerspectiveCamera camera = new PerspectiveCamera(90, 300, 300);
         camera.near = 1f;
-        camera.far = 55f;
+        camera.far = 555f;
         viewport = new ExtendViewport(300, 300, camera);
     }
 
@@ -96,53 +88,81 @@ public class Graphics {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
     }
 
+    public ModelInstanceRenderer getModelInstanceRenderer() {
+        return modelInstanceRenderer;
+    }
+
     /**
      * Created by karkoon on 26.04.17.
      */
-    public static class DungeonRenderer {
+    public static class ModelInstanceRenderer {
 
         private Environment environment;
         private ModelBatch modelBatch;
+        private ArrayList<RenderableProvider> staticInstances;
+        private Deque<RenderableProvider> variableInstances;
         private ModelCache cache;
 
-        private ArrayList<DungeonSectionModel> models;
         private Camera camera;
 
-        DungeonRenderer(Dungeon dungeon, Camera camera) {
+        ModelInstanceRenderer(Camera camera) {
             this.camera = camera;
-            createDungeonSectionModels(dungeon);
+            this.cache = new ModelCache();
             setUpEnvironment();
-            setUpModelCache();
             modelBatch = new ModelBatch();
+            this.variableInstances = new ArrayDeque<>();
+            staticInstances = new ArrayList<>();
         }
 
-        private void createDungeonSectionModels(Dungeon dungeon) {
-            models = new ArrayList<>();
-            WallModelsAccessor accessor = Assets.getWallModelsAccessor();
-            for (DungeonSection section : dungeon.getGrid()) {
-                models.add(new DungeonSectionModel(section, accessor));
-            }
-        }
-
-        public void render(float deltaTime) {
+        public void render() {
+            cache.begin();
+            cache.add(staticInstances);
+            cache.add(variableInstances);
+            cache.end();
+            variableInstances.clear();
             modelBatch.begin(camera);
-            modelBatch.render(cache, environment); //cached models
+            modelBatch.render(cache, environment);
             modelBatch.end();
         }
 
         private void setUpEnvironment() {
             environment = new Environment();
             environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-            environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.8f, -0.4f, -0.2f));
         }
 
-        private void setUpModelCache() {
-            cache = new ModelCache();
-            cache.begin();
-            for (DungeonSectionModel model : models) {
-                cache.add(model.getModelInstance());
+        public void addToCache(ModelInstance... modelInstances) {
+            variableInstances.addAll(Arrays.asList(modelInstances));
+        }
+
+        public void addToCache(RenderableProvider... provider) {
+            variableInstances.addAll(Arrays.asList(provider));
+        }
+
+        public void addToStaticCache(ModelInstance... modelInstances) {
+            staticInstances.addAll(Arrays.asList(modelInstances));
+        }
+
+        public void addToStaticCache(RenderableProvider... provider) {
+            staticInstances.addAll(Arrays.asList(provider));
+        }
+    }
+
+    public static class DungeonRepresentation implements RenderableProvider {
+
+        List<DungeonSectionRepresentation> models = new ArrayList<>();
+
+        public DungeonRepresentation(Dungeon dungeon) {
+            WallModelsAccessor accessor = Assets.getWallModelsAccessor();
+            for (DungeonSection section : dungeon.getGrid()) {
+                models.add(new DungeonSectionRepresentation(section, accessor));
             }
-            cache.end();
+        }
+
+        @Override
+        public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+            for (DungeonSectionRepresentation representation : models) {
+                representation.getModelInstance().getRenderables(renderables, pool);
+            }
         }
     }
 }

@@ -12,40 +12,32 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
 import java.util.EnumMap;
 
-import static com.badlogic.gdx.graphics.VertexAttributes.*;
+import static com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 /**
  * Created by kacper on 25.01.17.
  */
 public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
 
-    private float size; //square
-    private float height;
+    private float size = DungeonSectionRepresentation.getSize(); //it's a square
+    private float height = DungeonSectionRepresentation.getHeight();
 
-    private void setSize(float size) {
-        this.size = size;
-    }
-
-    private void setHeight(float height) {
-        this.height = height;
-    }
-
-    private EnumMap<WallModelsAccessor.WallType, Model> createWallModels(WallModelsAccessor.Theme theme, float size, float height) {
-        setHeight(height);
-        setSize(size);
+    private EnumMap<WallType, Model> createWallModels(WallTheme theme) {
         long attributes = Usage.Normal | Usage.Position | Usage.TextureCoordinates;
+
         Texture texture = new Texture(Gdx.files.internal("178.JPG"));
         TextureRegion region = new TextureRegion(texture);
+
         Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region));
-        Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()));
+        Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region));
         Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor().mul(1.2f)));
 
         ModelBuilder builder = new ModelBuilder();
-        EnumMap<WallModelsAccessor.WallType, Model> models = new EnumMap<>(WallModelsAccessor.WallType.class);
-        models.put(WallModelsAccessor.WallType.ONE_SIDE, createOneSide(builder, attributes, floor, ceiling, wall));
-        models.put(WallModelsAccessor.WallType.CORNER, createCorner(builder, attributes, floor, ceiling, wall));
-        models.put(WallModelsAccessor.WallType.TWO_SIDES, createTwoSides(builder, attributes, floor, ceiling, wall));
-        models.put(WallModelsAccessor.WallType.NO_SIDES, createNoSides(builder, attributes, floor, ceiling));
+        EnumMap<WallType, Model> models = new EnumMap<>(WallType.class);
+        models.put(WallType.ONE_SIDE, createOneSide(builder, attributes, floor, ceiling, wall));
+        models.put(WallType.CORNER, createCorner(builder, attributes, floor, ceiling, wall));
+        models.put(WallType.TWO_SIDES, createTwoSides(builder, attributes, floor, ceiling, wall));
+        models.put(WallType.NO_SIDES, createNoSides(builder, attributes, floor, ceiling));
         return models;
     }
 
@@ -120,8 +112,8 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
     }
 
     @Override
-    public EnumMap<WallModelsAccessor.WallType, Model> getNewModels(WallModelsAccessor.Theme theme) {
-        return createWallModels(theme, DungeonSectionModel.getSize(), DungeonSectionModel.getHeight());
+    public EnumMap<WallType, Model> getNewModels(WallTheme theme) {
+        return createWallModels(theme);
     }
 
 }
