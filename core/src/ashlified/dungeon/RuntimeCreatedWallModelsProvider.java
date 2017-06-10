@@ -20,17 +20,19 @@ import static com.badlogic.gdx.graphics.VertexAttributes.Usage;
 public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
 
     private float size = DungeonSectionRepresentation.getSize(); //it's a square
+    private float halfSize = size / 2f;
     private float height = DungeonSectionRepresentation.getHeight();
 
     private EnumMap<WallType, Model> createWallModels(WallTheme theme) {
         long attributes = Usage.Normal | Usage.Position | Usage.TextureCoordinates;
 
         Texture texture = new Texture(Gdx.files.internal("178.JPG"));
+        Texture texture2 = new Texture(Gdx.files.internal("178_norm.JPG"));
         TextureRegion region = new TextureRegion(texture);
 
-        Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region));
-        Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region));
-        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor().mul(1.2f)));
+        Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region), TextureAttribute.createNormal(texture2));
+        Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region), TextureAttribute.createNormal(texture2));
+        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor().mul(1.2f)), TextureAttribute.createDiffuse(region), TextureAttribute.createNormal(texture2));
 
         ModelBuilder builder = new ModelBuilder();
         EnumMap<WallType, Model> models = new EnumMap<>(WallType.class);
@@ -51,19 +53,19 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
 
     private void createFloor(ModelBuilder builder, long attributes, Material floor) {
         builder.part("floor", GL20.GL_TRIANGLES, attributes, floor)
-                .rect(0, 0, 0,
-                        0, 0, size,
-                        size, 0, size,
-                        size, 0, 0,
-                        0, 1, 0);
+                .rect(-halfSize, 0, -halfSize,
+                        -halfSize, 0, halfSize,
+                        halfSize, 0, halfSize,
+                        halfSize, 0, -halfSize,
+                        0, 1f, 0);
     }
 
     private void createCeiling(ModelBuilder builder, long attributes, Material ceiling) {
         builder.part("ceiling", GL20.GL_TRIANGLES, attributes, ceiling)
-                .rect(0, height, 0,
-                        size, height, 0,
-                        size, height, size,
-                        0, height, size,
+                .rect(-halfSize, height, -halfSize,
+                        halfSize, height, -halfSize,
+                        halfSize, height, halfSize,
+                        -halfSize, height, halfSize,
                         0, -1, 0);
     }
 
@@ -73,11 +75,11 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
         createCeiling(builder, attributes, ceiling);
         createWall(builder, attributes, wall);
         builder.part("wall2", GL20.GL_TRIANGLES, attributes, wall)
-                .rect(size, 0, size,
-                        0, 0, size,
-                        0, height, size,
-                        size, height, size,
-                        -1, 0, 0);
+                .rect(halfSize, 0, halfSize,
+                        -halfSize, 0, halfSize,
+                        -halfSize, height, halfSize,
+                        halfSize, height, halfSize,
+                        0, 1, -7);
         return builder.end();
     }
 
@@ -90,11 +92,11 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
 
     private void createWall(ModelBuilder builder, long attributes, Material wall) {
         builder.part("wall", GL20.GL_TRIANGLES, attributes, wall)
-                .rect(0, 0, 0,
-                        size, 0, 0,
-                        size, height, 0,
-                        0, height, 0,
-                        1, 0, 0);
+                .rect(-halfSize, 0, -halfSize,
+                        halfSize, 0, -halfSize,
+                        halfSize, height, -halfSize,
+                        -halfSize, height, -halfSize,
+                        0, 1, 7);
     }
 
     private Model createCorner(ModelBuilder builder, long attributes, Material floor, Material ceiling, Material wall) {
@@ -103,11 +105,11 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
         createCeiling(builder, attributes, ceiling);
         createWall(builder, attributes, wall);
         builder.part("wall2", GL20.GL_TRIANGLES, attributes, wall)
-                .rect(0, 0, size,
-                        0, 0, 0,
-                        0, height, 0,
-                        0, height, size,
-                        0, 0, -1);
+                .rect(-halfSize, 0, halfSize,
+                        -halfSize, 0, -halfSize,
+                        -halfSize, height, -halfSize,
+                        -halfSize, height, halfSize,
+                        7, 1, 0);
         return builder.end();
     }
 

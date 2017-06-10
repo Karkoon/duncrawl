@@ -45,7 +45,7 @@ public class PlaneLoader extends Loader<ModelInstance> implements Disposable {
                 5,0,0,
                 5,10,0,
                 -5,10,0,
-                1, 0, 0,
+                0, 0, 1,
                 new Material(new BlendingAttribute()), attributes);
     }
 
@@ -108,7 +108,6 @@ public class PlaneLoader extends Loader<ModelInstance> implements Disposable {
                 TextureRegion texReg = tex.findRegion(this.data.getFile(ref).name);
                 texReg.setRegionWidth((int) this.data.getFile(ref).size.width);
                 texReg.setRegionHeight((int) this.data.getFile(ref).size.height);
-
                 model.materials.first().set(TextureAttribute.createDiffuse(texReg));
 
                 super.resources.put(ref, new ModelInstance(model));

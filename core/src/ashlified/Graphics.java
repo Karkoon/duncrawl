@@ -8,7 +8,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.*;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -71,7 +73,7 @@ public class Graphics {
     private void setUpViewport() {
         PerspectiveCamera camera = new PerspectiveCamera(90, 300, 300);
         camera.near = 1f;
-        camera.far = 555f;
+        camera.far = 55f;
         viewport = new ExtendViewport(300, 300, camera);
     }
 
@@ -103,18 +105,27 @@ public class Graphics {
         private Deque<RenderableProvider> variableInstances;
         private ModelCache cache;
 
+        private PointLight pointLight;
+
         private Camera camera;
 
         ModelInstanceRenderer(Camera camera) {
             this.camera = camera;
             this.cache = new ModelCache();
             setUpEnvironment();
-            modelBatch = new ModelBatch();
+            pointLight = new PointLight();
+            environment.add(pointLight.set(255,255,255, camera.position, 110));
+            DefaultShader.Config config = new DefaultShader.Config();
+            config.numPointLights = 1;
+            config.fragmentShader = Gdx.files.internal("shaders/test.fragment.glsl").readString();
+            config.vertexShader = Gdx.files.internal("shaders/test.vertex.glsl").readString();
+            modelBatch = new ModelBatch(new DefaultShaderProvider(config));
             this.variableInstances = new ArrayDeque<>();
             staticInstances = new ArrayList<>();
         }
 
         public void render() {
+            pointLight.setPosition(camera.position.x, camera.position.y, camera.position.z);
             cache.begin();
             cache.add(staticInstances);
             cache.add(variableInstances);
@@ -127,7 +138,7 @@ public class Graphics {
 
         private void setUpEnvironment() {
             environment = new Environment();
-            environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+            //environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         }
 
         public void addToCache(ModelInstance... modelInstances) {

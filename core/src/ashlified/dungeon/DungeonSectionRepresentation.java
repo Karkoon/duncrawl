@@ -15,17 +15,14 @@ public class DungeonSectionRepresentation {
     private ModelInstance modelInstance;
     private DungeonSection section;
     private float rotation = 0;
-    private Vector2 correction;
 
     public DungeonSectionRepresentation(DungeonSection section, WallModelsAccessor models) {
         this.section = section;
-        correction = new Vector2(0, 0);
         modelInstance = new ModelInstance(models.get(determineSectionType()));
-        modelInstance.transform.translate(section.getPoint().x - 5 - correction.x,
+        modelInstance.transform.translate(section.getPoint().x,
                 0,
-                section.getPoint().y - 5 - correction.y);
+                section.getPoint().y);
         modelInstance.transform.rotate(Vector3.Y, rotation);
-        rotation = 0;
     }
 
     public static float getHeight() {
@@ -61,39 +58,29 @@ public class DungeonSectionRepresentation {
         // sorry
         if (!northBorder && !southBorder && !eastBorder && westBorder) {
             rotation = 90;
-            correction.y = -SIZE;
             return WallType.ONE_SIDE;
         } else if (!northBorder && !southBorder && eastBorder && !westBorder) {
-            correction.x = -SIZE;
             rotation = -90;
             return WallType.ONE_SIDE;
         } else if (!northBorder && southBorder && !eastBorder && !westBorder) {
-            correction.y = -SIZE;
-            correction.x = -SIZE;
             rotation = 180;
             return WallType.ONE_SIDE;
         } else if (northBorder && !southBorder && !eastBorder && !westBorder) {
-            correction.y = 0;
             return WallType.ONE_SIDE;
         } else if (!northBorder && !southBorder && eastBorder && westBorder) {
             rotation = 90;
-            correction.y = -SIZE;
             return WallType.TWO_SIDES;
         } else if (northBorder && southBorder && !eastBorder && !westBorder) {
             return WallType.TWO_SIDES;
         } else if (!northBorder && southBorder && westBorder && !eastBorder) {
-            correction.y = -SIZE;
             rotation = 90;
             return WallType.CORNER;
         } else if (!northBorder && southBorder && !westBorder && eastBorder) {
-            correction.x = -SIZE;
-            correction.y = -SIZE;
             rotation = 180;
             return WallType.CORNER;
         } else if (northBorder && !southBorder && westBorder && !eastBorder) {
             return WallType.CORNER;
         } else if (northBorder && !southBorder && !westBorder && eastBorder) {
-            correction.x = -SIZE;
             rotation = 270;
             return WallType.CORNER;
         }

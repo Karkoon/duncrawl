@@ -1,11 +1,9 @@
 package ashlified.systems;
 
-import ashlified.components.*;
 import ashlified.dungeon.Dungeon;
 import ashlified.factories.NPCFactory;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 
 /**
@@ -22,9 +20,10 @@ public class NPCSystem extends EntitySystem {
 
     private void createNPCs() {
         NPCFactory factory = new NPCFactory(getEngine());
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 50; i++) {
             try {
                 factory.createEnemyNPC("'Hell knight'", dungeon);
+                factory.createEnemyNPC("'Snorg'", dungeon);
             } catch (Exception e) {
                 e.printStackTrace();
                 Gdx.app.exit();
