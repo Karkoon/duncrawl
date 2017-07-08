@@ -2,7 +2,7 @@ package ashlified.dungeon;
 
 import com.badlogic.gdx.graphics.Color;
 
-public class WallTheme {
+public class LevelTheme {
 
     public final static int NEVER = 0;
     public final static int START = 0;

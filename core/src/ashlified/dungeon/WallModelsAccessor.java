@@ -12,7 +12,7 @@ public class WallModelsAccessor {
 
     private final EnumMap<WallType, Model> models;
 
-    public WallModelsAccessor(WallTheme theme) {
+    public WallModelsAccessor(LevelTheme theme) {
         WallModelsProvider retriever = new RuntimeCreatedWallModelsProvider();
         this.models = retriever.getNewModels(theme);
     }

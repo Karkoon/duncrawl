@@ -9,8 +9,7 @@ import com.badlogic.gdx.InputProcessor;
 public class PlayerSystem extends EntitySystem {
 
 
-
-    public class KeyboardInputProcessor implements InputProcessor {
+    public static class KeyboardInputProcessor implements InputProcessor {
 
         @Override
         public boolean keyDown(int keycode) {

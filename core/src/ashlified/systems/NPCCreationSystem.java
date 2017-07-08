@@ -5,25 +5,29 @@ import ashlified.factories.NPCFactory;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 
 /**
  * Created by karkoon on 25.03.17.
  */
-public class NPCSystem extends EntitySystem {
+public class NPCCreationSystem extends EntitySystem {
 
     private Dungeon dungeon;
+    private AssetManager assetManager;
+    private NPCFactory factory;
 
-    public NPCSystem(Dungeon dungeon) {
-        super();
+    public NPCCreationSystem(Dungeon dungeon, AssetManager assetManager) {
         this.dungeon = dungeon;
+        this.assetManager = assetManager;
     }
 
-    private void createNPCs() {
-        NPCFactory factory = new NPCFactory(getEngine());
-        for (int i = 0; i < 50; i++) {
+    private void createInitialNPCs() {
+        factory = new NPCFactory(getEngine(), assetManager);
+        for (int i = 0; i < 200; i++) {
             try {
-                factory.createEnemyNPC("'Hell knight'", dungeon);
-                factory.createEnemyNPC("'Snorg'", dungeon);
+                factory.createEnemyNPC("Hell knight", dungeon);
+                factory.createEnemyNPC("Snorg", dungeon);
+                factory.createEnemyNPC("Ghost", dungeon);
             } catch (Exception e) {
                 e.printStackTrace();
                 Gdx.app.exit();
@@ -34,12 +38,13 @@ public class NPCSystem extends EntitySystem {
     @Override
     public void addedToEngine(Engine engine) {
         super.addedToEngine(engine);
-        createNPCs();
+        createInitialNPCs();
     }
 
     @Override
     public void removedFromEngine(Engine engine) {
         super.removedFromEngine(engine);
+        factory = null;
     }
 
     @Override

@@ -10,6 +10,6 @@ import java.util.EnumMap;
  */
 public interface WallModelsProvider {
 
-    EnumMap<WallType, Model> getNewModels(WallTheme theme);
+    EnumMap<WallType, Model> getNewModels(LevelTheme theme);
 
 }

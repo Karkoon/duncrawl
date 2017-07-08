@@ -1,53 +1,50 @@
 package ashlified.systems;
 
-import ashlified.Graphics;
-import ashlified.components.AnimationsComponent;
+import ashlified.ModelInstanceRenderer;
+import ashlified.assetManager.SCMLDataAndResources;
+import ashlified.components.GraphicalComponent;
 import ashlified.components.PositionComponent;
 import ashlified.spriterutils.PlaneDrawer;
 import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector3;
+import com.brashmonkey.spriter.Loader;
 
 /**
  * Created by karkoon on 25.03.17.
  */
 public class NPCRenderingSystem extends IteratingSystem {
 
-    private final Graphics graphics;
-    private ComponentMapper<AnimationsComponent> animationsMapper = ComponentMapper.getFor(AnimationsComponent.class);
+    private ComponentMapper<GraphicalComponent> graphicsMapper = ComponentMapper.getFor(GraphicalComponent.class);
     private ComponentMapper<PositionComponent> positionMapper = ComponentMapper.getFor(PositionComponent.class);
 
-    public NPCRenderingSystem(Family family, Graphics graphics) {
-        super(family);
-        this.graphics = graphics;
-    }
+    private PlaneDrawer npcDrawer;
 
-    @Override
-    public void addedToEngine(Engine engine) {
-        super.addedToEngine(engine);
-        for (Entity entity : engine.getEntitiesFor(getFamily())) {
-            AnimationsComponent animComp = animationsMapper.get(entity);
-            ((PlaneDrawer) animComp.getDrawer()).setGraphics(graphics);
-        }
+    public NPCRenderingSystem(Family family, AssetManager manager, ModelInstanceRenderer renderer) {
+        super(family);
+        Loader loader = manager.get("npc/backup.scml", SCMLDataAndResources.class).getLoader();
+        npcDrawer = new PlaneDrawer(loader, renderer);
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        AnimationsComponent animComp = animationsMapper.get(entity);
+        GraphicalComponent animComp = graphicsMapper.get(entity);
         PositionComponent posComp = positionMapper.get(entity);
         updateAnimationPosition(animComp, posComp.getPosition());
         updateAnimationTime(animComp, deltaTime);
-        animComp.getDrawer().draw(animComp.getPlayer());
+        Gdx.app.log("NPCRenderingSystem", "rendering one entity");
+        npcDrawer.draw(animComp.getPlayer());
     }
 
-    private void updateAnimationPosition(AnimationsComponent animComp, Vector3 position) {
+    private void updateAnimationPosition(GraphicalComponent animComp, Vector3 position) {
         animComp.getPlayer().setPosition(position.x, position.z);
     }
 
-    private void updateAnimationTime(AnimationsComponent animation, float deltaTime) {
+    private void updateAnimationTime(GraphicalComponent animation, float deltaTime) {
         animation.getPlayer().update();
     }
 }

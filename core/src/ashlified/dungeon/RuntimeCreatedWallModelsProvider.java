@@ -23,7 +23,7 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
     private float halfSize = size / 2f;
     private float height = DungeonSectionRepresentation.getHeight();
 
-    private EnumMap<WallType, Model> createWallModels(WallTheme theme) {
+    private EnumMap<WallType, Model> createWallModels(LevelTheme theme) {
         long attributes = Usage.Normal | Usage.Position | Usage.TextureCoordinates;
 
         Texture texture = new Texture(Gdx.files.internal("178.JPG"));
@@ -114,7 +114,7 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
     }
 
     @Override
-    public EnumMap<WallType, Model> getNewModels(WallTheme theme) {
+    public EnumMap<WallType, Model> getNewModels(LevelTheme theme) {
         return createWallModels(theme);
     }
 

@@ -1,9 +1,8 @@
 package ashlified;
 
-import ashlified.GameScreen;
-import com.badlogic.ashley.core.Engine;
+import ashlified.loading.LoadingScreen;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.assets.AssetManager;
 
 /**
  * Created by @Karkoon on 18.08.2016.
@@ -12,9 +11,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class DungeonCrawler extends Game {
 
+    public AssetManager assetManager = new AssetManager();
+
     @Override
     public void create() {
-        setScreen(new GameScreen());
+        setScreen(new LoadingScreen(this));
     }
 
+    @Override
+    public void dispose() {
+        assetManager.dispose();
+        super.dispose();
+    }
 }

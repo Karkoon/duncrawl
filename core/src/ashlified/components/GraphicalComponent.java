@@ -2,34 +2,14 @@ package ashlified.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Pool;
-import com.brashmonkey.spriter.Drawer;
-import com.brashmonkey.spriter.Loader;
 import com.brashmonkey.spriter.Player;
 
 /**
  * Created by karkoon on 25.03.17.
  */
-public final class AnimationsComponent implements Component, Pool.Poolable {
+public final class GraphicalComponent implements Component, Pool.Poolable {
 
     private Player player;
-    private Loader loader;
-    private Drawer drawer;
-
-    public Drawer getDrawer() {
-        return drawer;
-    }
-
-    public void setDrawer(Drawer drawer) {
-        this.drawer = drawer;
-    }
-
-    public Loader getLoader() {
-        return loader;
-    }
-
-    public void setLoader(Loader loader) {
-        this.loader = loader;
-    }
 
     public Player getPlayer() {
         return player;
@@ -42,8 +22,6 @@ public final class AnimationsComponent implements Component, Pool.Poolable {
     @Override
     public void reset() {
         player = null;
-        loader = null;
-        drawer = null;
     }
 
     public enum AnimationState {
