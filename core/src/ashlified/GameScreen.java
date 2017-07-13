@@ -4,6 +4,7 @@ import ashlified.components.GraphicalComponent;
 import ashlified.components.PositionComponent;
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.HTTPDungeonProvider;
+import ashlified.graphics.Graphics;
 import ashlified.systems.NPCCreationSystem;
 import ashlified.systems.NPCRenderingSystem;
 import ashlified.util.RandomNumber;
@@ -32,8 +33,8 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         engine = new PooledEngine();
-        Dungeon dungeon = new HTTPDungeonProvider().getNewDungeon(RandomNumber.nextInt(), 100, 20);
-        graphics = new Graphics(dungeon);
+        Dungeon dungeon = new HTTPDungeonProvider().getNewDungeon(RandomNumber.nextInt(), 100, 25);
+        graphics = new Graphics(dungeon, assetManager);
 
         // to be removed
         Gdx.input.setInputProcessor(new InputAdapter() {

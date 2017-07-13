@@ -9,7 +9,8 @@ public class RandomNumber {
 
     private static Random random = new Random();
 
-    private RandomNumber() {}
+    private RandomNumber() {
+    }
 
     public static long nextLong() {
         return random.nextLong();

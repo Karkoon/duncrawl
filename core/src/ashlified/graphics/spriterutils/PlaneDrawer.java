@@ -1,6 +1,6 @@
-package ashlified.spriterutils;
+package ashlified.graphics.spriterutils;
 
-import ashlified.ModelInstanceRenderer;
+import ashlified.graphics.ModelInstanceRenderer;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.brashmonkey.spriter.Drawer;

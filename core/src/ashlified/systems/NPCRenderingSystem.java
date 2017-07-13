@@ -1,15 +1,15 @@
 package ashlified.systems;
 
-import ashlified.ModelInstanceRenderer;
-import ashlified.assetManager.SCMLDataAndResources;
+import ashlified.AssetPaths;
 import ashlified.components.GraphicalComponent;
 import ashlified.components.PositionComponent;
-import ashlified.spriterutils.PlaneDrawer;
+import ashlified.graphics.ModelInstanceRenderer;
+import ashlified.graphics.spriterutils.PlaneDrawer;
+import ashlified.loading.assetmanagerloaders.SCMLDataWithResourcesLoader;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Vector3;
 import com.brashmonkey.spriter.Loader;
@@ -26,7 +26,7 @@ public class NPCRenderingSystem extends IteratingSystem {
 
     public NPCRenderingSystem(Family family, AssetManager manager, ModelInstanceRenderer renderer) {
         super(family);
-        Loader loader = manager.get("npc/backup.scml", SCMLDataAndResources.class).getLoader();
+        Loader loader = manager.get(AssetPaths.SCML_FILE, SCMLDataWithResourcesLoader.SCMLDataWithResources.class).getLoader();
         npcDrawer = new PlaneDrawer(loader, renderer);
     }
 
@@ -35,8 +35,7 @@ public class NPCRenderingSystem extends IteratingSystem {
         GraphicalComponent animComp = graphicsMapper.get(entity);
         PositionComponent posComp = positionMapper.get(entity);
         updateAnimationPosition(animComp, posComp.getPosition());
-        updateAnimationTime(animComp, deltaTime);
-        Gdx.app.log("NPCRenderingSystem", "rendering one entity");
+        updateAnimationTime(animComp);
         npcDrawer.draw(animComp.getPlayer());
     }
 
@@ -44,7 +43,7 @@ public class NPCRenderingSystem extends IteratingSystem {
         animComp.getPlayer().setPosition(position.x, position.z);
     }
 
-    private void updateAnimationTime(GraphicalComponent animation, float deltaTime) {
+    private void updateAnimationTime(GraphicalComponent animation) {
         animation.getPlayer().update();
     }
 }

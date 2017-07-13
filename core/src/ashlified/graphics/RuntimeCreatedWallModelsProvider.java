@@ -1,6 +1,10 @@
-package ashlified.dungeon;
+package ashlified.graphics;
 
-import com.badlogic.gdx.Gdx;
+import ashlified.AssetPaths;
+import ashlified.dungeon.DungeonSectionRepresentation;
+import ashlified.dungeon.LevelTheme;
+import ashlified.dungeon.WallType;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -22,17 +26,21 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
     private float size = DungeonSectionRepresentation.getSize(); //it's a square
     private float halfSize = size / 2f;
     private float height = DungeonSectionRepresentation.getHeight();
+    private AssetManager manager;
+
+    RuntimeCreatedWallModelsProvider(AssetManager manager) {
+        this.manager = manager;
+    }
 
     private EnumMap<WallType, Model> createWallModels(LevelTheme theme) {
         long attributes = Usage.Normal | Usage.Position | Usage.TextureCoordinates;
 
-        Texture texture = new Texture(Gdx.files.internal("178.JPG"));
-        Texture texture2 = new Texture(Gdx.files.internal("178_norm.JPG"));
-        TextureRegion region = new TextureRegion(texture);
+        Texture wallTexture = manager.get(AssetPaths.WALL_TEXTURE);
+        TextureRegion region = new TextureRegion(wallTexture);
 
-        Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region), TextureAttribute.createNormal(texture2));
-        Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region), TextureAttribute.createNormal(texture2));
-        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor().mul(1.2f)), TextureAttribute.createDiffuse(region), TextureAttribute.createNormal(texture2));
+        Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region));
+        Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region));
+        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region));
 
         ModelBuilder builder = new ModelBuilder();
         EnumMap<WallType, Model> models = new EnumMap<>(WallType.class);

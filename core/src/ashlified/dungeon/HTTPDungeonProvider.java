@@ -1,7 +1,6 @@
 package ashlified.dungeon;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
 
 import java.io.BufferedReader;
@@ -14,13 +13,8 @@ import java.net.URL;
  * Created by @Karkoon on 18.08.2016.
  * Provides dungeon in a form of a json from a third-party server (REST).
  * https://aorioli.github.io/procedural/
- * Resulted from a session of blind programming and googling.
  */
 public class HTTPDungeonProvider implements DungeonProvider {
-
-    public Dungeon getNewDungeon(int seed, int size, int rooms) {
-        return getNewDungeonWithHTTP(seed, size, rooms);
-    }
 
     private static Dungeon getNewDungeonWithHTTP(int seed, int size, int rooms) {
         Dungeon dungeon = null;
@@ -44,5 +38,9 @@ public class HTTPDungeonProvider implements DungeonProvider {
         }
         if (dungeon == null) throw new NullPointerException("wtf");
         return dungeon;
+    }
+
+    public Dungeon getNewDungeon(int seed, int size, int rooms) {
+        return getNewDungeonWithHTTP(seed, size, rooms);
     }
 }

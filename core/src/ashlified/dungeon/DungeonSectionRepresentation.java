@@ -1,13 +1,18 @@
 package ashlified.dungeon;
 
+import ashlified.graphics.WallModelsAccessor;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 
 /**
  * Created by karkoon on 26.04.17.
  */
-public class DungeonSectionRepresentation {
+public class DungeonSectionRepresentation implements RenderableProvider {
 
     private final static float SIZE = 10f;
     private final static float HEIGHT = 15f;
@@ -23,6 +28,7 @@ public class DungeonSectionRepresentation {
                 0,
                 section.getPoint().y);
         modelInstance.transform.rotate(Vector3.Y, rotation);
+
     }
 
     public static float getHeight() {
@@ -31,10 +37,6 @@ public class DungeonSectionRepresentation {
 
     public static float getSize() {
         return SIZE;
-    }
-
-    public ModelInstance getModelInstance() {
-        return modelInstance;
     }
 
     private WallType determineSectionType() {
@@ -85,5 +87,10 @@ public class DungeonSectionRepresentation {
             return WallType.CORNER;
         }
         return WallType.NO_SIDES;
+    }
+
+    @Override
+    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+        modelInstance.getRenderables(renderables, pool);
     }
 }

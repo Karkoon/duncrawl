@@ -1,5 +1,8 @@
-package ashlified.dungeon;
+package ashlified.graphics;
 
+import ashlified.dungeon.LevelTheme;
+import ashlified.dungeon.WallType;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Model;
 
 import java.util.EnumMap;
@@ -12,8 +15,8 @@ public class WallModelsAccessor {
 
     private final EnumMap<WallType, Model> models;
 
-    public WallModelsAccessor(LevelTheme theme) {
-        WallModelsProvider retriever = new RuntimeCreatedWallModelsProvider();
+    public WallModelsAccessor(LevelTheme theme, AssetManager manager) {
+        WallModelsProvider retriever = new RuntimeCreatedWallModelsProvider(manager);
         this.models = retriever.getNewModels(theme);
     }
 

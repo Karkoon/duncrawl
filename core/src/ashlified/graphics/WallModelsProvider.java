@@ -1,5 +1,7 @@
-package ashlified.dungeon;
+package ashlified.graphics;
 
+import ashlified.dungeon.LevelTheme;
+import ashlified.dungeon.WallType;
 import com.badlogic.gdx.graphics.g3d.Model;
 
 import java.util.EnumMap;

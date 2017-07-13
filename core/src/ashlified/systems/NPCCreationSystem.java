@@ -4,7 +4,6 @@ import ashlified.dungeon.Dungeon;
 import ashlified.factories.NPCFactory;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 
 /**
@@ -23,15 +22,10 @@ public class NPCCreationSystem extends EntitySystem {
 
     private void createInitialNPCs() {
         factory = new NPCFactory(getEngine(), assetManager);
-        for (int i = 0; i < 200; i++) {
-            try {
-                factory.createEnemyNPC("Hell knight", dungeon);
-                factory.createEnemyNPC("Snorg", dungeon);
-                factory.createEnemyNPC("Ghost", dungeon);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Gdx.app.exit();
-            }
+        for (int i = 0; i < 100; i++) {
+            factory.createEnemyNPC("Hell knight", dungeon);
+            factory.createEnemyNPC("Snorg", dungeon);
+            factory.createEnemyNPC("Ghost", dungeon);
         }
     }
 

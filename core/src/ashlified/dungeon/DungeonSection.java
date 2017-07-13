@@ -48,7 +48,6 @@ public class DungeonSection implements Json.Serializable {
         for (Vector2 vector2 : next) {
             vector2.set(vector2.x * scale, vector2.y * scale);
         }
-
         occupyingObjects = new ArrayList<>();
     }
 
@@ -56,7 +55,7 @@ public class DungeonSection implements Json.Serializable {
         return dungeon;
     }
 
-    public void setDungeon(Dungeon dungeon) {
+    void setDungeon(Dungeon dungeon) {
         this.dungeon = dungeon;
     }
 }

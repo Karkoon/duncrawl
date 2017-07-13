@@ -1,30 +1,23 @@
-package ashlified;
+package ashlified.graphics;
 
 import ashlified.dungeon.Dungeon;
-import ashlified.dungeon.DungeonSection;
+import ashlified.dungeon.DungeonRepresentation;
 import ashlified.dungeon.DungeonSectionRepresentation;
-import ashlified.dungeon.WallModelsAccessor;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by @Karkoon on 2016-08-24.
  * Creates an environment for rendering and drawing game objects.
  */
 
-class Graphics {
+public class Graphics {
 
     private Viewport viewport;
     private SpriteBatch fboBatch;
@@ -32,33 +25,33 @@ class Graphics {
 
     private ModelInstanceRenderer modelInstanceRenderer;
 
-    Graphics(Dungeon dungeon) {
+    public Graphics(Dungeon dungeon, AssetManager manager) {
         setUpViewport();
         setUpFrameBuffer();
-        modelInstanceRenderer = new ModelInstanceRenderer(viewport.getCamera());
-        modelInstanceRenderer.addToStaticCache(new DungeonRepresentation(dungeon));
+        modelInstanceRenderer = new ModelInstanceRenderer(viewport.getCamera(), manager);
+        modelInstanceRenderer.addToStaticCache(new DungeonRepresentation(dungeon, manager));
         Vector2 point = dungeon.getSpawnDungeonSection().getPoint();
-        viewport.getCamera().position.set(point.x, DungeonSectionRepresentation.getHeight() / 2f, point.y);
+        viewport.getCamera().position.set(point.x, DungeonSectionRepresentation.getHeight() / 2f, point.y); // todo: remove that
     }
 
-    void resizeViewport(int screenWidth, int screenHeight) {
+    public void resizeViewport(int screenWidth, int screenHeight) {
         viewport.update(screenWidth, screenHeight);
         viewport.getCamera().update();
         setUpFrameBuffer();
     }
 
-    void begin() {
+    public void begin() {
         frameBuffer.begin();
     }
 
-    void end() {
+    public void end() {
         frameBuffer.end();
         fboBatch.begin();
         fboBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight(), 0, 0, 1, 1);
         fboBatch.end();
     }
 
-    void render(float delta) {
+    public void render(float delta) {
         clearScreen();
         modelInstanceRenderer.render();
     }
@@ -90,24 +83,5 @@ class Graphics {
 
     public ModelInstanceRenderer getModelInstanceRenderer() {
         return modelInstanceRenderer;
-    }
-
-    public static class DungeonRepresentation implements RenderableProvider {
-
-        private List<DungeonSectionRepresentation> models = new ArrayList<>();
-
-        DungeonRepresentation(Dungeon dungeon) {
-            WallModelsAccessor accessor = Assets.getWallModelsAccessor();
-            for (DungeonSection section : dungeon.getGrid()) {
-                models.add(new DungeonSectionRepresentation(section, accessor));
-            }
-        }
-
-        @Override
-        public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-            for (DungeonSectionRepresentation representation : models) {
-                representation.getModelInstance().getRenderables(renderables, pool);
-            }
-        }
     }
 }

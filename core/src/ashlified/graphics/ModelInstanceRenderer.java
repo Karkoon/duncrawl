@@ -1,6 +1,7 @@
-package ashlified;
+package ashlified.graphics;
 
-import com.badlogic.gdx.Gdx;
+import ashlified.AssetPaths;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -27,9 +28,11 @@ public class ModelInstanceRenderer {
     private PointLight pointLight; // TODO: 21.06.17 create a player with point light and remove this point light
 
     private Camera camera;
+    private AssetManager manager;
 
-    ModelInstanceRenderer(Camera camera) {
+    ModelInstanceRenderer(Camera camera, AssetManager manager) {
         this.camera = camera;
+        this.manager = manager;
         this.cache = new ModelCache();
         this.environment = createEnvironment();
         this.modelBatch = new ModelBatch(new DefaultShaderProvider(createShaderConfig()));
@@ -44,15 +47,15 @@ public class ModelInstanceRenderer {
     private Environment createEnvironment() {
         Environment environment = new Environment();
         pointLight = new PointLight();
-        environment.add(pointLight.set(255, 255, 255, camera.position, 100));
+        environment.add(pointLight.set(255, 255, 255, camera.position, 80));
         return environment;
     }
 
     private DefaultShader.Config createShaderConfig() {
         DefaultShader.Config config = new DefaultShader.Config();
         config.numPointLights = 1;
-        config.fragmentShader = Gdx.files.internal("shaders/test.fragment.glsl").readString();
-        config.vertexShader = Gdx.files.internal("shaders/test.vertex.glsl").readString(); // TODO: change that to asset manager
+        config.fragmentShader = manager.get(AssetPaths.FRAGMENT_SHADER, String.class);
+        config.vertexShader = manager.get(AssetPaths.VERTEX_SHADER, String.class);
         return config;
     }
 
