@@ -6,26 +6,24 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelCache;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.graphics.g3d.environment.PointLight;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.Disposable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by karkoon on 26.04.17.
  */
-public class ModelInstanceRenderer {
+public class ModelInstanceRenderer implements Disposable {
 
     private Environment environment;
     private ModelBatch modelBatch;
-    private ArrayList<RenderableProvider> constantRenderableProviders;
-    private ArrayList<RenderableProvider> varyingRenderableProviders;
+    private ArrayList<ModelInstance> constantModelInstances;
+    private ArrayList<ModelInstance> varyingModelInstances;
     private ModelCache cache;
-
-    private PointLight pointLight; // TODO: 21.06.17 create a player with point light and remove this point light
 
     private Camera camera;
     private AssetManager manager;
@@ -33,22 +31,15 @@ public class ModelInstanceRenderer {
     ModelInstanceRenderer(Camera camera, AssetManager manager) {
         this.camera = camera;
         this.manager = manager;
-        this.cache = new ModelCache();
-        this.environment = createEnvironment();
+        this.cache = new ModelCache(new ModelCache.Sorter(), new ModelCache.SimpleMeshPool());
+        this.environment = new Environment();
         this.modelBatch = new ModelBatch(new DefaultShaderProvider(createShaderConfig()));
-        this.varyingRenderableProviders = new ArrayList<>();
-        this.constantRenderableProviders = new ArrayList<>();
+        this.varyingModelInstances = new ArrayList<>();
+        this.constantModelInstances = new ArrayList<>();
     }
 
     public Camera getCamera() {
         return camera;
-    }
-
-    private Environment createEnvironment() {
-        Environment environment = new Environment();
-        pointLight = new PointLight();
-        environment.add(pointLight.set(255, 255, 255, camera.position, 80));
-        return environment;
     }
 
     private DefaultShader.Config createShaderConfig() {
@@ -60,22 +51,57 @@ public class ModelInstanceRenderer {
     }
 
     public void render() {
-        pointLight.setPosition(camera.position.x, camera.position.y, camera.position.z);
-        cache.begin();
-        cache.add(constantRenderableProviders);
-        cache.add(varyingRenderableProviders);
+        cache.begin(camera);
+        for (int i = 0; i < constantModelInstances.size(); i++) {
+            ModelInstance modelInstance = constantModelInstances.get(i);
+            if (isSectionVisible(camera, modelInstance)) {
+                cache.add(modelInstance);
+            }
+        }
+        for (int i = 0; i < varyingModelInstances.size(); i++) {
+            ModelInstance modelInstance = varyingModelInstances.get(i);
+            if (isVisible(camera, modelInstance)) {
+                cache.add(modelInstance);
+            }
+        }
         cache.end();
-        varyingRenderableProviders.clear();
+        varyingModelInstances.clear();
         modelBatch.begin(camera);
         modelBatch.render(cache, environment);
         modelBatch.end();
     }
 
-    public void addToCache(RenderableProvider... provider) {
-        varyingRenderableProviders.addAll(Arrays.asList(provider));
+    private boolean isVisible(Camera cam, ModelInstance instance) {
+        float[] val = instance.transform.val;
+        return cam.frustum.boundsInFrustum(
+                val[Matrix4.M03], val[Matrix4.M13], val[Matrix4.M23],
+                5f, 5f, 0f) && cam.position.dst(val[Matrix4.M03], val[Matrix4.M13], val[Matrix4.M23]) < 55f;
     }
 
-    public void addToStaticCache(RenderableProvider... provider) {
-        constantRenderableProviders.addAll(Arrays.asList(provider));
+    private boolean isSectionVisible(Camera cam, ModelInstance section) {
+        float[] val = section.transform.val;
+        return cam.frustum.boundsInFrustum(val[Matrix4.M03], val[Matrix4.M13], val[Matrix4.M23],
+                5f, 7.5f, 5f) && cam.position.dst(val[Matrix4.M03], val[Matrix4.M13], val[Matrix4.M23]) < 55f;
+    }
+
+    public void addToCache(ModelInstance modelInstance) {
+        varyingModelInstances.add(modelInstance);
+    }
+
+    public void addToCache(ArrayList<ModelInstance> modelInstances) {
+        varyingModelInstances.addAll(modelInstances);
+    }
+
+    public void addToConstantCache(ArrayList<ModelInstance> modelInstances) {
+        constantModelInstances.addAll(modelInstances);
+    }
+
+    @Override
+    public void dispose() {
+        cache.dispose();
+    }
+
+    public Environment getEnvironment() {
+        return environment;
     }
 }

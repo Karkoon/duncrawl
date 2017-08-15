@@ -1,21 +1,16 @@
 package ashlified;
 
-import ashlified.components.GraphicalComponent;
-import ashlified.components.PositionComponent;
+import ashlified.components.PointLightComponent;
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.HTTPDungeonProvider;
+import ashlified.entitylisteners.LightComponentListener;
 import ashlified.graphics.Graphics;
-import ashlified.systems.NPCCreationSystem;
-import ashlified.systems.NPCRenderingSystem;
+import ashlified.systems.*;
 import ashlified.util.RandomNumber;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.math.Vector3;
 
 /**
  * Created by @Karkoon on 2016-08-30.
@@ -25,6 +20,7 @@ public class GameScreen implements Screen {
     private Graphics graphics;
     private PooledEngine engine;
     private AssetManager assetManager;
+    private Dungeon dungeon;
 
     public GameScreen(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -33,77 +29,56 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         engine = new PooledEngine();
-        Dungeon dungeon = new HTTPDungeonProvider().getNewDungeon(RandomNumber.nextInt(), 100, 25);
+        dungeon = new HTTPDungeonProvider().getNewDungeon(RandomNumber.nextInt(), 50, 20);
         graphics = new Graphics(dungeon, assetManager);
+        addEntityListeners();
+        addSystems();
+    }
 
-        // to be removed
-        Gdx.input.setInputProcessor(new InputAdapter() {
-            Vector3 moveRate = new Vector3(0, 0, -10);
-
-            @Override
-            public boolean keyDown(int keycode) {
-                switch (keycode) {
-                    case Input.Keys.W:
-                        graphics.getCamera().position.add(moveRate);
-                        Gdx.app.log("wtf", "wtf");
-                        break;
-                    case Input.Keys.S:
-                        graphics.getCamera().position.sub(moveRate);
-                        break;
-                    case Input.Keys.A:
-                        graphics.getCamera().rotate(Vector3.Y, 90);
-                        moveRate.rotate(Vector3.Y, 90);
-                        break;
-                    case Input.Keys.D:
-                        graphics.getCamera().rotate(Vector3.Y, -90);
-                        moveRate.rotate(Vector3.Y, -90);
-                        break;
-                    default:
-                        break;
-                }
-                graphics.getCamera().update();
-                return true;
-            }
-
-        });// todo input multiplexer of userInterface and some sort of camera control.
+    private void addSystems() {
         engine.addSystem(new NPCCreationSystem(dungeon, assetManager));
+        engine.addSystem(new ChestCreationSystem(dungeon, assetManager));
         engine.addSystem(new NPCRenderingSystem(
-                Family.all(GraphicalComponent.class, PositionComponent.class).get(),
                 assetManager,
                 graphics.getModelInstanceRenderer()));
+        engine.addSystem(new ModelInstanceRenderingSystem(graphics.getModelInstanceRenderer()));
+        engine.addSystem(new ModelAnimationSystem());
+        engine.addSystem(new PlayerSystem(dungeon.getSpawnDungeonSection()));
+        engine.addSystem(new InputSystem(graphics.getCamera()));
+        engine.addSystem(new LightingSystem());
+    }
+
+    private void addEntityListeners() {
+        engine.addEntityListener(Family.all(PointLightComponent.class).get(),
+                new LightComponentListener(graphics.getModelInstanceRenderer().getEnvironment()));
     }
 
     @Override
     public void render(float delta) {
-        graphics.begin();
         engine.update(delta);
+        graphics.begin();
         graphics.render(delta);
         graphics.end();
-
     }
 
     @Override
     public void resize(int width, int height) {
-        graphics.resizeViewport(width, height);
+        graphics.resize(width, height);
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
     public void dispose() {
-
     }
 }

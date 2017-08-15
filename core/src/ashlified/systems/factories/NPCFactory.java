@@ -1,4 +1,4 @@
-package ashlified.factories;
+package ashlified.systems.factories;
 
 import ashlified.AssetPaths;
 import ashlified.components.*;
@@ -6,12 +6,12 @@ import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.DungeonSection;
 import ashlified.loading.assetmanagerloaders.NPCBlueprintListLoader;
 import ashlified.loading.assetmanagerloaders.SCMLDataWithResourcesLoader;
+import ashlified.util.CardinalDirection;
 import ashlified.util.RandomNumber;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.math.Vector3;
 import com.brashmonkey.spriter.Data;
 import com.brashmonkey.spriter.Player;
 
@@ -22,7 +22,6 @@ import java.util.ArrayList;
  */
 public class NPCFactory {
 
-    private final static int SPEED = 1;
     private final PooledEngine engine;
     private ArrayList<EnemyNPCBlueprint> blueprints;
     private AssetManager assetManager;
@@ -39,7 +38,7 @@ public class NPCFactory {
 
                 StatsComponent stats = engine.createComponent(StatsComponent.class);
                 PositionComponent position = engine.createComponent(PositionComponent.class);
-                SpeedComponent speed = engine.createComponent(SpeedComponent.class);
+                DirectionComponent direction = engine.createComponent(DirectionComponent.class);
                 InventoryComponent inventory = engine.createComponent(InventoryComponent.class);
                 ArmorComponent armor = engine.createComponent(ArmorComponent.class);
                 AttackComponent attack = engine.createComponent(AttackComponent.class);
@@ -50,9 +49,9 @@ public class NPCFactory {
 
                 name.setName(blueprint.name);
                 DungeonSection dungeonSection = dungeon.getRandomDungeonSection();
-                position.setPosition(new Vector3(dungeonSection.getPoint().x, 0, dungeonSection.getPoint().y));
+                position.setPosition(dungeonSection.getPosition());
                 position.setOccupiedSection(dungeonSection);
-                speed.setSpeed(SPEED);
+                direction.setDirection(CardinalDirection.NORTH);
                 stats.setDexterity(blueprint.dexterity);
                 stats.setStrength(blueprint.strength);
                 stats.setWisdom(blueprint.wisdom);
@@ -70,7 +69,7 @@ public class NPCFactory {
                 Entity entity = engine.createEntity();
                 entity.add(stats);
                 entity.add(position);
-                entity.add(speed);
+                entity.add(direction);
                 entity.add(inventory);
                 entity.add(retrieveGraphicalRepresentation(blueprint));
                 entity.add(armor);
@@ -84,8 +83,8 @@ public class NPCFactory {
         }
     }
 
-    private GraphicalComponent retrieveGraphicalRepresentation(EnemyNPCBlueprint blueprint) {
-        GraphicalComponent animationsComponent = engine.createComponent(GraphicalComponent.class);
+    private SpriterModelComponent retrieveGraphicalRepresentation(EnemyNPCBlueprint blueprint) {
+        SpriterModelComponent animationsComponent = engine.createComponent(SpriterModelComponent.class);
         Data data = assetManager.get(AssetPaths.SCML_FILE, SCMLDataWithResourcesLoader.SCMLDataWithResources.class).getData();
         Player player = new Player(data.getEntity(blueprint.scmlPrefix));
         int startTime = RandomNumber.nextInt(1000);

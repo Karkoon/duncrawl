@@ -1,18 +1,14 @@
 package ashlified.dungeon;
 
 import ashlified.graphics.WallModelsAccessor;
+import ashlified.util.CardinalDirection;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 
 /**
  * Created by karkoon on 26.04.17.
  */
-public class DungeonSectionRepresentation implements RenderableProvider {
+public class DungeonSectionRepresentation {
 
     private final static float SIZE = 10f;
     private final static float HEIGHT = 15f;
@@ -21,12 +17,10 @@ public class DungeonSectionRepresentation implements RenderableProvider {
     private DungeonSection section;
     private float rotation = 0;
 
-    public DungeonSectionRepresentation(DungeonSection section, WallModelsAccessor models) {
+    public DungeonSectionRepresentation(DungeonSection section, WallModelsAccessor modelsAccessor) {
         this.section = section;
-        modelInstance = new ModelInstance(models.get(determineSectionType()));
-        modelInstance.transform.translate(section.getPoint().x,
-                0,
-                section.getPoint().y);
+        modelInstance = new ModelInstance(modelsAccessor.get(determineSectionType()));
+        modelInstance.transform.translate(section.getPosition());
         modelInstance.transform.rotate(Vector3.Y, rotation);
 
     }
@@ -45,16 +39,20 @@ public class DungeonSectionRepresentation implements RenderableProvider {
         boolean westBorder = true;
         boolean eastBorder = true;
 
-        for (Vector2 nextSection : section.getNext()) {
-            if (nextSection.x < section.getPoint().x) {
-                westBorder = false;
-            } else if (nextSection.x > section.getPoint().x) {
-                eastBorder = false;
-            } else if (nextSection.y < section.getPoint().y) {
-                northBorder = false;
-            } else if (nextSection.y > section.getPoint().y) {
-                southBorder = false;
-            }
+        if (section.getAdjacentSection(CardinalDirection.WEST) != section) {
+            westBorder = false;
+        }
+
+        if (section.getAdjacentSection(CardinalDirection.EAST) != section) {
+            eastBorder = false;
+        }
+
+        if (section.getAdjacentSection(CardinalDirection.NORTH) != section) {
+            northBorder = false;
+        }
+
+        if (section.getAdjacentSection(CardinalDirection.SOUTH) != section) {
+            southBorder = false;
         }
 
         // sorry
@@ -89,8 +87,7 @@ public class DungeonSectionRepresentation implements RenderableProvider {
         return WallType.NO_SIDES;
     }
 
-    @Override
-    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-        modelInstance.getRenderables(renderables, pool);
+    public ModelInstance getModelInstance() {
+        return modelInstance;
     }
 }

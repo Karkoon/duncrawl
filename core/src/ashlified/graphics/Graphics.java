@@ -2,58 +2,62 @@ package ashlified.graphics;
 
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.DungeonRepresentation;
-import ashlified.dungeon.DungeonSectionRepresentation;
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Created by @Karkoon on 2016-08-24.
- * Creates an environment for rendering and drawing game objects.
  */
 
 public class Graphics {
 
     private Viewport viewport;
-    private SpriteBatch fboBatch;
-    private FrameBuffer frameBuffer;
+    private PixelatedCanvas pixelatedCanvas;
 
+    private FPSLogger logger = new FPSLogger();
     private ModelInstanceRenderer modelInstanceRenderer;
 
     public Graphics(Dungeon dungeon, AssetManager manager) {
         setUpViewport();
-        setUpFrameBuffer();
+        pixelatedCanvas = new PixelatedCanvas(viewport);
         modelInstanceRenderer = new ModelInstanceRenderer(viewport.getCamera(), manager);
-        modelInstanceRenderer.addToStaticCache(new DungeonRepresentation(dungeon, manager));
-        Vector2 point = dungeon.getSpawnDungeonSection().getPoint();
-        viewport.getCamera().position.set(point.x, DungeonSectionRepresentation.getHeight() / 2f, point.y); // todo: remove that
+        modelInstanceRenderer.addToConstantCache(new DungeonRepresentation(dungeon, manager).getModelInstances());
     }
 
-    public void resizeViewport(int screenWidth, int screenHeight) {
+    public void resize(int screenWidth, int screenHeight) {
         viewport.update(screenWidth, screenHeight);
         viewport.getCamera().update();
-        setUpFrameBuffer();
+        pixelatedCanvas.resize();
     }
 
     public void begin() {
-        frameBuffer.begin();
+        pixelatedCanvas.begin();
     }
 
     public void end() {
-        frameBuffer.end();
-        fboBatch.begin();
-        fboBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight(), 0, 0, 1, 1);
-        fboBatch.end();
+        pixelatedCanvas.end();
+        pixelatedCanvas.draw();
     }
 
     public void render(float delta) {
         clearScreen();
         modelInstanceRenderer.render();
+        if (Gdx.app.getType() == Application.ApplicationType.Android) androidSpin();
+        logger.log();
+    }
+
+    private void androidSpin() {
+        getCamera().rotate(Vector3.Y, 10);
+        getCamera().update();
+
     }
 
     public Camera getCamera() {
@@ -61,19 +65,10 @@ public class Graphics {
     }
 
     private void setUpViewport() {
-        PerspectiveCamera camera = new PerspectiveCamera(90, 300, 300);
-        camera.near = 1f;
-        camera.far = 55f;
+        PerspectiveCamera camera = new PerspectiveCamera(66, 300, 300);
+        camera.near = 2f;
+        camera.far = 45f;
         viewport = new ExtendViewport(300, 300, camera);
-    }
-
-    private void setUpFrameBuffer() {
-        if (frameBuffer != null) frameBuffer.dispose();
-        frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, 1280 / 6, 720 / 6, true);
-        frameBuffer.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-
-        if (fboBatch != null) fboBatch.dispose();
-        fboBatch = new SpriteBatch();
     }
 
     private void clearScreen() {

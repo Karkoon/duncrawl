@@ -12,7 +12,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -50,6 +49,10 @@ public class LoadingScreen extends ScreenAdapter {
     public LoadingScreen(DungeonCrawler game) {
         this.game = game;
         assetManager = game.assetManager;
+        setCustomLoaders();
+    }
+
+    private void setCustomLoaders() {
         assetManager.setLoader(SCMLDataWithResourcesLoader.SCMLDataWithResources.class, new SCMLDataWithResourcesLoader(new InternalFileHandleResolver()));
         assetManager.setLoader(LevelThemesRandomizer.class, new LevelThemesRandomizerLoader(new InternalFileHandleResolver()));
         assetManager.setLoader(NPCBlueprintListLoader.EnemyNPCBlueprintList.class, new NPCBlueprintListLoader(new InternalFileHandleResolver()));
@@ -65,6 +68,7 @@ public class LoadingScreen extends ScreenAdapter {
         assetManager.load(AssetPaths.WALL_TEXTURE, Texture.class);
         assetManager.load(AssetPaths.VERTEX_SHADER, String.class);
         assetManager.load(AssetPaths.FRAGMENT_SHADER, String.class);
+        assetManager.load(AssetPaths.CHEST_MODEL, Model.class);
     }
 
     @Override
@@ -85,8 +89,6 @@ public class LoadingScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1 / 5f, 2 / 5f, 4 / 5f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (assetManager.update() && !isLoading) {
             game.setScreen(new GameScreen(assetManager));
         }

@@ -7,7 +7,7 @@ import com.brashmonkey.spriter.Player;
 /**
  * Created by karkoon on 25.03.17.
  */
-public final class GraphicalComponent implements Component, Pool.Poolable {
+public final class SpriterModelComponent implements Component, Pool.Poolable {
 
     private Player player;
 

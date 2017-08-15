@@ -1,6 +1,6 @@
 package ashlified.loading.assetmanagerloaders;
 
-import ashlified.factories.NPCFactory;
+import ashlified.systems.factories.NPCFactory;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;

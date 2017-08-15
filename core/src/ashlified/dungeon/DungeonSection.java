@@ -1,10 +1,13 @@
 package ashlified.dungeon;
 
+import ashlified.util.CardinalDirection;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 
 /**
  * Created by karkoon on 01.02.17.
@@ -12,29 +15,44 @@ import java.util.ArrayList;
 
 public class DungeonSection implements Json.Serializable {
 
-    private static float scale = 10f;
+    private static float scale = 10f; // in the data each section has 1 unit size, multiplying gives a more reasonable number and making it here allows for a common interface
     private ArrayList<Object> occupyingObjects;
-    private Vector2 point; //used by json thing
-    private ArrayList<Vector2> next; //used by json thing
+    private Vector3 position;
+    private ArrayList<Vector3> adjacentPositions;
     private Dungeon dungeon;
 
-    public ArrayList<Vector2> getNext() {
-        return next;
+    private EnumMap<CardinalDirection, DungeonSection> adjacentSections = new EnumMap<>(CardinalDirection.class);
+
+    ArrayList<Vector3> getAdjacentSectionPositions() {
+        return adjacentPositions;
     }
 
-    public Vector2 getPoint() {
-        return point;
+    EnumMap<CardinalDirection, DungeonSection> getAdjacentSections() {
+        return adjacentSections;
+    }
+
+    public DungeonSection getAdjacentSection(CardinalDirection direction) {
+        return adjacentSections.get(direction);
+    }
+
+    public Vector3 getPosition() {
+        return position;
     }
 
     public ArrayList<Object> getOccupyingObjects() {
         return occupyingObjects;
     }
 
+    public void addOccupyingObject(Object object) {
+        occupyingObjects.add(object);
+    }
+
     @Override
     public void write(Json json) {
-        point = new Vector2(point.x / scale, point.y / scale);
-        for (Vector2 vector2 : next) {
-            vector2.set(vector2.x, vector2.y);
+        Vector2 point = new Vector2(this.position.x / scale, this.position.z / scale);
+        ArrayList<Vector2> next = new ArrayList<>();
+        for (Vector3 adjacentPosition : this.adjacentPositions) {
+            next.add(new Vector2(adjacentPosition.x / scale, adjacentPosition.z / scale));
         }
         json.writeValue(point);
         json.writeValue(next);
@@ -42,12 +60,14 @@ public class DungeonSection implements Json.Serializable {
 
     @Override
     public void read(Json json, JsonValue jsonData) {
-        point = json.readValue("point", Vector2.class, jsonData);
-        next = json.readValue("next", ArrayList.class, Vector2.class, jsonData);
-        point = new Vector2(point.x * scale, point.y * scale);
-        for (Vector2 vector2 : next) {
-            vector2.set(vector2.x * scale, vector2.y * scale);
+        Vector2 jsonPoint = json.readValue("point", Vector2.class, jsonData);
+        ArrayList<Vector2> jsonNext = json.readValue("next", ArrayList.class, Vector2.class, jsonData);
+        position = new Vector3(jsonPoint.x * scale, 0, jsonPoint.y * scale);
+        adjacentPositions = new ArrayList<>();
+        for (Vector2 adjacentPositionXY : jsonNext) {
+            adjacentPositions.add(new Vector3(adjacentPositionXY.x * scale, 0, adjacentPositionXY.y * scale));
         }
+
         occupyingObjects = new ArrayList<>();
     }
 
@@ -58,4 +78,5 @@ public class DungeonSection implements Json.Serializable {
     void setDungeon(Dungeon dungeon) {
         this.dungeon = dungeon;
     }
+
 }

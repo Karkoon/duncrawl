@@ -4,12 +4,14 @@ import ashlified.AssetPaths;
 import ashlified.dungeon.DungeonSectionRepresentation;
 import ashlified.dungeon.LevelTheme;
 import ashlified.dungeon.WallType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -38,9 +40,9 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
         Texture wallTexture = manager.get(AssetPaths.WALL_TEXTURE);
         TextureRegion region = new TextureRegion(wallTexture);
 
-        Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region));
-        Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region));
-        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region));
+        Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region), new BlendingAttribute(false, 1));
+        Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region), new BlendingAttribute(false, 1));
+        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region), new BlendingAttribute(false, 1));
 
         ModelBuilder builder = new ModelBuilder();
         EnumMap<WallType, Model> models = new EnumMap<>(WallType.class);
@@ -48,6 +50,7 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
         models.put(WallType.CORNER, createCorner(builder, attributes, floor, ceiling, wall));
         models.put(WallType.TWO_SIDES, createTwoSides(builder, attributes, floor, ceiling, wall));
         models.put(WallType.NO_SIDES, createNoSides(builder, attributes, floor, ceiling));
+
         return models;
     }
 
@@ -123,6 +126,7 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
 
     @Override
     public EnumMap<WallType, Model> getNewModels(LevelTheme theme) {
+        Gdx.app.log("LevelTheme", theme.getName());
         return createWallModels(theme);
     }
 

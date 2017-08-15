@@ -1,7 +1,7 @@
 package ashlified.loading.assetmanagerloaders;
 
 import ashlified.AssetPaths;
-import ashlified.graphics.spriterutils.PlaneAtlasLoader;
+import ashlified.graphics.spriterutils.PoolPlaneAtlasLoader;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -15,7 +15,10 @@ import com.brashmonkey.spriter.Data;
 import com.brashmonkey.spriter.Loader;
 import com.brashmonkey.spriter.SCMLReader;
 
-public class SCMLDataWithResourcesLoader extends AsynchronousAssetLoader<SCMLDataWithResourcesLoader.SCMLDataWithResources, SCMLDataWithResourcesLoader.DataAndResourcesParameter> {
+import static ashlified.loading.assetmanagerloaders.SCMLDataWithResourcesLoader.DataAndResourcesParameter;
+import static ashlified.loading.assetmanagerloaders.SCMLDataWithResourcesLoader.SCMLDataWithResources;
+
+public class SCMLDataWithResourcesLoader extends AsynchronousAssetLoader<SCMLDataWithResources, DataAndResourcesParameter> {
 
     private SCMLDataWithResources dataAndResources;
 
@@ -30,7 +33,7 @@ public class SCMLDataWithResourcesLoader extends AsynchronousAssetLoader<SCMLDat
         dataAndResources.setData(null);
         dataAndResources.setData(new SCMLReader(file.read()).getData());
         dataAndResources.setLoader(null);
-        dataAndResources.setLoader(new PlaneAtlasLoader(dataAndResources.getData(), manager));
+        dataAndResources.setLoader(new PoolPlaneAtlasLoader(dataAndResources.getData(), manager));
         dataAndResources.getLoader().load(file.file());
     }
 

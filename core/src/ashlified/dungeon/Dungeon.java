@@ -1,10 +1,12 @@
 package ashlified.dungeon;
 
-import com.badlogic.gdx.math.Vector2;
+import ashlified.util.CardinalDirection;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.Random;
 
 /**
@@ -36,14 +38,33 @@ public class Dungeon implements Json.Serializable {
         grid = json.readValue("grid", ArrayList.class, DungeonSection.class, jsonData);
         for (DungeonSection section : grid) {
             section.setDungeon(this);
+            determineSectionConnections(section);
         }
     }
 
-    public DungeonSection getDungeonSectionAt(Vector2 position) {
+    public DungeonSection getDungeonSectionAt(Vector3 position) {
         for (DungeonSection section : grid) {
-            if (section.getPoint().equals(position)) return section;
+            if (section.getPosition().equals(position)) return section;
         }
         return null;
+    }
+
+    private void determineSectionConnections(DungeonSection section) {
+        EnumMap<CardinalDirection, DungeonSection> adjacentSections = section.getAdjacentSections();
+        for (CardinalDirection direction : CardinalDirection.values()) {
+            adjacentSections.put(direction, section);
+        }
+        for (Vector3 adjacentSectionPosition : section.getAdjacentSectionPositions()) {
+            if (adjacentSectionPosition.x < section.getPosition().x) {
+                adjacentSections.put(CardinalDirection.WEST, getDungeonSectionAt(adjacentSectionPosition));
+            } else if (adjacentSectionPosition.x > section.getPosition().x) {
+                adjacentSections.put(CardinalDirection.EAST, getDungeonSectionAt(adjacentSectionPosition));
+            } else if (adjacentSectionPosition.z < section.getPosition().z) {
+                adjacentSections.put(CardinalDirection.NORTH, getDungeonSectionAt(adjacentSectionPosition));
+            } else if (adjacentSectionPosition.z > section.getPosition().z) {
+                adjacentSections.put(CardinalDirection.SOUTH, getDungeonSectionAt(adjacentSectionPosition));
+            }
+        }
     }
 
     public DungeonSection getRandomDungeonSection() {
