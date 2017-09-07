@@ -14,7 +14,7 @@ import java.net.URL;
  * Provides dungeon in a form of a json from a third-party server (REST).
  * https://aorioli.github.io/procedural/
  */
-public class HTTPDungeonProvider implements DungeonProvider {
+public class HttpDungeonProvider implements DungeonProvider {
 
     private static Dungeon getNewDungeonWithHTTP(int seed, int size, int rooms) {
         Dungeon dungeon = null;
@@ -31,6 +31,8 @@ public class HTTPDungeonProvider implements DungeonProvider {
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (conn.getInputStream())));
             Json json = new Json();
+            json.setSerializer(Dungeon.class, new DungeonSerializer());
+            json.setSerializer(DungeonSection.class, new DungeonSerializer.DungeonSectionSerializer());
             dungeon = json.fromJson(Dungeon.class, br);
             conn.disconnect();
         } catch (IOException e) {
