@@ -1,0 +1,204 @@
+{
+	"frames": [
+		{
+			"filename": "idle2.png",
+			"frame": {
+				"h": 32,
+				"w": 30,
+				"x": 0,
+				"y": 0
+			},
+			"rotated": "false",
+			"sourceSize": {
+				"h": 32,
+				"w": 32
+			},
+			"spriteSourceSize": {
+				"h": 32,
+				"w": 30,
+				"x": 2,
+				"y": 0
+			},
+			"trimmed": "true"
+		},
+		{
+			"filename": "knighslash3.png",
+			"frame": {
+				"h": 32,
+				"w": 30,
+				"x": 30,
+				"y": 0
+			},
+			"rotated": "false",
+			"sourceSize": {
+				"h": 32,
+				"w": 32
+			},
+			"spriteSourceSize": {
+				"h": 32,
+				"w": 30,
+				"x": 2,
+				"y": 0
+			},
+			"trimmed": "true"
+		},
+		{
+			"filename": "attack2.png",
+			"frame": {
+				"h": 32,
+				"w": 30,
+				"x": 60,
+				"y": 0
+			},
+			"rotated": "false",
+			"sourceSize": {
+				"h": 32,
+				"w": 32
+			},
+			"spriteSourceSize": {
+				"h": 32,
+				"w": 30,
+				"x": 2,
+				"y": 0
+			},
+			"trimmed": "true"
+		},
+		{
+			"filename": "Hell Knight.png",
+			"frame": {
+				"h": 32,
+				"w": 30,
+				"x": 90,
+				"y": 0
+			},
+			"rotated": "false",
+			"sourceSize": {
+				"h": 32,
+				"w": 32
+			},
+			"spriteSourceSize": {
+				"h": 32,
+				"w": 30,
+				"x": 2,
+				"y": 0
+			},
+			"trimmed": "true"
+		},
+		{
+			"filename": "damaged2.png",
+			"frame": {
+				"h": 32,
+				"w": 30,
+				"x": 120,
+				"y": 0
+			},
+			"rotated": "false",
+			"sourceSize": {
+				"h": 32,
+				"w": 32
+			},
+			"spriteSourceSize": {
+				"h": 32,
+				"w": 30,
+				"x": 2,
+				"y": 0
+			},
+			"trimmed": "true"
+		},
+		{
+			"filename": "knighslash1.png",
+			"frame": {
+				"h": 32,
+				"w": 30,
+				"x": 150,
+				"y": 0
+			},
+			"rotated": "false",
+			"sourceSize": {
+				"h": 32,
+				"w": 32
+			},
+			"spriteSourceSize": {
+				"h": 32,
+				"w": 30,
+				"x": 2,
+				"y": 0
+			},
+			"trimmed": "true"
+		},
+		{
+			"filename": "knighslash2.png",
+			"frame": {
+				"h": 32,
+				"w": 30,
+				"x": 180,
+				"y": 0
+			},
+			"rotated": "false",
+			"sourceSize": {
+				"h": 32,
+				"w": 32
+			},
+			"spriteSourceSize": {
+				"h": 32,
+				"w": 30,
+				"x": 2,
+				"y": 0
+			},
+			"trimmed": "true"
+		},
+		{
+			"filename": "die2.png",
+			"frame": {
+				"h": 24,
+				"w": 30,
+				"x": 210,
+				"y": 0
+			},
+			"rotated": "true",
+			"sourceSize": {
+				"h": 32,
+				"w": 32
+			},
+			"spriteSourceSize": {
+				"h": 24,
+				"w": 30,
+				"x": 2,
+				"y": 8
+			},
+			"trimmed": "true"
+		},
+		{
+			"filename": "die3.png",
+			"frame": {
+				"h": 9,
+				"w": 29,
+				"x": 234,
+				"y": 0
+			},
+			"rotated": "true",
+			"sourceSize": {
+				"h": 32,
+				"w": 32
+			},
+			"spriteSourceSize": {
+				"h": 9,
+				"w": 29,
+				"x": 2,
+				"y": 23
+			},
+			"trimmed": "true"
+		}
+	],
+	"meta": {
+		"app": "Spriter",
+		"format": "RGBA8888",
+		"image": "kk.png",
+		"scale": 1,
+		"size": {
+			"h": 32,
+			"w": 243
+		},
+		"version": "r11"
+	}
+}

@@ -1,12 +1,12 @@
 {
 name: gray
 color: {
-	r: 0.49803922
-	g: 0.49803922
-	b: 0.49803922
+	r: 0.39803922
+	g: 0.39803922
+	b: 0.39803922
 	a: 1
 }
-chanceOfAppearing: 100
+spawnRate: 100
 startLevel: 0
 endLevel: 5
 }

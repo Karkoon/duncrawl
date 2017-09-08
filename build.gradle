@@ -4,9 +4,12 @@ buildscript {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
+        maven { url 'https://raw.github.com/Trixt0r/spriter/mvn/' }
+        maven { url 'https://raw.github.com/Trixt0r/gdx-spriter/mvn/' }
+
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.3.0'
         classpath 'me.tatarka:gradle-retrolambda:3.3.0'
     }
 }
@@ -24,18 +27,19 @@ allprojects {
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
     }
-
+ 
     repositories {
         mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url 'https://raw.github.com/Trixt0r/spriter/mvn/' }
+        maven { url 'https://raw.github.com/Trixt0r/gdx-spriter/mvn/' }
     }
 }
 
 project(":desktop") {
     apply plugin: "java"
-
 
     dependencies {
         compile project(":core")
@@ -76,13 +80,13 @@ project(":android") {
 project(":core") {
     apply plugin: "java"
 
-
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-ai:1.8.0"
         compile "com.badlogicgames.ashley:ashley:1.7.0"
+        compile 'com.brashmonkey.spriter:gdx-spriter:1.0.1'
     }
 }
 
