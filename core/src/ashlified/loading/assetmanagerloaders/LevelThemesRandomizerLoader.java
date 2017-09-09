@@ -1,7 +1,7 @@
 package ashlified.loading.assetmanagerloaders;
 
-import ashlified.dungeon.LevelTheme;
-import ashlified.dungeon.LevelThemesRandomizer;
+import ashlified.graphics.LevelTheme;
+import ashlified.graphics.LevelThemesRandomizer;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -13,6 +13,9 @@ import com.badlogic.gdx.utils.Json;
 
 import java.util.ArrayList;
 
+/**
+ * Loads theme files from json and creates a randomizer class.
+ */
 public class LevelThemesRandomizerLoader extends AsynchronousAssetLoader<LevelThemesRandomizer, LevelThemesRandomizerLoader.LevelThemesLoaderParameters> {
 
     private LevelThemesRandomizer levelThemesRandomizer;

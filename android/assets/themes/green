@@ -1,9 +1,9 @@
 {
 name: green
 color: {
-	r: 0.54
-	g: 0.82
-	b: 0.25
+	r: 0.64
+	g: 0.92
+	b: 0.35
 	a: 1
 }
 spawnRate: 100

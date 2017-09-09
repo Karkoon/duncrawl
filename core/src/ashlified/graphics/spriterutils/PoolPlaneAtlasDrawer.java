@@ -12,6 +12,9 @@ import java.util.ArrayList;
 
 import static java.lang.Math.atan2;
 
+/**
+ * Draws 2D models of Spriter-created animated NPCs.
+ */
 public class PoolPlaneAtlasDrawer extends Drawer<FlushablePool<ModelInstance>> {
 
     private final ModelInstanceRenderer renderer;

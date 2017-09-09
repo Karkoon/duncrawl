@@ -3,15 +3,16 @@ package ashlified.loading;
 import ashlified.AssetPaths;
 import ashlified.DungeonCrawler;
 import ashlified.GameScreen;
-import ashlified.dungeon.LevelThemesRandomizer;
+import ashlified.graphics.LevelThemesRandomizer;
 import ashlified.loading.assetmanagerloaders.LevelThemesRandomizerLoader;
-import ashlified.loading.assetmanagerloaders.NPCBlueprintListLoader;
-import ashlified.loading.assetmanagerloaders.SCMLDataWithResourcesLoader;
+import ashlified.loading.assetmanagerloaders.NpcBlueprintListLoader;
+import ashlified.loading.assetmanagerloaders.ScmlDataWithResourcesLoader;
 import ashlified.loading.assetmanagerloaders.StringLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -26,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * @author Mats Svensson
+ * https://github.com/Matsemann/libgdx-loading-screen
  */
 public class LoadingScreen extends ScreenAdapter {
 
@@ -53,18 +55,18 @@ public class LoadingScreen extends ScreenAdapter {
     }
 
     private void setCustomLoaders() {
-        assetManager.setLoader(SCMLDataWithResourcesLoader.SCMLDataWithResources.class, new SCMLDataWithResourcesLoader(new InternalFileHandleResolver()));
+        assetManager.setLoader(ScmlDataWithResourcesLoader.SCMLDataWithResources.class, new ScmlDataWithResourcesLoader(new InternalFileHandleResolver()));
         assetManager.setLoader(LevelThemesRandomizer.class, new LevelThemesRandomizerLoader(new InternalFileHandleResolver()));
-        assetManager.setLoader(NPCBlueprintListLoader.EnemyNPCBlueprintList.class, new NPCBlueprintListLoader(new InternalFileHandleResolver()));
+        assetManager.setLoader(NpcBlueprintListLoader.EnemyNPCBlueprintList.class, new NpcBlueprintListLoader(new InternalFileHandleResolver()));
         assetManager.setLoader(String.class, new StringLoader(new InternalFileHandleResolver()));
     }
 
     private void loadAssets() {
         assetManager.load(AssetPaths.NPC_ATLAS, TextureAtlas.class);
         assetManager.load(AssetPaths.NPC_MODEL, Model.class);
-        assetManager.load(AssetPaths.SCML_FILE, SCMLDataWithResourcesLoader.SCMLDataWithResources.class);
+        assetManager.load(AssetPaths.SCML_FILE, ScmlDataWithResourcesLoader.SCMLDataWithResources.class);
         assetManager.load(AssetPaths.LEVEL_THEMES_DIR, LevelThemesRandomizer.class);
-        assetManager.load(AssetPaths.NPC_DIRECTORY, NPCBlueprintListLoader.EnemyNPCBlueprintList.class);
+        assetManager.load(AssetPaths.NPC_DIRECTORY, NpcBlueprintListLoader.EnemyNPCBlueprintList.class);
         assetManager.load(AssetPaths.WALL_TEXTURE, Texture.class);
         assetManager.load(AssetPaths.VERTEX_SHADER, String.class);
         assetManager.load(AssetPaths.FRAGMENT_SHADER, String.class);
@@ -89,13 +91,20 @@ public class LoadingScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        if (assetManager.update() && !isLoading) {
+        clearScreen();
+        //if (assetManager.update() && !isLoading) {
+        if (assetManager.update()) {
             game.setScreen(new GameScreen(assetManager));
         }
-        if (assetManager.update() && isLoading) createSkin();
+        //if (assetManager.update() && isLoading) createSkin();
         updateLoadingBar();
         stage.act();
         stage.draw();
+    }
+
+    private void clearScreen() {
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        Gdx.gl20.glClearColor(0, 0, 0, 1);
     }
 
     @Override

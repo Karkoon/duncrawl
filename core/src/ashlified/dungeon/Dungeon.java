@@ -1,20 +1,18 @@
 package ashlified.dungeon;
 
-import ashlified.util.CardinalDirection;
+import com.badlogic.gdx.ai.pfa.Connection;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.Random;
 
 /**
  * Created by @Karkoon on 2016-08-20.
- * Class used for libGDX's deserialization from json files. Relevant fields are width, height, grid.
- * The rest is customizable.
+ * Used for pathfinding and managing dungeon sections.
  */
-public class Dungeon implements Json.Serializable {
+public class Dungeon implements IndexedGraph<DungeonSection> {
 
     private int width;
     private int height;
@@ -24,55 +22,62 @@ public class Dungeon implements Json.Serializable {
         return grid;
     }
 
-    @Override
-    public void write(Json json) {
-        json.writeValue(width);
-        json.writeValue(height);
-        json.writeValue(grid);
+    public void setGrid(ArrayList<DungeonSection> grid) {
+        this.grid = grid;
     }
 
-    @Override
-    public void read(Json json, JsonValue jsonData) {
-        width = json.readValue("width", int.class, jsonData);
-        height = json.readValue("height", int.class, jsonData);
-        grid = json.readValue("grid", ArrayList.class, DungeonSection.class, jsonData);
-        for (DungeonSection section : grid) {
-            section.setDungeon(this);
-            determineSectionConnections(section);
-        }
-    }
-
-    public DungeonSection getDungeonSectionAt(Vector3 position) {
+    public DungeonSection getSectionAt(Vector3 position) {
         for (DungeonSection section : grid) {
             if (section.getPosition().equals(position)) return section;
         }
         return null;
     }
 
-    private void determineSectionConnections(DungeonSection section) {
-        EnumMap<CardinalDirection, DungeonSection> adjacentSections = section.getAdjacentSections();
-        for (CardinalDirection direction : CardinalDirection.values()) {
-            adjacentSections.put(direction, section);
-        }
-        for (Vector3 adjacentSectionPosition : section.getAdjacentSectionPositions()) {
-            if (adjacentSectionPosition.x < section.getPosition().x) {
-                adjacentSections.put(CardinalDirection.WEST, getDungeonSectionAt(adjacentSectionPosition));
-            } else if (adjacentSectionPosition.x > section.getPosition().x) {
-                adjacentSections.put(CardinalDirection.EAST, getDungeonSectionAt(adjacentSectionPosition));
-            } else if (adjacentSectionPosition.z < section.getPosition().z) {
-                adjacentSections.put(CardinalDirection.NORTH, getDungeonSectionAt(adjacentSectionPosition));
-            } else if (adjacentSectionPosition.z > section.getPosition().z) {
-                adjacentSections.put(CardinalDirection.SOUTH, getDungeonSectionAt(adjacentSectionPosition));
-            }
-        }
-    }
-
     public DungeonSection getRandomDungeonSection() {
-        return grid.get(new Random().nextInt(grid.size()));
+        DungeonSection randomSection;
+        do {
+            randomSection = grid.get(new Random().nextInt(grid.size()));
+        } while (randomSection.getOccupyingObjects().size() != 0);
+        return randomSection;
     }
 
     public DungeonSection getSpawnDungeonSection() {
         return grid.get(0);
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    @Override
+    public int getIndex(DungeonSection node) {
+        return grid.indexOf(node);
+    }
+
+    @Override
+    public int getNodeCount() {
+        return grid.size();
+    }
+
+    @Override
+    public Array<Connection<DungeonSection>> getConnections(DungeonSection fromNode) {
+        Array<Connection<DungeonSection>> connections = new Array<>();
+        for (DungeonConnection connection : fromNode.getConnections().values()) {
+            connections.add(connection);
+        }
+        ;
+        return connections;
+    }
 }

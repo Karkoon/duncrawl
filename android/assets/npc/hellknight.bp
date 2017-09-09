@@ -1,5 +1,5 @@
 {
-  name: 'Hell knight'
+  name: Hell knight
   strength: 10
   wisdom: 10
   dexterity: 10
@@ -11,5 +11,5 @@
   levelTheme: gray
   maxItems: 1
   viewDistance: 10
-  scmlPath: hellknight/kk.scml
+  scmlPrefix: hellknight
 }

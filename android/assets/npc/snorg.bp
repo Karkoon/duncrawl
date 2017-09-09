@@ -1,5 +1,5 @@
 {
-  name: 'Snorg'
+  name: Snorg
   strength: 10
   wisdom: 10
   dexterity: 10
@@ -11,5 +11,5 @@
   levelTheme: green
   maxItems: 1
   viewDistance: 10
-  scmlPath: snorg/snorg.scml
+  scmlPrefix: snorg
 }

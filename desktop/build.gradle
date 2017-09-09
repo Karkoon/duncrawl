@@ -1,5 +1,5 @@
 apply plugin: "java"
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_1_7
 sourceSets.main.java.srcDirs = ["src/"]
 project.ext.mainClassName = "com.karkoon.dungeoncrawler.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/assets");

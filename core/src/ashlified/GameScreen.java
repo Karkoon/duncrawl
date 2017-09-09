@@ -1,19 +1,23 @@
 package ashlified;
 
-import ashlified.components.PointLightComponent;
 import ashlified.dungeon.Dungeon;
-import ashlified.dungeon.HTTPDungeonProvider;
-import ashlified.entitylisteners.LightComponentListener;
+import ashlified.dungeon.HttpDungeonProvider;
+import ashlified.entitycomponentsystem.components.PositionComponent;
+import ashlified.entitycomponentsystem.entityinitializers.PlayerInitializer;
+import ashlified.entitycomponentsystem.entitylisteners.LightComponentListener;
+import ashlified.entitycomponentsystem.entitysystems.*;
+import ashlified.entitycomponentsystem.signals.TurnEndSignal;
 import ashlified.graphics.Graphics;
-import ashlified.systems.*;
-import ashlified.util.RandomNumber;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * Created by @Karkoon on 2016-08-30.
+ * Manages the main game.
  */
 public class GameScreen implements Screen {
 
@@ -21,6 +25,7 @@ public class GameScreen implements Screen {
     private PooledEngine engine;
     private AssetManager assetManager;
     private Dungeon dungeon;
+    private Entity player;
 
     public GameScreen(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -29,27 +34,41 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         engine = new PooledEngine();
-        dungeon = new HTTPDungeonProvider().getNewDungeon(RandomNumber.nextInt(), 50, 20);
+        dungeon = new HttpDungeonProvider().getNewDungeon(MathUtils.random(Integer.MAX_VALUE - 1), 50, 20);
         graphics = new Graphics(dungeon, assetManager);
         addEntityListeners();
+        player = new PlayerInitializer(engine).createPlayer(dungeon.getSpawnDungeonSection());
         addSystems();
     }
 
     private void addSystems() {
-        engine.addSystem(new NPCCreationSystem(dungeon, assetManager));
-        engine.addSystem(new ChestCreationSystem(dungeon, assetManager));
-        engine.addSystem(new NPCRenderingSystem(
-                assetManager,
-                graphics.getModelInstanceRenderer()));
-        engine.addSystem(new ModelInstanceRenderingSystem(graphics.getModelInstanceRenderer()));
-        engine.addSystem(new ModelAnimationSystem());
-        engine.addSystem(new PlayerSystem(dungeon.getSpawnDungeonSection()));
-        engine.addSystem(new InputSystem(graphics.getCamera()));
-        engine.addSystem(new LightingSystem());
+        NpcCreationSystem npcCreation = new NpcCreationSystem(dungeon, assetManager);
+        ChestCreationSystem chestCreation = new ChestCreationSystem(dungeon, assetManager);
+        NpcRenderingSystem npcRendering = new NpcRenderingSystem(assetManager, graphics.getModelInstanceRenderer());
+        ModelInstanceRenderingSystem modelInstanceRendering = new ModelInstanceRenderingSystem(graphics.getModelInstanceRenderer());
+        ModelAnimationSystem modelAnimation = new ModelAnimationSystem();
+        LightingSystem lighting = new LightingSystem();
+        NpcAiSystem npcAi = new NpcAiSystem(dungeon);
+        TargetSystem targeting = new TargetSystem(player.getComponent(PositionComponent.class)); // workaround
+
+        TurnEndSignal endTurnSignal = new TurnEndSignal();
+        endTurnSignal.add(npcAi);
+
+        InputSystem input = new InputSystem(graphics.getCamera(), endTurnSignal);
+
+        engine.addSystem(npcCreation);
+        engine.addSystem(chestCreation);
+        engine.addSystem(npcRendering);
+        engine.addSystem(modelAnimation);
+        engine.addSystem(modelInstanceRendering);
+        engine.addSystem(input);
+        engine.addSystem(lighting);
+        engine.addSystem(npcAi);
+        engine.addSystem(targeting);
     }
 
     private void addEntityListeners() {
-        engine.addEntityListener(Family.all(PointLightComponent.class).get(),
+        engine.addEntityListener(Family.all(ashlified.entitycomponentsystem.components.PointLightComponent.class).get(),
                 new LightComponentListener(graphics.getModelInstanceRenderer().getEnvironment()));
     }
 
@@ -57,7 +76,7 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         engine.update(delta);
         graphics.begin();
-        graphics.render(delta);
+        graphics.render();
         graphics.end();
     }
 

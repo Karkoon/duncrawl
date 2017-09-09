@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.profiling.GLProfiler;
 
 /**
  * Created by @Karkoon on 18.08.2016.
- * Class interfacing with libgdx framework. It manages screens.
+ * Class interfacing with libgdx framework. Manages screens.
  */
 
 public class DungeonCrawler extends Game {

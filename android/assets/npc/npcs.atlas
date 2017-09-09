@@ -1,0 +1,195 @@
+
+npcs.png
+size: 1024,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ghost_Ghost.png
+   rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ghost_attack1.png
+   rotate: false
+  xy: 614, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ghost_attack2.png
+   rotate: false
+  xy: 648, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ghost_attack3.png
+   rotate: false
+  xy: 682, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ghost_attack4.png
+   rotate: false
+  xy: 716, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ghost_damaged2.png
+   rotate: false
+  xy: 138, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ghost_die2.png
+   rotate: false
+  xy: 36, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ghost_die3.png
+   rotate: false
+  xy: 70, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ghost_idle2.png
+   rotate: false
+  xy: 478, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+kk_Hell_Knight.png
+   rotate: false
+  xy: 206, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+kk_attack2.png
+   rotate: false
+  xy: 512, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+kk_damaged2.png
+   rotate: false
+  xy: 240, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+kk_die2.png
+   rotate: false
+  xy: 104, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+kk_die3.png
+   rotate: false
+  xy: 546, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+kk_idle2.png
+   rotate: false
+  xy: 444, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+kk_knighslash1.png
+   rotate: false
+  xy: 342, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+kk_knighslash2.png
+   rotate: false
+  xy: 376, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+kk_knighslash3.png
+   rotate: false
+  xy: 410, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+snorg_Snorg.png
+   rotate: false
+  xy: 580, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+snorg_attack1.png
+   rotate: false
+  xy: 172, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+snorg_attack2.png
+   rotate: false
+  xy: 782, 2
+  size: 30, 32
+  orig: 30, 32
+  offset: 0, 0
+  index: -1
+snorg_attack3.png
+   rotate: false
+  xy: 878, 2
+  size: 30, 32
+  orig: 30, 32
+  offset: 0, 0
+  index: -1
+snorg_attack4.png
+   rotate: false
+  xy: 750, 2
+  size: 30, 32
+  orig: 30, 32
+  offset: 0, 0
+  index: -1
+snorg_damaged2.png
+   rotate: false
+  xy: 308, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+snorg_die2.png
+   rotate: false
+  xy: 814, 2
+  size: 30, 32
+  orig: 30, 32
+  offset: 0, 0
+  index: -1
+snorg_die3.png
+   rotate: false
+  xy: 846, 2
+  size: 30, 32
+  orig: 30, 32
+  offset: 0, 0
+  index: -1
+snorg_idle2.png
+   rotate: false
+  xy: 274, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

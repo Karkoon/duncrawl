@@ -1,7 +1,5 @@
 package ashlified.graphics;
 
-import ashlified.dungeon.LevelTheme;
-import ashlified.dungeon.WallType;
 import com.badlogic.gdx.graphics.g3d.Model;
 
 import java.util.EnumMap;
@@ -12,6 +10,6 @@ import java.util.EnumMap;
  */
 public interface WallModelsProvider {
 
-    EnumMap<WallType, Model> getNewModels(LevelTheme theme);
+    EnumMap<WallModelsAccessor.WallType, Model> getNewModels(LevelTheme theme);
 
 }
