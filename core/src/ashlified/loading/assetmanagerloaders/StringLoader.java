@@ -8,6 +8,9 @@ import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * Reads text from file.
+ */
 public class StringLoader extends AsynchronousAssetLoader<String, StringLoader.StringLoaderParameter> {
 
     private String text;

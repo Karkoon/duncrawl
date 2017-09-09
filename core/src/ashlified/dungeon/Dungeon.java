@@ -1,16 +1,18 @@
 package ashlified.dungeon;
 
+import com.badlogic.gdx.ai.pfa.Connection;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 /**
  * Created by @Karkoon on 2016-08-20.
- * Class used for libGDX's deserialization from json files. Relevant fields are width, height, grid.
- * The rest is customizable.
+ * Used for pathfinding and managing dungeon sections.
  */
-public class Dungeon {
+public class Dungeon implements IndexedGraph<DungeonSection> {
 
     private int width;
     private int height;
@@ -57,5 +59,25 @@ public class Dungeon {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    @Override
+    public int getIndex(DungeonSection node) {
+        return grid.indexOf(node);
+    }
+
+    @Override
+    public int getNodeCount() {
+        return grid.size();
+    }
+
+    @Override
+    public Array<Connection<DungeonSection>> getConnections(DungeonSection fromNode) {
+        Array<Connection<DungeonSection>> connections = new Array<>();
+        for (DungeonConnection connection : fromNode.getConnections().values()) {
+            connections.add(connection);
+        }
+        ;
+        return connections;
     }
 }

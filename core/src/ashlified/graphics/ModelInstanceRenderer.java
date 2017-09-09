@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 /**
  * Created by karkoon on 26.04.17.
+ * Renders ModelInstances, provides a lighting evironment, provides basic rendering optimizations.
  */
 public class ModelInstanceRenderer implements Disposable {
 
@@ -44,7 +45,7 @@ public class ModelInstanceRenderer implements Disposable {
 
     private DefaultShader.Config createShaderConfig() {
         DefaultShader.Config config = new DefaultShader.Config();
-        config.numPointLights = 1;
+        config.numPointLights = 200;
         config.fragmentShader = manager.get(AssetPaths.FRAGMENT_SHADER, String.class);
         config.vertexShader = manager.get(AssetPaths.VERTEX_SHADER, String.class);
         return config;

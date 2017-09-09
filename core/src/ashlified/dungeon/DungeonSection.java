@@ -8,6 +8,9 @@ import java.util.EnumMap;
 
 /**
  * Created by karkoon on 01.02.17.
+ * Used in pathfinding a node. Contains connections.
+ * It's positions and positions of its neighbours are read to create an accurate model instance.
+ * Contains a list of objects that are currently occupying it to block other NPCs from moving onto it.
  */
 
 public class DungeonSection {
@@ -16,17 +19,17 @@ public class DungeonSection {
     private ArrayList<Vector3> adjacentPositions = new ArrayList<>();
     private Vector3 position;
 
-    private EnumMap<CardinalDirection, DungeonSection> adjacentSections = new EnumMap<>(CardinalDirection.class);
+    private EnumMap<CardinalDirection, DungeonConnection> adjacentSections = new EnumMap<>(CardinalDirection.class);
 
     ArrayList<Vector3> getAdjacentSectionPositions() {
         return adjacentPositions;
     }
 
-    EnumMap<CardinalDirection, DungeonSection> getAdjacentSections() {
+    public EnumMap<CardinalDirection, DungeonConnection> getConnections() {
         return adjacentSections;
     }
 
-    public DungeonSection getAdjacentSection(CardinalDirection direction) {
+    public DungeonConnection getConnection(CardinalDirection direction) {
         return adjacentSections.get(direction);
     }
 

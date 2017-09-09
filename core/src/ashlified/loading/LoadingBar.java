@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
  * @author Mats Svensson
+ * https://github.com/Matsemann/libgdx-loading-screen
  */
 class LoadingBar extends Actor {
 

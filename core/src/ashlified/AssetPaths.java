@@ -1,5 +1,8 @@
 package ashlified;
 
+/**
+ * Contains paths to used files.
+ */
 public class AssetPaths {
 
     public static final String NPC_DIRECTORY = "npc/";

@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+/**
+ * Used for rendering into a small resolution frame buffer for later upscaling to get a pixelated filter effect.
+ */
 class PixelatedCanvas {
 
     private SpriteBatch fboBatch;

@@ -1,0 +1,15 @@
+{
+  name: Ghost
+  strength: 10
+  wisdom: 10
+  dexterity: 10
+  maxHealth: 10
+  armor: 10
+  startLevel: 0
+  endLevel: 10
+  spawnRate: 100
+  levelTheme: green
+  maxItems: 1
+  viewDistance: 10
+  scmlPrefix: ghost
+}

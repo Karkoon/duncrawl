@@ -1,28 +1,25 @@
 package ashlified.graphics;
 
 import ashlified.dungeon.Dungeon;
-import ashlified.dungeon.DungeonRepresentation;
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Created by @Karkoon on 2016-08-24.
+ * Provides a simple interface for rendering the end result.
  */
 
-public class Graphics {
+public class Graphics implements Disposable {
 
     private Viewport viewport;
     private PixelatedCanvas pixelatedCanvas;
 
-    private FPSLogger logger = new FPSLogger();
     private ModelInstanceRenderer modelInstanceRenderer;
 
     public Graphics(Dungeon dungeon, AssetManager manager) {
@@ -47,17 +44,9 @@ public class Graphics {
         pixelatedCanvas.draw();
     }
 
-    public void render(float delta) {
+    public void render() {
         clearScreen();
         modelInstanceRenderer.render();
-        if (Gdx.app.getType() == Application.ApplicationType.Android) androidSpin();
-        logger.log();
-    }
-
-    private void androidSpin() {
-        getCamera().rotate(Vector3.Y, 10);
-        getCamera().update();
-
     }
 
     public Camera getCamera() {
@@ -67,7 +56,7 @@ public class Graphics {
     private void setUpViewport() {
         PerspectiveCamera camera = new PerspectiveCamera(66, 300, 300);
         camera.near = 2f;
-        camera.far = 45f;
+        camera.far = 46f;
         viewport = new ExtendViewport(300, 300, camera);
     }
 
@@ -78,5 +67,10 @@ public class Graphics {
 
     public ModelInstanceRenderer getModelInstanceRenderer() {
         return modelInstanceRenderer;
+    }
+
+    @Override
+    public void dispose() {
+        modelInstanceRenderer.dispose();
     }
 }

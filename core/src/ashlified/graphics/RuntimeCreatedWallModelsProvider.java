@@ -1,9 +1,6 @@
 package ashlified.graphics;
 
 import ashlified.AssetPaths;
-import ashlified.dungeon.DungeonSectionRepresentation;
-import ashlified.dungeon.LevelTheme;
-import ashlified.dungeon.WallType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,19 +19,20 @@ import static com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 /**
  * Created by kacper on 25.01.17.
+ * Provides created on runtime models for dungeon sections.
  */
 public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
 
-    private float size = DungeonSectionRepresentation.getSize(); //it's a square
-    private float halfSize = size / 2f;
-    private float height = DungeonSectionRepresentation.getHeight();
+    private final static float SIZE = 10f; // the base is a square
+    private final static float HEIGHT = 15f;
+    private float halfSize = SIZE / 2f;
     private AssetManager manager;
 
     RuntimeCreatedWallModelsProvider(AssetManager manager) {
         this.manager = manager;
     }
 
-    private EnumMap<WallType, Model> createWallModels(LevelTheme theme) {
+    private EnumMap<WallModelsAccessor.WallType, Model> createWallModels(LevelTheme theme) {
         long attributes = Usage.Normal | Usage.Position | Usage.TextureCoordinates;
 
         Texture wallTexture = manager.get(AssetPaths.WALL_TEXTURE);
@@ -45,11 +43,11 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
         Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region), new BlendingAttribute(false, 1));
 
         ModelBuilder builder = new ModelBuilder();
-        EnumMap<WallType, Model> models = new EnumMap<>(WallType.class);
-        models.put(WallType.ONE_SIDE, createOneSide(builder, attributes, floor, ceiling, wall));
-        models.put(WallType.CORNER, createCorner(builder, attributes, floor, ceiling, wall));
-        models.put(WallType.TWO_SIDES, createTwoSides(builder, attributes, floor, ceiling, wall));
-        models.put(WallType.NO_SIDES, createNoSides(builder, attributes, floor, ceiling));
+        EnumMap<WallModelsAccessor.WallType, Model> models = new EnumMap<>(WallModelsAccessor.WallType.class);
+        models.put(WallModelsAccessor.WallType.ONE_SIDE, createOneSide(builder, attributes, floor, ceiling, wall));
+        models.put(WallModelsAccessor.WallType.CORNER, createCorner(builder, attributes, floor, ceiling, wall));
+        models.put(WallModelsAccessor.WallType.TWO_SIDES, createTwoSides(builder, attributes, floor, ceiling, wall));
+        models.put(WallModelsAccessor.WallType.NO_SIDES, createNoSides(builder, attributes, floor, ceiling));
 
         return models;
     }
@@ -73,10 +71,10 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
 
     private void createCeiling(ModelBuilder builder, long attributes, Material ceiling) {
         builder.part("ceiling", GL20.GL_TRIANGLES, attributes, ceiling)
-                .rect(-halfSize, height, -halfSize,
-                        halfSize, height, -halfSize,
-                        halfSize, height, halfSize,
-                        -halfSize, height, halfSize,
+                .rect(-halfSize, HEIGHT, -halfSize,
+                        halfSize, HEIGHT, -halfSize,
+                        halfSize, HEIGHT, halfSize,
+                        -halfSize, HEIGHT, halfSize,
                         0, -1, 0);
     }
 
@@ -88,8 +86,8 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
         builder.part("wall2", GL20.GL_TRIANGLES, attributes, wall)
                 .rect(halfSize, 0, halfSize,
                         -halfSize, 0, halfSize,
-                        -halfSize, height, halfSize,
-                        halfSize, height, halfSize,
+                        -halfSize, HEIGHT, halfSize,
+                        halfSize, HEIGHT, halfSize,
                         0, 1, -7);
         return builder.end();
     }
@@ -105,8 +103,8 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
         builder.part("wall", GL20.GL_TRIANGLES, attributes, wall)
                 .rect(-halfSize, 0, -halfSize,
                         halfSize, 0, -halfSize,
-                        halfSize, height, -halfSize,
-                        -halfSize, height, -halfSize,
+                        halfSize, HEIGHT, -halfSize,
+                        -halfSize, HEIGHT, -halfSize,
                         0, 1, 7);
     }
 
@@ -118,14 +116,14 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
         builder.part("wall2", GL20.GL_TRIANGLES, attributes, wall)
                 .rect(-halfSize, 0, halfSize,
                         -halfSize, 0, -halfSize,
-                        -halfSize, height, -halfSize,
-                        -halfSize, height, halfSize,
+                        -halfSize, HEIGHT, -halfSize,
+                        -halfSize, HEIGHT, halfSize,
                         7, 1, 0);
         return builder.end();
     }
 
     @Override
-    public EnumMap<WallType, Model> getNewModels(LevelTheme theme) {
+    public EnumMap<WallModelsAccessor.WallType, Model> getNewModels(LevelTheme theme) {
         Gdx.app.log("LevelTheme", theme.getName());
         return createWallModels(theme);
     }

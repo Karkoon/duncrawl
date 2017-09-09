@@ -1,7 +1,5 @@
 package ashlified.graphics;
 
-import ashlified.dungeon.LevelTheme;
-import ashlified.dungeon.WallType;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Model;
 
@@ -24,4 +22,10 @@ public class WallModelsAccessor {
         return models.get(key);
     }
 
+    /**
+     * Describes different kinds of wall models.
+     */
+    public enum WallType {
+        TWO_SIDES, CORNER, ONE_SIDE, NO_SIDES
+    }
 }

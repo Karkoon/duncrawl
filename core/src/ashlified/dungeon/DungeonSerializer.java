@@ -9,6 +9,9 @@ import com.badlogic.gdx.utils.JsonValue;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
+/**
+ * Serializes and deserializes the dungeon from an external source.
+ */
 public class DungeonSerializer implements Json.Serializer<Dungeon> {
 
     private Dungeon dungeon;
@@ -31,26 +34,26 @@ public class DungeonSerializer implements Json.Serializer<Dungeon> {
     }
 
     private void determineSectionConnections(DungeonSection section) {
-        EnumMap<CardinalDirection, DungeonSection> adjacentSections = section.getAdjacentSections();
-        for (CardinalDirection direction : CardinalDirection.values()) {
-            adjacentSections.put(direction, section);
-        }
+        EnumMap<CardinalDirection, DungeonConnection> adjacentSections = section.getConnections();
         for (Vector3 adjacentSectionPosition : section.getAdjacentSectionPositions()) {
-            if (adjacentSectionPosition.x < section.getPosition().x) {
-                adjacentSections.put(CardinalDirection.WEST, dungeon.getSectionAt(adjacentSectionPosition));
-            } else if (adjacentSectionPosition.x > section.getPosition().x) {
-                adjacentSections.put(CardinalDirection.EAST, dungeon.getSectionAt(adjacentSectionPosition));
-            } else if (adjacentSectionPosition.z < section.getPosition().z) {
-                adjacentSections.put(CardinalDirection.NORTH, dungeon.getSectionAt(adjacentSectionPosition));
-            } else if (adjacentSectionPosition.z > section.getPosition().z) {
-                adjacentSections.put(CardinalDirection.SOUTH, dungeon.getSectionAt(adjacentSectionPosition));
+            DungeonSection adjacentSection = dungeon.getSectionAt(adjacentSectionPosition);
+            if (adjacentSection != null) {
+                if (adjacentSectionPosition.x < section.getPosition().x) {
+                    adjacentSections.put(CardinalDirection.WEST, new DungeonConnection(section, adjacentSection));
+                } else if (adjacentSectionPosition.x > section.getPosition().x) {
+                    adjacentSections.put(CardinalDirection.EAST, new DungeonConnection(section, adjacentSection));
+                } else if (adjacentSectionPosition.z < section.getPosition().z) {
+                    adjacentSections.put(CardinalDirection.NORTH, new DungeonConnection(section, adjacentSection));
+                } else if (adjacentSectionPosition.z > section.getPosition().z) {
+                    adjacentSections.put(CardinalDirection.SOUTH, new DungeonConnection(section, adjacentSection));
+                }
             }
         }
     }
 
     public static class DungeonSectionSerializer implements Json.Serializer<DungeonSection> {
 
-        private float scale = 10f; // in the data each section has 1 unit size, multiplying gives a more reasonable number and making it here allows for a common interface
+        private float scale = 10f; // in the data each section has 1 unit size, multiplying gives a more reasonable number
 
         @Override
         public void write(Json json, DungeonSection object, Class knownType) {

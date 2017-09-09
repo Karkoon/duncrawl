@@ -11,7 +11,7 @@ import java.net.URL;
 
 /**
  * Created by @Karkoon on 18.08.2016.
- * Provides dungeon in a form of a json from a third-party server (REST).
+ * Provides dungeon in a form of a json file from a third-party server.
  * https://aorioli.github.io/procedural/
  */
 public class HttpDungeonProvider implements DungeonProvider {
