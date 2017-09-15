@@ -1,7 +1,7 @@
 package ashlified.entitycomponentsystem.entityinitializers;
 
 import ashlified.dungeon.DungeonSection;
-import ashlified.entitycomponentsystem.components.DirectionComponent;
+import ashlified.entitycomponentsystem.components.*;
 import ashlified.util.CardinalDirection;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
@@ -20,17 +20,17 @@ public class PlayerInitializer {
     }
 
     public Entity createPlayer(DungeonSection start) {
-        ashlified.entitycomponentsystem.components.StatsComponent stats = engine.createComponent(ashlified.entitycomponentsystem.components.StatsComponent.class);
-        ashlified.entitycomponentsystem.components.PositionComponent position = engine.createComponent(ashlified.entitycomponentsystem.components.PositionComponent.class);
+        StatsComponent stats = engine.createComponent(StatsComponent.class);
+        PositionComponent position = engine.createComponent(PositionComponent.class);
         position.setPosition(new Vector3(start.getPosition().x, 6.5f, start.getPosition().z));
         position.setOccupiedSection(start);
-        ashlified.entitycomponentsystem.components.DirectionComponent direction = engine.createComponent(DirectionComponent.class);
+        DirectionComponent direction = engine.createComponent(DirectionComponent.class);
         direction.setDirection(CardinalDirection.NORTH);
-        ashlified.entitycomponentsystem.components.InventoryComponent inventory = engine.createComponent(ashlified.entitycomponentsystem.components.InventoryComponent.class);
-        ashlified.entitycomponentsystem.components.ArmorComponent armor = engine.createComponent(ashlified.entitycomponentsystem.components.ArmorComponent.class);
-        ashlified.entitycomponentsystem.components.AttackComponent attack = engine.createComponent(ashlified.entitycomponentsystem.components.AttackComponent.class);
-        ashlified.entitycomponentsystem.components.HealthComponent health = engine.createComponent(ashlified.entitycomponentsystem.components.HealthComponent.class);
-        ashlified.entitycomponentsystem.components.PointLightComponent pointLight = engine.createComponent(ashlified.entitycomponentsystem.components.PointLightComponent.class);
+        InventoryComponent inventory = engine.createComponent(InventoryComponent.class);
+        ArmorComponent armor = engine.createComponent(ArmorComponent.class);
+        AttackComponent attack = engine.createComponent(AttackComponent.class);
+        HealthComponent health = engine.createComponent(HealthComponent.class);
+        PointLightComponent pointLight = engine.createComponent(PointLightComponent.class);
         pointLight.setPointLight(new PointLight());
         pointLight.getPointLight().set(255, 255, 255, position.getPosition(), 100f);
 

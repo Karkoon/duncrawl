@@ -3,7 +3,7 @@ package ashlified.entitycomponentsystem.entityinitializers;
 import ashlified.AssetPaths;
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.DungeonSection;
-import ashlified.entitycomponentsystem.components.DirectionComponent;
+import ashlified.entitycomponentsystem.components.*;
 import ashlified.loading.assetmanagerloaders.NpcBlueprintListLoader;
 import ashlified.loading.assetmanagerloaders.ScmlDataWithResourcesLoader;
 import ashlified.util.CardinalDirection;
@@ -37,17 +37,17 @@ public class EnemyNPCEntitiesInitializer {
         for (EnemyNPCBlueprint blueprint : blueprints) {
             if (enemyNPCname.equals(blueprint.name)) {
 
-                ashlified.entitycomponentsystem.components.StatsComponent stats = engine.createComponent(ashlified.entitycomponentsystem.components.StatsComponent.class);
-                ashlified.entitycomponentsystem.components.PositionComponent position = engine.createComponent(ashlified.entitycomponentsystem.components.PositionComponent.class);
-                ashlified.entitycomponentsystem.components.DirectionComponent direction = engine.createComponent(DirectionComponent.class);
-                ashlified.entitycomponentsystem.components.InventoryComponent inventory = engine.createComponent(ashlified.entitycomponentsystem.components.InventoryComponent.class);
-                ashlified.entitycomponentsystem.components.ArmorComponent armor = engine.createComponent(ashlified.entitycomponentsystem.components.ArmorComponent.class);
-                ashlified.entitycomponentsystem.components.AttackComponent attack = engine.createComponent(ashlified.entitycomponentsystem.components.AttackComponent.class);
-                ashlified.entitycomponentsystem.components.ViewDistanceComponent viewDistance = engine.createComponent(ashlified.entitycomponentsystem.components.ViewDistanceComponent.class);
-                ashlified.entitycomponentsystem.components.NameComponent name = engine.createComponent(ashlified.entitycomponentsystem.components.NameComponent.class);
-                ashlified.entitycomponentsystem.components.SpawnRateComponent spawnRateComponent = engine.createComponent(ashlified.entitycomponentsystem.components.SpawnRateComponent.class);
-                ashlified.entitycomponentsystem.components.HealthComponent health = engine.createComponent(ashlified.entitycomponentsystem.components.HealthComponent.class);
-                ashlified.entitycomponentsystem.components.TargetComponent target = engine.createComponent(ashlified.entitycomponentsystem.components.TargetComponent.class);
+                StatsComponent stats = engine.createComponent(StatsComponent.class);
+                PositionComponent position = engine.createComponent(PositionComponent.class);
+                DirectionComponent direction = engine.createComponent(DirectionComponent.class);
+                InventoryComponent inventory = engine.createComponent(InventoryComponent.class);
+                ArmorComponent armor = engine.createComponent(ArmorComponent.class);
+                AttackComponent attack = engine.createComponent(AttackComponent.class);
+                ViewDistanceComponent viewDistance = engine.createComponent(ViewDistanceComponent.class);
+                NameComponent name = engine.createComponent(NameComponent.class);
+                SpawnRateComponent spawnRateComponent = engine.createComponent(SpawnRateComponent.class);
+                HealthComponent health = engine.createComponent(HealthComponent.class);
+                TargetComponent target = engine.createComponent(TargetComponent.class);
 
                 name.setName(blueprint.name);
                 DungeonSection dungeonSection = dungeon.getRandomDungeonSection();
@@ -88,14 +88,28 @@ public class EnemyNPCEntitiesInitializer {
         }
     }
 
-    private ashlified.entitycomponentsystem.components.SpriterModelComponent retrieveGraphicalRepresentation(EnemyNPCBlueprint blueprint) {
-        ashlified.entitycomponentsystem.components.SpriterModelComponent animationsComponent = engine.createComponent(ashlified.entitycomponentsystem.components.SpriterModelComponent.class);
+    private SpriterModelComponent retrieveGraphicalRepresentation(EnemyNPCBlueprint blueprint) {
+        SpriterModelComponent animationsComponent = engine.createComponent(SpriterModelComponent.class);
         Data data = assetManager.get(AssetPaths.SCML_FILE, ScmlDataWithResourcesLoader.SCMLDataWithResources.class).getData();
         Player player = new Player(data.getEntity(blueprint.scmlPrefix));
         int startTime = MathUtils.random(1000); // stops enemies from having synchronized animations
         player.setTime(startTime);
         animationsComponent.setPlayer(player);
         return animationsComponent;
+    }
+
+    public enum EnemyName {
+        GHOST("Ghost"), HELL_KNIGHT("Hell knight"), SNORG("Snorg");
+
+        private String value;
+
+        EnemyName(String name) {
+            this.value = name;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 
     /**

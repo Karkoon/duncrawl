@@ -2,13 +2,13 @@ package ashlified;
 
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.HttpDungeonProvider;
-import ashlified.entitycomponentsystem.components.PositionComponent;
+import ashlified.entitycomponentsystem.entityinitializers.ChestEntityInitializer;
+import ashlified.entitycomponentsystem.entityinitializers.EnemyNPCEntitiesInitializer;
 import ashlified.entitycomponentsystem.entityinitializers.PlayerInitializer;
 import ashlified.entitycomponentsystem.entitylisteners.LightComponentListener;
 import ashlified.entitycomponentsystem.entitysystems.*;
 import ashlified.entitycomponentsystem.signals.TurnEndSignal;
 import ashlified.graphics.Graphics;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Screen;
@@ -25,7 +25,6 @@ public class GameScreen implements Screen {
     private PooledEngine engine;
     private AssetManager assetManager;
     private Dungeon dungeon;
-    private Entity player;
 
     public GameScreen(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -37,27 +36,44 @@ public class GameScreen implements Screen {
         dungeon = new HttpDungeonProvider().getNewDungeon(MathUtils.random(Integer.MAX_VALUE - 1), 50, 20);
         graphics = new Graphics(dungeon, assetManager);
         addEntityListeners();
-        player = new PlayerInitializer(engine).createPlayer(dungeon.getSpawnDungeonSection());
+        initializeEntities();
         addSystems();
     }
 
+    private void initializeEntities() {
+        new PlayerInitializer(engine).createPlayer(dungeon.getSpawnDungeonSection());
+        initializeEnemyNPCs();
+        initializeChests();
+    }
+
+    private void initializeEnemyNPCs() {
+        EnemyNPCEntitiesInitializer enemyNPC = new EnemyNPCEntitiesInitializer(engine, assetManager);
+        for (int i = 0; i < 30; i++) {
+            for (EnemyNPCEntitiesInitializer.EnemyName enemyName : EnemyNPCEntitiesInitializer.EnemyName.values()) {
+                enemyNPC.addEnemyNPC(enemyName.getValue(), dungeon);
+            }
+        }
+    }
+
+    private void initializeChests() {
+        ChestEntityInitializer chestEntityInitializer = new ChestEntityInitializer(engine, assetManager);
+        for (int i = 0; i < 30; i++) {
+            chestEntityInitializer.addChest(dungeon);
+        }
+    }
+
     private void addSystems() {
-        NpcCreationSystem npcCreation = new NpcCreationSystem(dungeon, assetManager);
-        ChestCreationSystem chestCreation = new ChestCreationSystem(dungeon, assetManager);
         NpcRenderingSystem npcRendering = new NpcRenderingSystem(assetManager, graphics.getModelInstanceRenderer());
         ModelInstanceRenderingSystem modelInstanceRendering = new ModelInstanceRenderingSystem(graphics.getModelInstanceRenderer());
         ModelAnimationSystem modelAnimation = new ModelAnimationSystem();
         LightingSystem lighting = new LightingSystem();
         NpcAiSystem npcAi = new NpcAiSystem(dungeon);
-        TargetSystem targeting = new TargetSystem(player.getComponent(PositionComponent.class)); // workaround
+        TargetSystem targeting = new TargetSystem();
 
         TurnEndSignal endTurnSignal = new TurnEndSignal();
         endTurnSignal.add(npcAi);
-
         InputSystem input = new InputSystem(graphics.getCamera(), endTurnSignal);
 
-        engine.addSystem(npcCreation);
-        engine.addSystem(chestCreation);
         engine.addSystem(npcRendering);
         engine.addSystem(modelAnimation);
         engine.addSystem(modelInstanceRendering);
