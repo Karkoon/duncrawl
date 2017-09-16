@@ -1,6 +1,6 @@
 package ashlified.loading.assetmanagerloaders;
 
-import ashlified.entitycomponentsystem.entityinitializers.EnemyNPCEntitiesInitializer;
+import ashlified.entitycomponentsystem.entityinitializers.EnemyNPCEntityConfigurer;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -32,7 +32,7 @@ public class NpcBlueprintListLoader extends AsynchronousAssetLoader<NpcBlueprint
         if (files != null) {
             Json json = new Json();
             for (FileHandle blueprintFileHandle : files) {
-                EnemyNPCEntitiesInitializer.EnemyNPCBlueprint blueprint = json.fromJson(EnemyNPCEntitiesInitializer.EnemyNPCBlueprint.class, blueprintFileHandle);
+                EnemyNPCEntityConfigurer.EnemyNPCBlueprint blueprint = json.fromJson(EnemyNPCEntityConfigurer.EnemyNPCBlueprint.class, blueprintFileHandle);
                 blueprints.getEnemyNPCBlueprints().add(blueprint);
             }
         }
@@ -61,9 +61,9 @@ public class NpcBlueprintListLoader extends AsynchronousAssetLoader<NpcBlueprint
 
     public static class EnemyNPCBlueprintList {
 
-        private ArrayList<EnemyNPCEntitiesInitializer.EnemyNPCBlueprint> enemyNPCBlueprints = new ArrayList<>();
+        private ArrayList<EnemyNPCEntityConfigurer.EnemyNPCBlueprint> enemyNPCBlueprints = new ArrayList<>();
 
-        public ArrayList<EnemyNPCEntitiesInitializer.EnemyNPCBlueprint> getEnemyNPCBlueprints() {
+        public ArrayList<EnemyNPCEntityConfigurer.EnemyNPCBlueprint> getEnemyNPCBlueprints() {
             return enemyNPCBlueprints;
         }
     }

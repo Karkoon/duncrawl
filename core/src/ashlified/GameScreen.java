@@ -2,9 +2,8 @@ package ashlified;
 
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.HttpDungeonProvider;
-import ashlified.entitycomponentsystem.entityinitializers.ChestEntityInitializer;
-import ashlified.entitycomponentsystem.entityinitializers.EnemyNPCEntitiesInitializer;
-import ashlified.entitycomponentsystem.entityinitializers.PlayerInitializer;
+import ashlified.entitycomponentsystem.components.PointLightComponent;
+import ashlified.entitycomponentsystem.entityinitializers.GameEntities;
 import ashlified.entitycomponentsystem.entitylisteners.LightComponentListener;
 import ashlified.entitycomponentsystem.entitysystems.*;
 import ashlified.entitycomponentsystem.signals.TurnEndSignal;
@@ -36,30 +35,8 @@ public class GameScreen implements Screen {
         dungeon = new HttpDungeonProvider().getNewDungeon(MathUtils.random(Integer.MAX_VALUE - 1), 50, 20);
         graphics = new Graphics(dungeon, assetManager);
         addEntityListeners();
-        initializeEntities();
+        new GameEntities(engine, dungeon, assetManager).createInitialEntities();
         addSystems();
-    }
-
-    private void initializeEntities() {
-        new PlayerInitializer(engine).createPlayer(dungeon.getSpawnDungeonSection());
-        initializeEnemyNPCs();
-        initializeChests();
-    }
-
-    private void initializeEnemyNPCs() {
-        EnemyNPCEntitiesInitializer enemyNPC = new EnemyNPCEntitiesInitializer(engine, assetManager);
-        for (int i = 0; i < 30; i++) {
-            for (EnemyNPCEntitiesInitializer.EnemyName enemyName : EnemyNPCEntitiesInitializer.EnemyName.values()) {
-                enemyNPC.addEnemyNPC(enemyName.getValue(), dungeon);
-            }
-        }
-    }
-
-    private void initializeChests() {
-        ChestEntityInitializer chestEntityInitializer = new ChestEntityInitializer(engine, assetManager);
-        for (int i = 0; i < 30; i++) {
-            chestEntityInitializer.addChest(dungeon);
-        }
     }
 
     private void addSystems() {
@@ -84,7 +61,7 @@ public class GameScreen implements Screen {
     }
 
     private void addEntityListeners() {
-        engine.addEntityListener(Family.all(ashlified.entitycomponentsystem.components.PointLightComponent.class).get(),
+        engine.addEntityListener(Family.all(PointLightComponent.class).get(),
                 new LightComponentListener(graphics.getModelInstanceRenderer().getEnvironment()));
     }
 

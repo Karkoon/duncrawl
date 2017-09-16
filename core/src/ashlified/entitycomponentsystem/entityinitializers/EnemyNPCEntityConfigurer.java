@@ -19,21 +19,21 @@ import java.util.ArrayList;
 
 /**
  * Created by karkoon on 01.04.17.
- * Creates and configures an EnemyNPC entity.
+ * Obtains an Entity and Components and configures them into an EnemyNPC.
  */
-public class EnemyNPCEntitiesInitializer {
+public class EnemyNPCEntityConfigurer {
 
     private final PooledEngine engine;
     private ArrayList<EnemyNPCBlueprint> blueprints;
     private AssetManager assetManager;
 
-    public EnemyNPCEntitiesInitializer(Engine engine, AssetManager assetManager) {
+    EnemyNPCEntityConfigurer(Engine engine, AssetManager assetManager) {
         this.engine = (PooledEngine) engine;
         blueprints = assetManager.get(AssetPaths.NPC_DIRECTORY, NpcBlueprintListLoader.EnemyNPCBlueprintList.class).getEnemyNPCBlueprints();
         this.assetManager = assetManager;
     }
 
-    public void addEnemyNPC(String enemyNPCname, Dungeon dungeon) {
+    void addEnemyNPC(String enemyNPCname, Dungeon dungeon) {
         for (EnemyNPCBlueprint blueprint : blueprints) {
             if (enemyNPCname.equals(blueprint.name)) {
 
@@ -98,6 +98,9 @@ public class EnemyNPCEntitiesInitializer {
         return animationsComponent;
     }
 
+    /**
+     * Contains all of the names of available entities.
+     */
     public enum EnemyName {
         GHOST("Ghost"), HELL_KNIGHT("Hell knight"), SNORG("Snorg");
 

@@ -9,17 +9,18 @@ import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * Creates and configures a Player. There can't be more than one players in the game.
+ * Obtains an Entity and Components and configures them into a Player.
+ * There can't be more than one player in the game.
  */
-public class PlayerInitializer {
+public class PlayerEntityConfigurer {
 
     private PooledEngine engine;
 
-    public PlayerInitializer(PooledEngine engine) {
+    PlayerEntityConfigurer(PooledEngine engine) {
         this.engine = engine;
     }
 
-    public Entity createPlayer(DungeonSection start) {
+    void getPlayer(DungeonSection start) {
         StatsComponent stats = engine.createComponent(StatsComponent.class);
         PositionComponent position = engine.createComponent(PositionComponent.class);
         position.setPosition(new Vector3(start.getPosition().x, 6.5f, start.getPosition().z));
@@ -47,8 +48,6 @@ public class PlayerInitializer {
         start.addOccupyingObject(entity);
 
         engine.addEntity(entity);
-
-        return entity;
     }
 
 }
