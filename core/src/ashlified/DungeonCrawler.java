@@ -29,6 +29,9 @@ public class DungeonCrawler extends Game {
         super.render();
     }
 
+    /**
+     * PROFILER STUFF
+     */
     private void printProfilerInfo() {
         Gdx.app.error("Profiler",
                 "Calls: " + GLProfiler.calls

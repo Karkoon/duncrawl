@@ -33,13 +33,13 @@ public class EnemyNPCEntityConfigurer {
         this.assetManager = assetManager;
     }
 
-    void addEnemyNPC(String enemyNPCname, Dungeon dungeon) {
+    void configureNewEnemyNPC(String enemyNPCname, Dungeon dungeon) {
         for (EnemyNPCBlueprint blueprint : blueprints) {
             if (enemyNPCname.equals(blueprint.name)) {
 
                 StatsComponent stats = engine.createComponent(StatsComponent.class);
                 PositionComponent position = engine.createComponent(PositionComponent.class);
-                DirectionComponent direction = engine.createComponent(DirectionComponent.class);
+                MovingDirectionComponent direction = engine.createComponent(MovingDirectionComponent.class);
                 InventoryComponent inventory = engine.createComponent(InventoryComponent.class);
                 ArmorComponent armor = engine.createComponent(ArmorComponent.class);
                 AttackComponent attack = engine.createComponent(AttackComponent.class);
@@ -84,6 +84,7 @@ public class EnemyNPCEntityConfigurer {
                 engine.addEntity(entity);
 
                 dungeonSection.addOccupyingObject(entity);
+                return;
             }
         }
     }

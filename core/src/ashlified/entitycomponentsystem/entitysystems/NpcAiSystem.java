@@ -45,11 +45,10 @@ public class NpcAiSystem extends IteratingSystem implements Listener<EntitySyste
         }
     };
 
-    public NpcAiSystem(IndexedGraph<DungeonSection> dungeon) {
+    NpcAiSystem(IndexedGraph<DungeonSection> dungeon) {
         super(Family.all(SpriterModelComponent.class).get());
         path = new DefaultGraphPath<>();
         p = new IndexedAStarPathFinder<>(dungeon);
-
     }
 
     @Override

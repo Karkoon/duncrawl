@@ -6,7 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 
 /**
  * Creates the initial set of entities
- * todo Allows the creation of entities during playing
+ * todo Allows the creation of entities while playing the game
  */
 public class GameEntities {
 
@@ -27,14 +27,14 @@ public class GameEntities {
     }
 
     private void createPlayer() {
-        new PlayerEntityConfigurer(engine).getPlayer(dungeon.getSpawnDungeonSection());
+        new PlayerEntityConfigurer(engine).configurePlayer(dungeon.getSpawnDungeonSection());
     }
 
     private void createInitialEnemyNPCs() {
         EnemyNPCEntityConfigurer enemyNPC = new EnemyNPCEntityConfigurer(engine, assetManager);
         for (int i = 0; i < 30; i++) {
             for (EnemyNPCEntityConfigurer.EnemyName enemyName : EnemyNPCEntityConfigurer.EnemyName.values()) {
-                enemyNPC.addEnemyNPC(enemyName.getValue(), dungeon);
+                enemyNPC.configureNewEnemyNPC(enemyName.getValue(), dungeon);
             }
         }
     }

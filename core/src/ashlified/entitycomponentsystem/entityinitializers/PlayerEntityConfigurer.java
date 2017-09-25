@@ -20,20 +20,23 @@ public class PlayerEntityConfigurer {
         this.engine = engine;
     }
 
-    void getPlayer(DungeonSection start) {
+    void configurePlayer(DungeonSection start) {
         StatsComponent stats = engine.createComponent(StatsComponent.class);
         PositionComponent position = engine.createComponent(PositionComponent.class);
         position.setPosition(new Vector3(start.getPosition().x, 6.5f, start.getPosition().z));
         position.setOccupiedSection(start);
-        DirectionComponent direction = engine.createComponent(DirectionComponent.class);
+        MovingDirectionComponent direction = engine.createComponent(MovingDirectionComponent.class);
         direction.setDirection(CardinalDirection.NORTH);
         InventoryComponent inventory = engine.createComponent(InventoryComponent.class);
         ArmorComponent armor = engine.createComponent(ArmorComponent.class);
         AttackComponent attack = engine.createComponent(AttackComponent.class);
         HealthComponent health = engine.createComponent(HealthComponent.class);
+        PlayerComponent player = engine.createComponent(PlayerComponent.class);
         PointLightComponent pointLight = engine.createComponent(PointLightComponent.class);
         pointLight.setPointLight(new PointLight());
         pointLight.getPointLight().set(255, 255, 255, position.getPosition(), 100f);
+        LookingDirectionComponent lookingDirection = engine.createComponent(LookingDirectionComponent.class);
+        lookingDirection.setLookingDirection(direction.getDirection().value.cpy());
 
         Entity entity = engine.createEntity();
         entity.add(stats);
@@ -44,10 +47,13 @@ public class PlayerEntityConfigurer {
         entity.add(attack);
         entity.add(health);
         entity.add(pointLight);
+        entity.add(player);
+        entity.add(lookingDirection);
 
         start.addOccupyingObject(entity);
 
         engine.addEntity(entity);
+
     }
 
 }
