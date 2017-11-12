@@ -28,22 +28,22 @@ public class DungeonSectionRepresentation {
         boolean westBorder = true;
         boolean eastBorder = true;
 
-        if (section.getConnections().containsKey(CardinalDirection.WEST)
+        if (section.getConnectionsMap().containsKey(CardinalDirection.WEST)
                 && section.getConnection(CardinalDirection.WEST).getToNode() != section) {
             westBorder = false;
         }
 
-        if (section.getConnections().containsKey(CardinalDirection.EAST)
+        if (section.getConnectionsMap().containsKey(CardinalDirection.EAST)
                 && section.getConnection(CardinalDirection.EAST).getToNode() != section) {
             eastBorder = false;
         }
 
-        if (section.getConnections().containsKey(CardinalDirection.NORTH)
+        if (section.getConnectionsMap().containsKey(CardinalDirection.NORTH)
                 && section.getConnection(CardinalDirection.NORTH).getToNode() != section) {
             northBorder = false;
         }
 
-        if (section.getConnections().containsKey(CardinalDirection.SOUTH)
+        if (section.getConnectionsMap().containsKey(CardinalDirection.SOUTH)
                 && section.getConnection(CardinalDirection.SOUTH).getToNode() != section) {
             southBorder = false;
         }

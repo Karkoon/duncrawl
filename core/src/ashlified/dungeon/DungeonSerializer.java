@@ -1,6 +1,7 @@
 package ashlified.dungeon;
 
 import ashlified.util.CardinalDirection;
+import com.badlogic.gdx.ai.pfa.DefaultConnection;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
@@ -34,18 +35,22 @@ public class DungeonSerializer implements Json.Serializer<Dungeon> {
     }
 
     private void determineSectionConnections(DungeonSection section) {
-        EnumMap<CardinalDirection, DungeonConnection> adjacentSections = section.getConnections();
+        EnumMap<CardinalDirection, DefaultConnection<DungeonSection>> adjacentSections = section.getConnectionsMap();
         for (Vector3 adjacentSectionPosition : section.getAdjacentSectionPositions()) {
             DungeonSection adjacentSection = dungeon.getSectionAt(adjacentSectionPosition);
             if (adjacentSection != null) {
                 if (adjacentSectionPosition.x < section.getPosition().x) {
-                    adjacentSections.put(CardinalDirection.WEST, new DungeonConnection(section, adjacentSection));
+                    adjacentSections.put(CardinalDirection.WEST, new DefaultConnection<>(section, adjacentSection));
+                    section.getConnections().add(adjacentSections.get(CardinalDirection.WEST));
                 } else if (adjacentSectionPosition.x > section.getPosition().x) {
-                    adjacentSections.put(CardinalDirection.EAST, new DungeonConnection(section, adjacentSection));
+                    adjacentSections.put(CardinalDirection.EAST, new DefaultConnection<>(section, adjacentSection));
+                    section.getConnections().add(adjacentSections.get(CardinalDirection.EAST));
                 } else if (adjacentSectionPosition.z < section.getPosition().z) {
-                    adjacentSections.put(CardinalDirection.NORTH, new DungeonConnection(section, adjacentSection));
+                    adjacentSections.put(CardinalDirection.NORTH, new DefaultConnection<>(section, adjacentSection));
+                    section.getConnections().add(adjacentSections.get(CardinalDirection.NORTH));
                 } else if (adjacentSectionPosition.z > section.getPosition().z) {
-                    adjacentSections.put(CardinalDirection.SOUTH, new DungeonConnection(section, adjacentSection));
+                    adjacentSections.put(CardinalDirection.SOUTH, new DefaultConnection<>(section, adjacentSection));
+                    section.getConnections().add(adjacentSections.get(CardinalDirection.SOUTH));
                 }
             }
         }
@@ -77,7 +82,6 @@ public class DungeonSerializer implements Json.Serializer<Dungeon> {
             for (Vector2 adjacentPosition : jsonNext) {
                 section.getAdjacentSectionPositions().add(changeToVector3(adjacentPosition));
             }
-
             return section;
         }
 

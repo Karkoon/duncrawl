@@ -18,6 +18,8 @@ public class LightingSystem extends IteratingSystem {
     private ComponentMapper<PointLightComponent> lightMapper = ComponentMapper.getFor(PointLightComponent.class);
     private ComponentMapper<PositionComponent> posMapper = ComponentMapper.getFor(PositionComponent.class);
 
+    private float lightPositionChangeAlpha = 0.15f;
+
     public LightingSystem() {
         super(Family.all(PointLightComponent.class, PositionComponent.class).get());
     }
@@ -26,6 +28,6 @@ public class LightingSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         PointLight light = lightMapper.get(entity).getPointLight();
         Vector3 pos = posMapper.get(entity).getPosition();
-        light.position.interpolate(pos, 0.2f, Interpolation.linear);
+        light.position.interpolate(pos, lightPositionChangeAlpha, Interpolation.linear);
     }
 }

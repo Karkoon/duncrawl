@@ -21,11 +21,11 @@ allprojects {
 
     ext {
         appName = "dungeoncrawler"
-        gdxVersion = '1.9.5'
+        gdxVersion = '1.9.6'
         roboVMVersion = '2.2.0'
         box2DLightsVersion = '1.4'
-        ashleyVersion = '1.7.0'
-        aiVersion = '1.8.0'
+        ashleyVersion = '1.7.3'
+        aiVersion = '1.8.1'
     }
  
     repositories {
@@ -83,8 +83,8 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-ai:1.8.0"
-        compile "com.badlogicgames.ashley:ashley:1.7.0"
+        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+        compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
         compile 'com.brashmonkey.spriter:gdx-spriter:1.0.1'
     }
 }

@@ -16,20 +16,20 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 
 /**
- * Creates and configures a chest entity.
+ * Obtains an Entity and Components and configures them into a Chest.
  */
-public class ChestEntityInitializer {
+public class ChestEntityConfigurer {
 
     private final static int ITEM_CAPACITY = 1;
     private final PooledEngine engine;
     private AssetManager assetManager;
 
-    public ChestEntityInitializer(Engine engine, AssetManager assetManager) {
+    ChestEntityConfigurer(Engine engine, AssetManager assetManager) {
         this.engine = (PooledEngine) engine;
         this.assetManager = assetManager;
     }
 
-    public void addChest(Dungeon dungeon) {
+    void addChest(Dungeon dungeon) {
         PositionComponent position = engine.createComponent(PositionComponent.class);
         InventoryComponent inventory = engine.createComponent(InventoryComponent.class);
         ModelInstanceComponent representation = engine.createComponent(ModelInstanceComponent.class);

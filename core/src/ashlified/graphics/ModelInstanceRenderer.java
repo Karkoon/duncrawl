@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelCache;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -34,7 +33,8 @@ public class ModelInstanceRenderer implements Disposable {
         this.manager = manager;
         this.cache = new ModelCache(new ModelCache.Sorter(), new ModelCache.SimpleMeshPool());
         this.environment = new Environment();
-        this.modelBatch = new ModelBatch(new DefaultShaderProvider(createShaderConfig()));
+        this.modelBatch = new ModelBatch();
+        //this.modelBatch = new ModelBatch(new DefaultShaderProvider(createShaderConfig()));
         this.varyingModelInstances = new ArrayList<>();
         this.constantModelInstances = new ArrayList<>();
     }
@@ -45,7 +45,7 @@ public class ModelInstanceRenderer implements Disposable {
 
     private DefaultShader.Config createShaderConfig() {
         DefaultShader.Config config = new DefaultShader.Config();
-        config.numPointLights = 200;
+        config.numPointLights = 1;
         config.fragmentShader = manager.get(AssetPaths.FRAGMENT_SHADER, String.class);
         config.vertexShader = manager.get(AssetPaths.VERTEX_SHADER, String.class);
         return config;
@@ -82,7 +82,7 @@ public class ModelInstanceRenderer implements Disposable {
     private boolean isSectionVisible(Camera cam, ModelInstance section) {
         float[] val = section.transform.val;
         return cam.frustum.boundsInFrustum(val[Matrix4.M03], val[Matrix4.M13], val[Matrix4.M23],
-                5f, 7.5f, 5f) && cam.position.dst(val[Matrix4.M03], val[Matrix4.M13], val[Matrix4.M23]) < 55f;
+                5f, 15f, 5f) && cam.position.dst(val[Matrix4.M03], val[Matrix4.M13], val[Matrix4.M23]) < 55f;
     }
 
     public void addToCache(ModelInstance modelInstance) {

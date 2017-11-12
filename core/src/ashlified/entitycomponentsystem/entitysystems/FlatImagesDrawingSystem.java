@@ -4,7 +4,7 @@ import ashlified.AssetPaths;
 import ashlified.entitycomponentsystem.components.PositionComponent;
 import ashlified.entitycomponentsystem.components.SpriterModelComponent;
 import ashlified.graphics.ModelInstanceRenderer;
-import ashlified.graphics.spriterutils.PoolPlaneAtlasDrawer;
+import ashlified.graphics.spriterutils.PooledPlaneAtlasDrawer;
 import ashlified.loading.assetmanagerloaders.ScmlDataWithResourcesLoader;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
@@ -17,17 +17,17 @@ import com.brashmonkey.spriter.Loader;
 /**
  * Created by karkoon on 25.03.17.
  */
-public class NpcRenderingSystem extends IteratingSystem {
+public class FlatImagesDrawingSystem extends IteratingSystem {
 
     private ComponentMapper<SpriterModelComponent> graphicsMapper = ComponentMapper.getFor(SpriterModelComponent.class);
     private ComponentMapper<PositionComponent> positionMapper = ComponentMapper.getFor(PositionComponent.class);
 
-    private PoolPlaneAtlasDrawer npcDrawer;
+    private PooledPlaneAtlasDrawer poolPlaneAtlasDrawer;
 
-    public NpcRenderingSystem(AssetManager manager, ModelInstanceRenderer renderer) {
+    public FlatImagesDrawingSystem(AssetManager manager, ModelInstanceRenderer renderer) {
         super(Family.all(SpriterModelComponent.class, PositionComponent.class).get());
         Loader loader = manager.get(AssetPaths.SCML_FILE, ScmlDataWithResourcesLoader.SCMLDataWithResources.class).getLoader();
-        npcDrawer = new PoolPlaneAtlasDrawer(loader, renderer);
+        poolPlaneAtlasDrawer = new PooledPlaneAtlasDrawer(loader, renderer);
     }
 
     @Override
@@ -36,20 +36,20 @@ public class NpcRenderingSystem extends IteratingSystem {
         PositionComponent posComp = positionMapper.get(entity);
         updateAnimationPosition(animComp, posComp.getPosition());
         updateAnimationTime(animComp);
-        npcDrawer.draw(animComp.getPlayer());
+        poolPlaneAtlasDrawer.draw(animComp.getSpriterAnimationController().getPlayer());
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-        npcDrawer.flush();
+        poolPlaneAtlasDrawer.flush();
     }
 
     private void updateAnimationPosition(SpriterModelComponent animComp, Vector3 position) {
-        animComp.getPlayer().setPosition(position.x, position.z);
+        animComp.getSpriterAnimationController().getPlayer().setPosition(position.x, position.z);
     }
 
     private void updateAnimationTime(SpriterModelComponent animation) {
-        animation.getPlayer().update();
+        animation.getSpriterAnimationController().getPlayer().update();
     }
 }

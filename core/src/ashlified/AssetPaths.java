@@ -16,6 +16,8 @@ public class AssetPaths {
     public static final String FRAGMENT_SHADER = "shaders/test.frag";
     public static final String VERTEX_SHADER = "shaders/test.vert";
     public static final String CHEST_MODEL = "textures/chest.g3db";
+    public static final String SKIN = "skin/uiskin.json";
+    public static final String FLOOR_TEXTURE = TEXTURE_DIR + "floor.png";
 
     private AssetPaths() {
     }

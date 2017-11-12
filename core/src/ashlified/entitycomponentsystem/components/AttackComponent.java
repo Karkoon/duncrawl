@@ -7,4 +7,13 @@ import com.badlogic.ashley.core.Component;
  */
 public final class AttackComponent implements Component {
 
+    private int attackRange;
+
+    public int getAttackRange() {
+        return attackRange;
+    }
+
+    public void setAttackRange(int attackRange) {
+        this.attackRange = attackRange;
+    }
 }

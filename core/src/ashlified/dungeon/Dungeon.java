@@ -22,11 +22,11 @@ public class Dungeon implements IndexedGraph<DungeonSection> {
         return grid;
     }
 
-    public void setGrid(ArrayList<DungeonSection> grid) {
+    void setGrid(ArrayList<DungeonSection> grid) {
         this.grid = grid;
     }
 
-    public DungeonSection getSectionAt(Vector3 position) {
+    DungeonSection getSectionAt(Vector3 position) {
         for (DungeonSection section : grid) {
             if (section.getPosition().equals(position)) return section;
         }
@@ -37,7 +37,7 @@ public class Dungeon implements IndexedGraph<DungeonSection> {
         DungeonSection randomSection;
         do {
             randomSection = grid.get(new Random().nextInt(grid.size()));
-        } while (randomSection.getOccupyingObjects().size() != 0);
+        } while (randomSection.getOccupyingEntities().size() != 0);
         return randomSection;
     }
 
@@ -73,11 +73,6 @@ public class Dungeon implements IndexedGraph<DungeonSection> {
 
     @Override
     public Array<Connection<DungeonSection>> getConnections(DungeonSection fromNode) {
-        Array<Connection<DungeonSection>> connections = new Array<>();
-        for (DungeonConnection connection : fromNode.getConnections().values()) {
-            connections.add(connection);
-        }
-        ;
-        return connections;
+        return fromNode.getConnections();
     }
 }

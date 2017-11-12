@@ -17,7 +17,7 @@ import com.brashmonkey.spriter.FileReference;
 import com.brashmonkey.spriter.Loader;
 
 /**
- * Loads spriter images and creates a Pool of ModelInstances for each type of animation keyframes.
+ * Loads Spriter images and creates a Pool of ModelInstances for each type of animation keyframes.
  */
 public class PoolPlaneAtlasLoader extends Loader<FlushablePool<ModelInstance>> {
 

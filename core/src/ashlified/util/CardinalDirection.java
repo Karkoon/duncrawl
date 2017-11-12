@@ -1,19 +1,21 @@
 package ashlified.util;
 
+import com.badlogic.gdx.math.Vector3;
+
 /**
  * Defines the basic directions.
  * Provides some utility methods.
  */
 public enum CardinalDirection {
 
-    NORTH(new com.badlogic.gdx.math.Vector3(0, 0, -1)),
-    SOUTH(new com.badlogic.gdx.math.Vector3(0, 0, 1)),
-    WEST(new com.badlogic.gdx.math.Vector3(-1, 0, 0)),
-    EAST(new com.badlogic.gdx.math.Vector3(1, 0, 0));
+    NORTH(new FinalVector3(0, 0, -1)),
+    SOUTH(new FinalVector3(0, 0, 1)),
+    WEST(new FinalVector3(-1, 0, 0)),
+    EAST(new FinalVector3(1, 0, 0));
 
-    public final com.badlogic.gdx.math.Vector3 value;
+    public final Vector3 value;
 
-    CardinalDirection(com.badlogic.gdx.math.Vector3 direction) {
+    CardinalDirection(Vector3 direction) {
         value = direction;
     }
 

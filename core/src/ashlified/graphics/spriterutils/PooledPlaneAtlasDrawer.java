@@ -15,12 +15,12 @@ import static java.lang.Math.atan2;
 /**
  * Draws 2D models of Spriter-created animated NPCs.
  */
-public class PoolPlaneAtlasDrawer extends Drawer<FlushablePool<ModelInstance>> {
+public class PooledPlaneAtlasDrawer extends Drawer<FlushablePool<ModelInstance>> {
 
     private final ModelInstanceRenderer renderer;
     private ArrayList<FlushablePool> poolsToFlushAfterFrame = new ArrayList<>();
 
-    public PoolPlaneAtlasDrawer(Loader<FlushablePool<ModelInstance>> loader, ModelInstanceRenderer renderer) {
+    public PooledPlaneAtlasDrawer(Loader<FlushablePool<ModelInstance>> loader, ModelInstanceRenderer renderer) {
         super(loader);
         this.renderer = renderer;
     }

@@ -71,6 +71,8 @@ public class LoadingScreen extends ScreenAdapter {
         assetManager.load(AssetPaths.VERTEX_SHADER, String.class);
         assetManager.load(AssetPaths.FRAGMENT_SHADER, String.class);
         assetManager.load(AssetPaths.CHEST_MODEL, Model.class);
+        assetManager.load(AssetPaths.SKIN, Skin.class);
+        assetManager.load(AssetPaths.FLOOR_TEXTURE, Texture.class);
     }
 
     @Override
