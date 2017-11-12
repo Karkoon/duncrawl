@@ -22,6 +22,9 @@ public class PlayerEntityConfigurer {
 
     void configurePlayer(DungeonSection start) {
         StatsComponent stats = engine.createComponent(StatsComponent.class);
+        stats.setStrength(10);
+        stats.setDexterity(10);
+        stats.setWisdom(10);
         PositionComponent position = engine.createComponent(PositionComponent.class);
         position.setPosition(new Vector3(start.getPosition().x, 6.5f, start.getPosition().z));
         position.setOccupiedSection(start);
@@ -31,6 +34,8 @@ public class PlayerEntityConfigurer {
         ArmorComponent armor = engine.createComponent(ArmorComponent.class);
         AttackComponent attack = engine.createComponent(AttackComponent.class);
         HealthComponent health = engine.createComponent(HealthComponent.class);
+        health.setMaxHealth(20);
+        health.setHealth(20);
         PlayerComponent player = engine.createComponent(PlayerComponent.class);
         PointLightComponent pointLight = engine.createComponent(PointLightComponent.class);
         pointLight.setPointLight(new PointLight());

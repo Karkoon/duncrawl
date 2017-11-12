@@ -17,7 +17,7 @@ public class CameraUpdateSystem extends EntitySystem {
     private ComponentMapper<PositionComponent> posMapper = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<LookingDirectionComponent> lookingDirectionMapper = ComponentMapper.getFor(LookingDirectionComponent.class);
 
-    public CameraUpdateSystem(Camera camera) {
+    CameraUpdateSystem(Camera camera) {
         this.camera = camera;
     }
 
@@ -40,9 +40,8 @@ public class CameraUpdateSystem extends EntitySystem {
         super.update(deltaTime);
         Vector3 position = posMapper.get(observedEntity).getPosition();
         Vector3 lookingDirection = lookingDirectionMapper.get(observedEntity).getLookingDirection();
-        camera.position.interpolate(position, 0.5f, Interpolation.linear);
-        float alpha = 0.2f;
-        camera.direction.lerp(lookingDirection, alpha);
+        camera.position.interpolate(position, 0.2f, Interpolation.linear);
+        camera.direction.lerp(lookingDirection, 0.125f);
         camera.update();
     }
 }

@@ -36,11 +36,14 @@ public class RuntimeCreatedWallModelsProvider implements WallModelsProvider {
         long attributes = Usage.Normal | Usage.Position | Usage.TextureCoordinates;
 
         Texture wallTexture = manager.get(AssetPaths.WALL_TEXTURE);
-        TextureRegion region = new TextureRegion(wallTexture);
+        TextureRegion wallRegion = new TextureRegion(wallTexture);
 
-        Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region), new BlendingAttribute(false, 1));
-        Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region), new BlendingAttribute(false, 1));
-        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(region), new BlendingAttribute(false, 1));
+        Texture floorTexture = manager.get(AssetPaths.FLOOR_TEXTURE);
+        TextureRegion floorRegion = new TextureRegion(floorTexture);
+
+        Material wall = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(wallRegion), new BlendingAttribute(false, 1));
+        Material floor = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(floorRegion), new BlendingAttribute(false, 1));
+        Material ceiling = new Material(ColorAttribute.createDiffuse(theme.getColor()), TextureAttribute.createDiffuse(wallRegion), new BlendingAttribute(false, 1));
 
         ModelBuilder builder = new ModelBuilder();
         EnumMap<WallModelsAccessor.WallType, Model> models = new EnumMap<>(WallModelsAccessor.WallType.class);

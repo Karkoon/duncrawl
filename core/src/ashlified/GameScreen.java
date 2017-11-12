@@ -9,6 +9,7 @@ import ashlified.entitycomponentsystem.entitylisteners.LightComponentListener;
 import ashlified.entitycomponentsystem.entitysystems.EntitySystems;
 import ashlified.entitycomponentsystem.signals.TurnEndSignal;
 import ashlified.graphics.Graphics;
+import ashlified.gui.UserInterfaceStage;
 import ashlified.inputprocessors.KeyboardInput;
 import ashlified.inputprocessors.TouchInput;
 import com.badlogic.ashley.core.Engine;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * Created by @Karkoon on 2016-08-30.
@@ -32,6 +34,7 @@ public class GameScreen extends ScreenAdapter {
     private PooledEngine engine;
     private AssetManager assetManager;
     private TurnEndSignal endTurnSignal = new TurnEndSignal();
+    private UserInterfaceStage userInterface;
 
     public GameScreen(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -45,15 +48,16 @@ public class GameScreen extends ScreenAdapter {
         addEntityListeners();
         GameEntities gameEntities = new GameEntities(engine, dungeon, assetManager);
         gameEntities.createInitialEntities();
-        setInputProcessors();
-        EntitySystems entitySystems = new EntitySystems(assetManager, graphics, dungeon);
+        EntitySystems entitySystems = new EntitySystems(assetManager, graphics.getModelInstanceRenderer(), dungeon, graphics.getCamera());
         entitySystems.addSystemsTo(engine);
         endTurnSignal.add(entitySystems.getNpcAiSystem());
+        userInterface = new UserInterfaceStage(assetManager.get(AssetPaths.SKIN, Skin.class), engine, endTurnSignal);
+        setInputProcessors();
     }
 
     private void setInputProcessors() {
         Entity player = getControllableEntityFrom(engine);
-        Gdx.input.setInputProcessor(new InputMultiplexer(new KeyboardInput(endTurnSignal, player), new TouchInput(player)));
+        Gdx.input.setInputProcessor(new InputMultiplexer(userInterface, new KeyboardInput(endTurnSignal, player), new TouchInput(player)));
     }
 
     private Entity getControllableEntityFrom(Engine engine) {
@@ -79,10 +83,13 @@ public class GameScreen extends ScreenAdapter {
         graphics.begin();
         graphics.render();
         graphics.end();
+        userInterface.act(delta);
+        userInterface.draw();
     }
 
     @Override
     public void resize(int width, int height) {
         graphics.resize(width, height);
+        userInterface.getViewport().update(width, height);
     }
 }

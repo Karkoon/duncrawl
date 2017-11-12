@@ -17,6 +17,7 @@ public class TargetingSystem extends IteratingSystem {
 
     private PositionComponent targetPosition;
     private ComponentMapper<TargetComponent> targetMapper = ComponentMapper.getFor(TargetComponent.class);
+    private ComponentMapper<PositionComponent> positionMapper = ComponentMapper.getFor(PositionComponent.class);
 
     public TargetingSystem() {
         super(Family.all(TargetComponent.class).get());
@@ -29,9 +30,9 @@ public class TargetingSystem extends IteratingSystem {
     }
 
     private void obtainPlayerPosition(Engine engine) {
-        targetPosition = engine.getEntitiesFor(Family.all(PositionComponent.class, MovingDirectionComponent.class)
+        targetPosition = positionMapper.get(engine.getEntitiesFor(Family.all(PositionComponent.class, MovingDirectionComponent.class)
                 .exclude(SpriterModelComponent.class)
-                .get()).first().getComponent(PositionComponent.class);
+                .get()).first());
     }
 
     @Override

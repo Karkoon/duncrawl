@@ -1,7 +1,11 @@
 package ashlified.dungeon;
 
 import ashlified.util.CardinalDirection;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.ai.pfa.Connection;
+import com.badlogic.gdx.ai.pfa.DefaultConnection;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -15,22 +19,27 @@ import java.util.EnumMap;
 
 public class DungeonSection {
 
-    private ArrayList<Object> occupyingObjects = new ArrayList<>();
+    private ArrayList<Entity> occupyingEntities = new ArrayList<>();
     private ArrayList<Vector3> adjacentPositions = new ArrayList<>();
+    private Array<Connection<DungeonSection>> adjacentSections = new Array<>();
     private Vector3 position;
 
-    private EnumMap<CardinalDirection, DungeonConnection> adjacentSections = new EnumMap<>(CardinalDirection.class);
+    private EnumMap<CardinalDirection, DefaultConnection<DungeonSection>> adjacentSectionsMap = new EnumMap<>(CardinalDirection.class);
 
     ArrayList<Vector3> getAdjacentSectionPositions() {
         return adjacentPositions;
     }
 
-    public EnumMap<CardinalDirection, DungeonConnection> getConnections() {
+    public EnumMap<CardinalDirection, DefaultConnection<DungeonSection>> getConnectionsMap() {
+        return adjacentSectionsMap;
+    }
+
+    public Array<Connection<DungeonSection>> getConnections() {
         return adjacentSections;
     }
 
-    public DungeonConnection getConnection(CardinalDirection direction) {
-        return adjacentSections.get(direction);
+    public DefaultConnection<DungeonSection> getConnection(CardinalDirection direction) {
+        return adjacentSectionsMap.get(direction);
     }
 
     public Vector3 getPosition() {
@@ -41,11 +50,11 @@ public class DungeonSection {
         this.position = position;
     }
 
-    public ArrayList<Object> getOccupyingObjects() {
-        return occupyingObjects;
+    public ArrayList<Entity> getOccupyingEntities() {
+        return occupyingEntities;
     }
 
-    public void addOccupyingObject(Object object) {
-        occupyingObjects.add(object);
+    public void addOccupyingObject(Entity entity) {
+        occupyingEntities.add(entity);
     }
 }

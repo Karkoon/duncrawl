@@ -1,16 +1,15 @@
 package ashlified.inputprocessors;
 
 import ashlified.dungeon.DungeonSection;
-import ashlified.entitycomponentsystem.components.LookingDirectionComponent;
-import ashlified.entitycomponentsystem.components.MovingDirectionComponent;
-import ashlified.entitycomponentsystem.components.PositionComponent;
+import ashlified.entitycomponentsystem.components.*;
 import ashlified.entitycomponentsystem.signals.TurnEndSignal;
 import ashlified.util.CardinalDirection;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.ai.pfa.Connection;
 
 /**
  * Interprets player's keyboard input. Changes the player's position, orientation and looking direction.
@@ -22,6 +21,7 @@ public class KeyboardInput extends InputAdapter {
     private MovingDirectionComponent movDir;
     private LookingDirectionComponent lookDir;
     private TurnEndSignal endTurnSignal;
+    private boolean inputLocked = false;
 
     public KeyboardInput(TurnEndSignal endTurnSignal, Entity controlledEntity) {
         this.endTurnSignal = endTurnSignal;
@@ -36,27 +36,44 @@ public class KeyboardInput extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
-        CardinalDirection direction = movDir.getDirection();
-        switch (keycode) {
-            case Input.Keys.W:
-                moveIn(direction);
-                break;
-            case Input.Keys.S:
-                moveIn(CardinalDirection.oppositeOf(direction));
-                break;
-            case Input.Keys.A:
-                rotateTo(CardinalDirection.leftOf(direction));
-                break;
-            case Input.Keys.D:
-                rotateTo(CardinalDirection.rightOf(direction));
-                break;
-            case Input.Keys.SPACE:
-                Gdx.app.exit();
-                break;
-            case Input.Keys.COMMA:
-                endTurnSignal.dispatch(null);
+        if (!inputLocked) {
+            CardinalDirection direction = movDir.getDirection();
+            switch (keycode) {
+                case Input.Keys.W:
+                    moveIn(direction);
+                    break;
+                case Input.Keys.S:
+                    moveIn(CardinalDirection.oppositeOf(direction));
+                    break;
+                case Input.Keys.A:
+                    rotateTo(CardinalDirection.leftOf(direction));
+                    break;
+                case Input.Keys.D:
+                    rotateTo(CardinalDirection.rightOf(direction));
+                    break;
+                case Input.Keys.SPACE:
+                    attack(direction);
+                    break;
+                case Input.Keys.COMMA:
+                    endTurnSignal.dispatch(null);
+            }
         }
         return true;
+    }
+
+    private void attack(CardinalDirection direction) {
+        Family enemyFamily = Family.all(SpriterModelComponent.class).get();
+        Connection<DungeonSection> connection = posComp.getOccupiedSection().getConnection(direction);
+        if (connection != null && connection.getToNode().getOccupyingEntities().size() > 0 && enemyFamily.matches(connection.getToNode().getOccupyingEntities().get(0))) {
+            Entity enemy = connection.getToNode().getOccupyingEntities().get(0);
+
+            HealthComponent enemyHealth = enemy.getComponent(HealthComponent.class);
+            StatsComponent npcStats = controlledEntity.getComponent(StatsComponent.class);
+            enemyHealth.setHealth(enemyHealth.getHealth() - npcStats.getStrength());
+            SpriterModelComponent spriterModelComponent = enemy.getComponent(SpriterModelComponent.class);
+            spriterModelComponent.getSpriterAnimationController().damagedEvent();
+            endTurnSignal.dispatch(null);
+        }
     }
 
     private void rotateTo(CardinalDirection direction) {
@@ -70,13 +87,13 @@ public class KeyboardInput extends InputAdapter {
         if (currentSection.getConnection(direction) != null) {
             adjacentSection = currentSection.getConnection(direction).getToNode();
         }
-        if (adjacentSection.getOccupyingObjects().size() <= 0) {
+        if (adjacentSection.getOccupyingEntities().size() <= 0) {
             moveToSection(adjacentSection);
         }
     }
 
     private void moveToSection(DungeonSection section) {
-        posComp.getOccupiedSection().getOccupyingObjects().remove(controlledEntity);
+        posComp.getOccupiedSection().getOccupyingEntities().remove(controlledEntity);
         posComp.setOccupiedSection(section);
         posComp.getPosition().set(section.getPosition().x, 6.5f, section.getPosition().z);
         section.addOccupyingObject(controlledEntity);

@@ -14,8 +14,8 @@ public class WallModelsAccessor {
     private final EnumMap<WallType, Model> models;
 
     public WallModelsAccessor(LevelTheme theme, AssetManager manager) {
-        WallModelsProvider retriever = new RuntimeCreatedWallModelsProvider(manager);
-        this.models = retriever.getNewModels(theme);
+        WallModelsProvider provider = new RuntimeCreatedWallModelsProvider(manager);
+        this.models = provider.getNewModels(theme);
     }
 
     public Model get(WallType key) {

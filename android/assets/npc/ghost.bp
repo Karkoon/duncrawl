@@ -10,6 +10,6 @@
   spawnRate: 100
   levelTheme: green
   maxItems: 1
-  viewDistance: 10
+  viewDistance: 30
   scmlPrefix: ghost
 }

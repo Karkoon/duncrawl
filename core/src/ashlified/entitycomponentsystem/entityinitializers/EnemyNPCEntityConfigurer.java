@@ -95,7 +95,8 @@ public class EnemyNPCEntityConfigurer {
         Player player = new Player(data.getEntity(blueprint.scmlPrefix));
         int startTime = MathUtils.random(1000); // stops enemies from having synchronized animations
         player.setTime(startTime);
-        animationsComponent.setPlayer(player);
+        animationsComponent.setSpriterAnimationController(new SpriterModelComponent.SpriterAnimationController());
+        animationsComponent.getSpriterAnimationController().setPlayer(player);
         return animationsComponent;
     }
 

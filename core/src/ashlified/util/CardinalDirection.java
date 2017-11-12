@@ -8,10 +8,10 @@ import com.badlogic.gdx.math.Vector3;
  */
 public enum CardinalDirection {
 
-    NORTH(new Vector3(0, 0, -1)),
-    SOUTH(new Vector3(0, 0, 1)),
-    WEST(new Vector3(-1, 0, 0)),
-    EAST(new Vector3(1, 0, 0));
+    NORTH(new FinalVector3(0, 0, -1)),
+    SOUTH(new FinalVector3(0, 0, 1)),
+    WEST(new FinalVector3(-1, 0, 0)),
+    EAST(new FinalVector3(1, 0, 0));
 
     public final Vector3 value;
 
