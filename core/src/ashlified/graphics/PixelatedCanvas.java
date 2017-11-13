@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.GLFrameBuffer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
@@ -24,7 +25,7 @@ class PixelatedCanvas {
         if (frameBuffer != null) frameBuffer.dispose();
         int virtualWidth = 1280 / 6;
         int virtualHeight = 720 / 6;
-        frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, virtualWidth, virtualHeight, true);
+        frameBuffer = FrameBuffer.createFrameBuffer(Pixmap.Format.RGB888, virtualWidth, virtualHeight, true);
         frameBuffer.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         if (fboBatch != null) fboBatch.dispose();
         fboBatch = new SpriteBatch();

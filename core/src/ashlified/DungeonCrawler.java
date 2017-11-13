@@ -16,10 +16,11 @@ public class DungeonCrawler extends Game {
     public AssetManager assetManager = new AssetManager();
 
     private int time = 0;
-
+    private GLProfiler glProfiler;
     @Override
     public void create() {
-        GLProfiler.enable();
+         glProfiler = new GLProfiler(Gdx.graphics);
+        glProfiler.enable();
         setScreen(new LoadingScreen(this));
     }
 
@@ -34,11 +35,11 @@ public class DungeonCrawler extends Game {
      */
     private void printProfilerInfo() {
         Gdx.app.error("Profiler",
-                "Calls: " + GLProfiler.calls
-                        + " DrawCalls: " + GLProfiler.drawCalls
-                        + " ShaderSwitches: " + GLProfiler.shaderSwitches
-                        + " Texture Bindings: " + GLProfiler.textureBindings
-                        + " Vertex count: " + GLProfiler.vertexCount.average);
+                "Calls: " + glProfiler.getCalls()
+                        + " DrawCalls: " + glProfiler.getDrawCalls()
+                        + " ShaderSwitches: " + glProfiler.getShaderSwitches()
+                        + " Texture Bindings: " + glProfiler.getTextureBindings()
+                        + " Vertex count: " + glProfiler.getVertexCount().average);
     }
 
     private void manageProfiler() {
@@ -48,7 +49,7 @@ public class DungeonCrawler extends Game {
         } else {
             time++;
         }
-        GLProfiler.reset();
+        glProfiler.reset();
     }
 
     @Override
