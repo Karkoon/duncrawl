@@ -2,8 +2,7 @@ package ashlified;
 
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.HttpDungeonProvider;
-import ashlified.entitycomponentsystem.components.PlayerComponent;
-import ashlified.entitycomponentsystem.components.PointLightComponent;
+import ashlified.entitycomponentsystem.components.*;
 import ashlified.entitycomponentsystem.entityinitializers.GameEntities;
 import ashlified.entitycomponentsystem.entitylisteners.LightComponentListener;
 import ashlified.entitycomponentsystem.entitysystems.EntitySystems;
@@ -73,7 +72,8 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private void addEntityListeners() {
-        engine.addEntityListener(Family.all(PointLightComponent.class).get(),
+        engine.addEntityListener(
+                Family.all(PointLightComponent.class).get(),
                 new LightComponentListener(graphics.getModelInstanceRenderer().getEnvironment()));
     }
 

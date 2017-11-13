@@ -2,6 +2,7 @@ package ashlified.inputprocessors;
 
 import ashlified.dungeon.DungeonSection;
 import ashlified.entitycomponentsystem.components.*;
+import ashlified.entitycomponentsystem.components.SpriterModelComponent.SpriterAnimationController;
 import ashlified.entitycomponentsystem.signals.TurnEndSignal;
 import ashlified.util.CardinalDirection;
 import com.badlogic.ashley.core.ComponentMapper;
@@ -66,12 +67,16 @@ public class KeyboardInput extends InputAdapter {
         Connection<DungeonSection> connection = posComp.getOccupiedSection().getConnection(direction);
         if (connection != null && connection.getToNode().getOccupyingEntities().size() > 0 && enemyFamily.matches(connection.getToNode().getOccupyingEntities().get(0))) {
             Entity enemy = connection.getToNode().getOccupyingEntities().get(0);
-
             HealthComponent enemyHealth = enemy.getComponent(HealthComponent.class);
             StatsComponent npcStats = controlledEntity.getComponent(StatsComponent.class);
             enemyHealth.setHealth(enemyHealth.getHealth() - npcStats.getStrength());
-            SpriterModelComponent spriterModelComponent = enemy.getComponent(SpriterModelComponent.class);
-            spriterModelComponent.getSpriterAnimationController().damagedEvent();
+            SpriterAnimationController animationController = enemy.getComponent(SpriterModelComponent.class).getSpriterAnimationController();
+            if (enemyHealth.getHealth() > 0) {
+                animationController.damagedEvent();
+            } else {
+                animationController.damagedEvent();
+                animationController.dieEvent();
+            }
             endTurnSignal.dispatch(null);
         }
     }

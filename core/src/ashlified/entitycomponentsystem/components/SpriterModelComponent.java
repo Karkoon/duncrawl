@@ -1,5 +1,6 @@
 package ashlified.entitycomponentsystem.components;
 
+import ashlified.graphics.spriterutils.PlayerListenerAdapter;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Queue;
@@ -27,12 +28,12 @@ public final class SpriterModelComponent implements Component, Pool.Poolable {
         spriterAnimationController = null;
     }
 
-    public enum AnimationState {
+    public enum AnimationID {
         IDLE(0), ATTACK(1), DIE(2), DAMAGED(3);
 
         private int id;
 
-        AnimationState(int id) {
+        AnimationID(int id) {
             this.id = id;
         }
 
@@ -49,57 +50,38 @@ public final class SpriterModelComponent implements Component, Pool.Poolable {
         public Player getPlayer() {
             return player;
         }
+        private boolean locked = false;
 
         public void setPlayer(final Player player) {
             this.player = player;
-            this.player.addListener(new Player.PlayerListener() {
+            this.player.addListener(new PlayerListenerAdapter() {
                 @Override
                 public void animationFinished(Animation animation) {
                     if (tasks.size > 0) {
                         tasks.removeFirst().run();
                     } else {
-                        player.setAnimation(AnimationState.IDLE.getId());
+                        player.setAnimation(AnimationID.IDLE.getId());
+                        locked = false;
                     }
-                }
-
-                @Override
-                public void animationChanged(Animation animation, Animation animation1) {
-
-                }
-
-                @Override
-                public void preProcess(Player player) {
-
-                }
-
-                @Override
-                public void postProcess(Player player) {
-
-                }
-
-                @Override
-                public void mainlineKeyChanged(Mainline.Key key, Mainline.Key key1) {
-
-                }
-            });
+                }});
         }
 
         public void attackEvent() {
-            animationEvent(AnimationState.ATTACK);
+            animationEvent(AnimationID.ATTACK);
         }
 
         public void dieEvent() {
-            animationEvent(AnimationState.DIE);
-
+            animationEvent(AnimationID.DIE);
         }
 
         public void damagedEvent() {
-            animationEvent(AnimationState.DAMAGED);
+            animationEvent(AnimationID.DAMAGED);
         }
 
-        private void animationEvent(final AnimationState state) {
-            if (player.getAnimation().id == AnimationState.IDLE.getId()) {
+        private void animationEvent(final AnimationID state) {
+            if (player.getAnimation().id == AnimationID.IDLE.getId()) {
                 player.setAnimation(state.getId());
+                locked = true;
             } else {
                 tasks.addLast(new Runnable() {
                     @Override
@@ -108,6 +90,10 @@ public final class SpriterModelComponent implements Component, Pool.Poolable {
                     }
                 });
             }
+        }
+
+        public boolean isLocked() {
+            return locked;
         }
     }
 }

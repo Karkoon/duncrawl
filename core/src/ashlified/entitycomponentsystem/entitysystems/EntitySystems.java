@@ -32,11 +32,11 @@ public class EntitySystems {
         engine.addSystem(npcRenderingSystem);
         engine.addSystem(modelAnimationSystem);
         engine.addSystem(modelInstanceRenderingSystem);
+        engine.addSystem(deadEntitiesRemover);
         engine.addSystem(lightingSystem);
         engine.addSystem(targetSystem);
         engine.addSystem(npcAiSystem);
         engine.addSystem(cameraUpdateSystem);
-        engine.addSystem(deadEntitiesRemover);
     }
 
     public DeadEntitiesRemoverSystem getDeadEntitiesRemover() {

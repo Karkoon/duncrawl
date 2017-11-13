@@ -26,6 +26,7 @@ public class NpcAiSystem extends IteratingSystem implements Listener<EntitySyste
     private static ComponentMapper<ViewDistanceComponent> viewDistanceMapper = ComponentMapper.getFor(ViewDistanceComponent.class);
     private static ComponentMapper<TargetComponent> targetMapper = ComponentMapper.getFor(TargetComponent.class);
     private static ComponentMapper<PositionComponent> posMapper = ComponentMapper.getFor(PositionComponent.class);
+    private static ComponentMapper<HealthComponent> healthMapper = ComponentMapper.getFor(HealthComponent.class);
 
     private Entity currentEntity;
     private ViewDistanceComponent viewDistance;
@@ -114,7 +115,7 @@ public class NpcAiSystem extends IteratingSystem implements Listener<EntitySyste
     }
 
     private boolean isAbleToDoAnyAction() {
-        return true;
+        return healthMapper.get(currentEntity).getHealth() > 0;
     }
     private boolean seesTarget() {
         boolean isCloseEnough = viewDistance.getViewDistance() > target.getTarget().getPosition().dst(posComp.getPosition());
