@@ -29,10 +29,11 @@ public class DeadEntitiesRemoverSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(final Entity entity, float deltaTime) {
+        int entityHealth = healthMapper.get(entity).getHealth();
         SpriterModelComponent.SpriterAnimationController animationController = spriterMapper.get(entity).getSpriterAnimationController();
-        if (healthMapper.get(entity).getHealth() <= 0 && !animationController.isLocked()) {
+        if (entityHealth <= 0 && !animationController.isLocked()) {
+            positionMapper.get(entity).getOccupiedSection().getOccupyingEntities().remove(entity);
             getEngine().removeEntity(entity);
         }
-
     }
 }

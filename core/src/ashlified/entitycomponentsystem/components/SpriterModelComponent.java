@@ -50,6 +50,7 @@ public final class SpriterModelComponent implements Component, Pool.Poolable {
         public Player getPlayer() {
             return player;
         }
+
         private boolean locked = false;
 
         public void setPlayer(final Player player) {
