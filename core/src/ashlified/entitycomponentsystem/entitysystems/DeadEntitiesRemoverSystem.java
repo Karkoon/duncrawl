@@ -1,21 +1,10 @@
 package ashlified.entitycomponentsystem.entitysystems;
 
-import ashlified.entitycomponentsystem.components.HealthComponent;
-import ashlified.entitycomponentsystem.components.PlayerComponent;
-import ashlified.entitycomponentsystem.components.PositionComponent;
-import ashlified.entitycomponentsystem.components.SpriterModelComponent;
-import ashlified.graphics.spriterutils.PlayerListenerAdapter;
+import ashlified.entitycomponentsystem.components.*;
 import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.signals.Listener;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
-import com.brashmonkey.spriter.Animation;
-import com.brashmonkey.spriter.Mainline;
-import com.brashmonkey.spriter.Player;
 
 public class DeadEntitiesRemoverSystem extends IteratingSystem {
 

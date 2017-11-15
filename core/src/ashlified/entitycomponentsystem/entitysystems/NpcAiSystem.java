@@ -3,10 +3,7 @@ package ashlified.entitycomponentsystem.entitysystems;
 import ashlified.dungeon.DungeonSection;
 import ashlified.entitycomponentsystem.components.*;
 import ashlified.util.CardinalDirection;
-import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.signals.Listener;
 import com.badlogic.ashley.signals.Signal;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -59,7 +56,9 @@ public class NpcAiSystem extends IteratingSystem implements Listener<EntitySyste
             if (isAbleToDoAnyAction() && seesTarget()) {
                 if (nextToTarget()) {
                     Gdx.app.log("END OF TURN", "NPC PROCESSING");
-                    attackTarget();
+                    AttackComponent attack = getEngine().createComponent(AttackComponent.class);
+                    attack.setEnemy(target.getTarget().getOccupyingEntities().get(0));
+                    entity.add(attack);
                 } else {
                     findPathToTarget();
                     if (!pathObstructed()) {
@@ -87,15 +86,6 @@ public class NpcAiSystem extends IteratingSystem implements Listener<EntitySyste
         p.searchNodePath(occupiedSection,
                 target.getTarget(), heuristic,
                 path);
-    }
-
-    private void attackTarget() {
-        HealthComponent enemyHealth = target.getTarget().getOccupyingEntities().get(0).getComponent(HealthComponent.class);
-        StatsComponent npcStats = currentEntity.getComponent(StatsComponent.class);
-        enemyHealth.setHealth(enemyHealth.getHealth() - npcStats.getStrength());
-        SpriterModelComponent spriterModelComponent = currentEntity.getComponent(SpriterModelComponent.class);
-        spriterModelComponent.getSpriterAnimationController().attackEvent();
-        Gdx.app.log("Target attacked!!", "Wooo");
     }
 
     private boolean nextToTarget() {

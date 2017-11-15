@@ -5,6 +5,7 @@ import com.brashmonkey.spriter.Mainline;
 import com.brashmonkey.spriter.Player;
 
 public abstract class PlayerListenerAdapter implements Player.PlayerListener {
+
     @Override
     public void animationFinished(Animation animation) {
 

@@ -8,6 +8,6 @@ import com.badlogic.ashley.signals.Signal;
  * Signals the end of a turn. (Triggered by movement, attack etc.).
  * Doesn't need to hold any data or do anything.
  */
-public class TurnEndSignal extends Signal<EntitySystem> {
+public class PlayerTurnEndSignal extends Signal<EntitySystem> {
 
 }

@@ -42,7 +42,6 @@ public class EnemyNPCEntityConfigurer {
                 MovingDirectionComponent direction = engine.createComponent(MovingDirectionComponent.class);
                 InventoryComponent inventory = engine.createComponent(InventoryComponent.class);
                 ArmorComponent armor = engine.createComponent(ArmorComponent.class);
-                AttackComponent attack = engine.createComponent(AttackComponent.class);
                 ViewDistanceComponent viewDistance = engine.createComponent(ViewDistanceComponent.class);
                 NameComponent name = engine.createComponent(NameComponent.class);
                 SpawnRateComponent spawnRateComponent = engine.createComponent(SpawnRateComponent.class);
@@ -69,18 +68,16 @@ public class EnemyNPCEntityConfigurer {
                 health.setHealth(blueprint.maxHealth);
 
                 Entity entity = engine.createEntity();
-                entity.add(stats);
-                entity.add(position);
-                entity.add(direction);
-                entity.add(inventory);
-                entity.add(retrieveGraphicalRepresentation(blueprint));
-                entity.add(armor);
-                entity.add(attack);
-                entity.add(viewDistance);
-                entity.add(name);
-                entity.add(spawnRateComponent);
-                entity.add(health);
-                entity.add(target);
+                entity.add(stats)
+                        .add(position)
+                        .add(direction)
+                        .add(inventory)
+                        .add(retrieveGraphicalRepresentation(blueprint))
+                        .add(armor).add(viewDistance)
+                        .add(name)
+                        .add(spawnRateComponent)
+                        .add(health)
+                        .add(target);
                 engine.addEntity(entity);
 
                 dungeonSection.addOccupyingObject(entity);

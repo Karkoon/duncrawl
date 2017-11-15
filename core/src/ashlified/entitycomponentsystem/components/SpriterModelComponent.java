@@ -60,6 +60,8 @@ public final class SpriterModelComponent implements Component, Pool.Poolable {
                 public void animationFinished(Animation animation) {
                     if (tasks.size > 0) {
                         tasks.removeFirst().run();
+                    } else if (animation.id == AnimationID.DIE.getId()) {
+                        locked = false;
                     } else {
                         player.setAnimation(AnimationID.IDLE.getId());
                         locked = false;

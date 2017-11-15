@@ -5,7 +5,7 @@ import ashlified.entitycomponentsystem.components.LookingDirectionComponent;
 import ashlified.entitycomponentsystem.components.MovingDirectionComponent;
 import ashlified.entitycomponentsystem.components.PlayerComponent;
 import ashlified.entitycomponentsystem.components.PositionComponent;
-import ashlified.entitycomponentsystem.signals.TurnEndSignal;
+import ashlified.entitycomponentsystem.signals.PlayerTurnEndSignal;
 import ashlified.util.CardinalDirection;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
@@ -18,16 +18,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 class ButtonsTable extends Table {
 
-    private TurnEndSignal turnEndSignal;
+    private PlayerTurnEndSignal playerTurnEndSignal;
     private PositionComponent currentPosition;
     private Entity controlledEntity;
 
-    ButtonsTable(final Skin skin, Engine engine, TurnEndSignal turnEndSignal) {
+    ButtonsTable(final Skin skin, Engine engine, PlayerTurnEndSignal playerTurnEndSignal) {
         this.controlledEntity = engine.getEntitiesFor(Family.all(PlayerComponent.class).get()).first();
         final MovingDirectionComponent directionComponent = controlledEntity.getComponent(MovingDirectionComponent.class);
         final LookingDirectionComponent lookingDirectionComponent = controlledEntity.getComponent(LookingDirectionComponent.class);
         currentPosition = controlledEntity.getComponent(PositionComponent.class);
-        this.turnEndSignal = turnEndSignal;
+        this.playerTurnEndSignal = playerTurnEndSignal;
         Button forwardButton = new Button(skin);
         forwardButton.addListener(new ClickListener() {
             @Override
@@ -97,6 +97,6 @@ class ButtonsTable extends Table {
         currentPosition.setOccupiedSection(section);
         currentPosition.getPosition().set(section.getPosition().x, 6.5f, section.getPosition().z);
         section.addOccupyingObject(controlledEntity);
-        turnEndSignal.dispatch(null);
+        playerTurnEndSignal.dispatch(null);
     }
 }

@@ -17,7 +17,11 @@ public class EntitySystems {
     private final CameraUpdateSystem cameraUpdateSystem;
     private final DeadEntitiesRemoverSystem deadEntitiesRemover;
 
+    private final AttackSystem attackSystem;
+
     public EntitySystems(AssetManager assetManager, ModelInstanceRenderer renderer, Dungeon dungeon, Camera camera) {
+        this.deadEntitiesRemover = new DeadEntitiesRemoverSystem();
+        this.attackSystem = new AttackSystem();
         this.npcRenderingSystem = new FlatImagesDrawingSystem(assetManager, renderer);
         this.modelInstanceRenderingSystem = new ModelInstanceRenderingSystem(renderer);
         this.modelAnimationSystem = new ModelAnimationSystem();
@@ -25,10 +29,10 @@ public class EntitySystems {
         this.npcAiSystem = new NpcAiSystem(dungeon);
         this.targetSystem = new TargetingSystem();
         this.cameraUpdateSystem = new CameraUpdateSystem(camera);
-        this.deadEntitiesRemover = new DeadEntitiesRemoverSystem();
     }
 
     public void addSystemsTo(Engine engine) {
+        engine.addSystem(attackSystem);
         engine.addSystem(npcRenderingSystem);
         engine.addSystem(modelAnimationSystem);
         engine.addSystem(modelInstanceRenderingSystem);
@@ -37,6 +41,10 @@ public class EntitySystems {
         engine.addSystem(targetSystem);
         engine.addSystem(npcAiSystem);
         engine.addSystem(cameraUpdateSystem);
+    }
+
+    public AttackSystem getAttackSystem() {
+        return attackSystem;
     }
 
     public DeadEntitiesRemoverSystem getDeadEntitiesRemover() {

@@ -1,0 +1,42 @@
+package ashlified.entitycomponentsystem.entitysystems;
+
+import ashlified.entitycomponentsystem.components.*;
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.systems.IteratingSystem;
+
+public class AttackSystem extends IteratingSystem {
+
+    private ComponentMapper<AttackComponent> attackMapper = ComponentMapper.getFor(AttackComponent.class);
+    private ComponentMapper<StatsComponent> statsMapper = ComponentMapper.getFor(StatsComponent.class);
+    private ComponentMapper<HealthComponent> healthMapper = ComponentMapper.getFor(HealthComponent.class);
+
+    private ComponentMapper<SpriterModelComponent> spriterMapper = ComponentMapper.getFor(SpriterModelComponent.class);
+
+    AttackSystem() {
+        super(Family.all(AttackComponent.class,
+                StatsComponent.class,
+                HealthComponent.class).get());
+    }
+
+    @Override
+    protected void processEntity(Entity entity, float deltaTime) {
+        Entity enemy = attackMapper.get(entity).getEnemy();
+        HealthComponent enemyHealth = healthMapper.get(enemy);
+        int entityStrength = statsMapper.get(entity).getStrength();
+        enemyHealth.setHealth(enemyHealth.getHealth() - entityStrength);
+        if (spriterMapper.has(entity)) {
+            spriterMapper.get(entity).getSpriterAnimationController().attackEvent();
+        }
+        if (spriterMapper.has(enemy)) {
+            SpriterModelComponent.SpriterAnimationController animationController = spriterMapper.get(enemy).getSpriterAnimationController();
+            if (enemyHealth.getHealth() <= 0) {
+                animationController.dieEvent();
+            } else {
+                animationController.damagedEvent();
+            }
+        }
+        entity.remove(AttackComponent.class);
+    }
+}

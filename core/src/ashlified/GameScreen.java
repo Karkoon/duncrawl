@@ -6,7 +6,7 @@ import ashlified.entitycomponentsystem.components.*;
 import ashlified.entitycomponentsystem.entityinitializers.GameEntities;
 import ashlified.entitycomponentsystem.entitylisteners.LightComponentListener;
 import ashlified.entitycomponentsystem.entitysystems.EntitySystems;
-import ashlified.entitycomponentsystem.signals.TurnEndSignal;
+import ashlified.entitycomponentsystem.signals.PlayerTurnEndSignal;
 import ashlified.graphics.Graphics;
 import ashlified.gui.UserInterfaceStage;
 import ashlified.inputprocessors.KeyboardInput;
@@ -32,7 +32,7 @@ public class GameScreen extends ScreenAdapter {
     private Graphics graphics;
     private PooledEngine engine;
     private AssetManager assetManager;
-    private TurnEndSignal endTurnSignal = new TurnEndSignal();
+    private PlayerTurnEndSignal playerTurnEndSignal = new PlayerTurnEndSignal();
     private UserInterfaceStage userInterface;
 
     public GameScreen(AssetManager assetManager) {
@@ -49,14 +49,15 @@ public class GameScreen extends ScreenAdapter {
         gameEntities.createInitialEntities();
         EntitySystems entitySystems = new EntitySystems(assetManager, graphics.getModelInstanceRenderer(), dungeon, graphics.getCamera());
         entitySystems.addSystemsTo(engine);
-        endTurnSignal.add(entitySystems.getNpcAiSystem());
-        userInterface = new UserInterfaceStage(assetManager.get(AssetPaths.SKIN, Skin.class), engine, endTurnSignal);
+        playerTurnEndSignal.add(entitySystems.getNpcAiSystem());
+        userInterface = new UserInterfaceStage(assetManager.get(AssetPaths.SKIN, Skin.class), engine, playerTurnEndSignal);
         setInputProcessors();
     }
 
     private void setInputProcessors() {
         Entity player = getControllableEntityFrom(engine);
-        Gdx.input.setInputProcessor(new InputMultiplexer(userInterface, new KeyboardInput(endTurnSignal, player), new TouchInput(player)));
+        KeyboardInput keyboardInput = new KeyboardInput(playerTurnEndSignal, player, engine);
+        Gdx.input.setInputProcessor(new InputMultiplexer(userInterface, keyboardInput, new TouchInput(player)));
     }
 
     private Entity getControllableEntityFrom(Engine engine) {

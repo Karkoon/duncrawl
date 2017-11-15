@@ -2,12 +2,11 @@ package ashlified.inputprocessors;
 
 import ashlified.dungeon.DungeonSection;
 import ashlified.entitycomponentsystem.components.*;
-import ashlified.entitycomponentsystem.components.SpriterModelComponent.SpriterAnimationController;
-import ashlified.entitycomponentsystem.signals.TurnEndSignal;
+import ashlified.entitycomponentsystem.signals.PlayerTurnEndSignal;
 import ashlified.util.CardinalDirection;
-import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.*;
+import com.badlogic.ashley.signals.Listener;
+import com.badlogic.ashley.signals.Signal;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ai.pfa.Connection;
@@ -15,18 +14,20 @@ import com.badlogic.gdx.ai.pfa.Connection;
 /**
  * Interprets player's keyboard input. Changes the player's position, orientation and looking direction.
  */
-public class KeyboardInput extends InputAdapter {
+public class KeyboardInput extends InputAdapter implements Listener<EntitySystem> {
 
     private Entity controlledEntity;
+    private PooledEngine engine;
     private PositionComponent posComp;
     private MovingDirectionComponent movDir;
     private LookingDirectionComponent lookDir;
-    private TurnEndSignal endTurnSignal;
+    private PlayerTurnEndSignal endTurnSignal;
     private boolean inputLocked = false;
 
-    public KeyboardInput(TurnEndSignal endTurnSignal, Entity controlledEntity) {
+    public KeyboardInput(PlayerTurnEndSignal endTurnSignal, Entity controlledEntity, PooledEngine engine) {
         this.endTurnSignal = endTurnSignal;
         this.controlledEntity = controlledEntity;
+        this.engine = engine;
         ComponentMapper<PositionComponent> posMapper = ComponentMapper.getFor(PositionComponent.class);
         ComponentMapper<MovingDirectionComponent> movingDirectionMapper = ComponentMapper.getFor(MovingDirectionComponent.class);
         ComponentMapper<LookingDirectionComponent> lookingDirectionMapper = ComponentMapper.getFor(LookingDirectionComponent.class);
@@ -57,6 +58,7 @@ public class KeyboardInput extends InputAdapter {
                     break;
                 case Input.Keys.COMMA:
                     endTurnSignal.dispatch(null);
+                    break;
             }
         }
         return true;
@@ -67,16 +69,9 @@ public class KeyboardInput extends InputAdapter {
         Connection<DungeonSection> connection = posComp.getOccupiedSection().getConnection(direction);
         if (connection != null && connection.getToNode().getOccupyingEntities().size() > 0 && enemyFamily.matches(connection.getToNode().getOccupyingEntities().get(0))) {
             Entity enemy = connection.getToNode().getOccupyingEntities().get(0);
-            HealthComponent enemyHealth = enemy.getComponent(HealthComponent.class);
-            StatsComponent npcStats = controlledEntity.getComponent(StatsComponent.class);
-            enemyHealth.setHealth(enemyHealth.getHealth() - npcStats.getStrength());
-            SpriterAnimationController animationController = enemy.getComponent(SpriterModelComponent.class).getSpriterAnimationController();
-            if (enemyHealth.getHealth() > 0) {
-                animationController.damagedEvent();
-            } else {
-                animationController.damagedEvent();
-                animationController.dieEvent();
-            }
+            AttackComponent attack = engine.createComponent(AttackComponent.class);
+            attack.setEnemy(enemy);
+            controlledEntity.add(attack);
             endTurnSignal.dispatch(null);
         }
     }
@@ -103,6 +98,11 @@ public class KeyboardInput extends InputAdapter {
         posComp.getPosition().set(section.getPosition().x, 6.5f, section.getPosition().z);
         section.addOccupyingObject(controlledEntity);
         endTurnSignal.dispatch(null);
+    }
+
+    @Override
+    public void receive(Signal<EntitySystem> signal, EntitySystem object) {
+        inputLocked = false;
     }
 }
 
