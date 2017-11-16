@@ -42,7 +42,7 @@ public class GameEntities {
     private void createChests() {
         ChestEntityConfigurer chestEntityInitializer = new ChestEntityConfigurer(engine, assetManager);
         for (int i = 0; i < 30; i++) {
-            chestEntityInitializer.addChest(dungeon);
+            chestEntityInitializer.configureNewChest(dungeon);
         }
     }
 }

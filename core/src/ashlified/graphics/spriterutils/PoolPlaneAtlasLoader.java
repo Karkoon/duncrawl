@@ -26,7 +26,7 @@ public class PoolPlaneAtlasLoader extends Loader<FlushablePool<ModelInstance>> {
 
     public PoolPlaneAtlasLoader(Data data, AssetManager assetManager) {
         super(data);
-        planeModel = assetManager.get(AssetPaths.NPC_MODEL, Model.class);
+        planeModel = assetManager.get(AssetPaths.PLANE_MODEL, Model.class);
         atlas = assetManager.get(AssetPaths.NPC_ATLAS, TextureAtlas.class);
     }
 

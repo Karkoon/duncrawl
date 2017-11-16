@@ -3,11 +3,9 @@ package ashlified.loading;
 import ashlified.AssetPaths;
 import ashlified.DungeonCrawler;
 import ashlified.GameScreen;
+import ashlified.entitycomponentsystem.entityinitializers.EnemyNPCEntityConfigurer;
 import ashlified.graphics.LevelThemesRandomizer;
-import ashlified.loading.assetmanagerloaders.LevelThemesRandomizerLoader;
-import ashlified.loading.assetmanagerloaders.NpcBlueprintListLoader;
-import ashlified.loading.assetmanagerloaders.ScmlDataWithResourcesLoader;
-import ashlified.loading.assetmanagerloaders.StringLoader;
+import ashlified.loading.assetmanagerloaders.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
@@ -57,13 +55,14 @@ public class LoadingScreen extends ScreenAdapter {
     private void setCustomLoaders() {
         assetManager.setLoader(ScmlDataWithResourcesLoader.SCMLDataWithResources.class, new ScmlDataWithResourcesLoader(new InternalFileHandleResolver()));
         assetManager.setLoader(LevelThemesRandomizer.class, new LevelThemesRandomizerLoader(new InternalFileHandleResolver()));
-        assetManager.setLoader(NpcBlueprintListLoader.EnemyNPCBlueprintList.class, new NpcBlueprintListLoader(new InternalFileHandleResolver()));
+        //assetManager.setLoader(NpcBlueprintListLoader.EnemyNPCBlueprintList.class, new NpcBlueprintListLoader(new InternalFileHandleResolver()));
+        assetManager.setLoader(BlueprintListLoader.BlueprintList.class, new BlueprintListLoader<>(new InternalFileHandleResolver(), EnemyNPCEntityConfigurer.EnemyNpcBlueprint.class));
         assetManager.setLoader(String.class, new StringLoader(new InternalFileHandleResolver()));
     }
 
     private void loadAssets() {
         assetManager.load(AssetPaths.NPC_ATLAS, TextureAtlas.class);
-        assetManager.load(AssetPaths.NPC_MODEL, Model.class);
+        assetManager.load(AssetPaths.PLANE_MODEL, Model.class);
         assetManager.load(AssetPaths.SCML_FILE, ScmlDataWithResourcesLoader.SCMLDataWithResources.class);
         assetManager.load(AssetPaths.LEVEL_THEMES_DIR, LevelThemesRandomizer.class);
         assetManager.load(AssetPaths.NPC_DIRECTORY, NpcBlueprintListLoader.EnemyNPCBlueprintList.class);

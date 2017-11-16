@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 /**
  * Obtains an Entity and Components and configures them into a Chest.
  */
-public class ChestEntityConfigurer {
+class ChestEntityConfigurer {
 
     private final static int ITEM_CAPACITY = 1;
     private final PooledEngine engine;
@@ -29,7 +29,7 @@ public class ChestEntityConfigurer {
         this.assetManager = assetManager;
     }
 
-    void addChest(Dungeon dungeon) {
+    void configureNewChest(Dungeon dungeon) {
         PositionComponent position = engine.createComponent(PositionComponent.class);
         InventoryComponent inventory = engine.createComponent(InventoryComponent.class);
         ModelInstanceComponent representation = engine.createComponent(ModelInstanceComponent.class);

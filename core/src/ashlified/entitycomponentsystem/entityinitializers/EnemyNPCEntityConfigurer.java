@@ -25,18 +25,18 @@ import java.util.ArrayList;
 public class EnemyNPCEntityConfigurer {
 
     private final PooledEngine engine;
-    private ArrayList<EnemyNPCBlueprint> blueprints;
+    private ArrayList<EnemyNpcBlueprint> blueprints;
     private AssetManager assetManager;
 
     EnemyNPCEntityConfigurer(Engine engine, AssetManager assetManager) {
         this.engine = (PooledEngine) engine;
-        blueprints = assetManager.get(AssetPaths.NPC_DIRECTORY, NpcBlueprintListLoader.EnemyNPCBlueprintList.class).getEnemyNPCBlueprints();
+        blueprints = assetManager.get(AssetPaths.NPC_DIRECTORY, NpcBlueprintListLoader.EnemyNPCBlueprintList.class).getEnemyNpcBlueprints();
         this.assetManager = assetManager;
     }
 
-    void configureNewEnemyNPC(String enemyNPCname, Dungeon dungeon) {
-        for (EnemyNPCBlueprint blueprint : blueprints) {
-            if (enemyNPCname.equals(blueprint.name)) {
+    void configureNewEnemyNPC(String enemyNpcName, Dungeon dungeon) {
+        for (EnemyNpcBlueprint blueprint : blueprints) {
+            if (enemyNpcName.equals(blueprint.name)) {
 
                 StatsComponent stats = engine.createComponent(StatsComponent.class);
                 PositionComponent position = engine.createComponent(PositionComponent.class);
@@ -87,7 +87,7 @@ public class EnemyNPCEntityConfigurer {
         }
     }
 
-    private SpriterModelComponent retrieveGraphicalRepresentation(EnemyNPCBlueprint blueprint) {
+    private SpriterModelComponent retrieveGraphicalRepresentation(EnemyNpcBlueprint blueprint) {
         SpriterModelComponent animationsComponent = engine.createComponent(SpriterModelComponent.class);
         Data data = assetManager.get(AssetPaths.SCML_FILE, ScmlDataWithResourcesLoader.SCMLDataWithResources.class).getData();
         Player player = new Player(data.getEntity(blueprint.scmlPrefix));
@@ -118,7 +118,7 @@ public class EnemyNPCEntityConfigurer {
     /**
      * Used in deserialization.
      */
-    public static class EnemyNPCBlueprint {
+    public static class EnemyNpcBlueprint {
 
         private String name;
         private int strength;

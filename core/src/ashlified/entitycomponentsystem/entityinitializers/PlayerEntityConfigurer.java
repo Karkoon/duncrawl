@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector3;
  * Obtains an Entity and Components and configures them into a Player.
  * There can't be more than one player in the game.
  */
-public class PlayerEntityConfigurer {
+class PlayerEntityConfigurer {
 
     private PooledEngine engine;
 
@@ -38,7 +38,7 @@ public class PlayerEntityConfigurer {
         PlayerComponent player = engine.createComponent(PlayerComponent.class);
         PointLightComponent pointLight = engine.createComponent(PointLightComponent.class);
         pointLight.setPointLight(new PointLight());
-        pointLight.getPointLight().set(255, 255, 255, position.getPosition(), 100f);
+        pointLight.getPointLight().set(255, 255, 255, position.getPosition(), 150f);
         LookingDirectionComponent lookingDirection = engine.createComponent(LookingDirectionComponent.class);
         lookingDirection.setLookingDirection(direction.getDirection().value.cpy());
 
@@ -56,7 +56,6 @@ public class PlayerEntityConfigurer {
         start.addOccupyingObject(entity);
 
         engine.addEntity(entity);
-
     }
 
 }
