@@ -36,10 +36,10 @@ public class AttackSystem extends IteratingSystem {
 
         if (spriterMapper.has(enemy)) {
             SpriterAnimationController animationController = spriterMapper.get(enemy).getSpriterAnimationController();
-            Animation animation = animationController.getPlayer().getAnimation();
             if (enemyHealth.getHealth() <= 0) {
+                animationController.damagedEvent();
                 animationController.dieEvent();
-            } else if (animation.id == AnimationID.DAMAGED.getId()){
+            } else {
                 animationController.damagedEvent();
             }
         }
