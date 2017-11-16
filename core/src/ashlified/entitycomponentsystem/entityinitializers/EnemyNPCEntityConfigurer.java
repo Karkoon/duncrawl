@@ -4,6 +4,7 @@ import ashlified.AssetPaths;
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.DungeonSection;
 import ashlified.entitycomponentsystem.components.*;
+import ashlified.graphics.spriterutils.SpriterAnimationController;
 import ashlified.loading.assetmanagerloaders.NpcBlueprintListLoader;
 import ashlified.loading.assetmanagerloaders.ScmlDataWithResourcesLoader;
 import ashlified.util.CardinalDirection;
@@ -92,7 +93,7 @@ public class EnemyNPCEntityConfigurer {
         Player player = new Player(data.getEntity(blueprint.scmlPrefix));
         int startTime = MathUtils.random(1000); // stops enemies from having synchronized animations
         player.setTime(startTime);
-        animationsComponent.setSpriterAnimationController(new SpriterModelComponent.SpriterAnimationController());
+        animationsComponent.setSpriterAnimationController(new SpriterAnimationController());
         animationsComponent.getSpriterAnimationController().setPlayer(player);
         return animationsComponent;
     }

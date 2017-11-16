@@ -2,7 +2,8 @@ package ashlified;
 
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.HttpDungeonProvider;
-import ashlified.entitycomponentsystem.components.*;
+import ashlified.entitycomponentsystem.components.PlayerComponent;
+import ashlified.entitycomponentsystem.components.PointLightComponent;
 import ashlified.entitycomponentsystem.entityinitializers.GameEntities;
 import ashlified.entitycomponentsystem.entitylisteners.LightComponentListener;
 import ashlified.entitycomponentsystem.entitysystems.EntitySystems;

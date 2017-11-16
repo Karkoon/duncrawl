@@ -14,11 +14,9 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.ai.pfa.Heuristic;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
-import com.badlogic.gdx.math.Interpolation;
 
 public class NpcAiSystem extends IteratingSystem implements Listener<EntitySystem> {
 
-    private final static float INTERPOLATION_ALPHA = 0.2f;
 
     private static ComponentMapper<ViewDistanceComponent> viewDistanceMapper = ComponentMapper.getFor(ViewDistanceComponent.class);
     private static ComponentMapper<TargetComponent> targetMapper = ComponentMapper.getFor(TargetComponent.class);
@@ -41,7 +39,7 @@ public class NpcAiSystem extends IteratingSystem implements Listener<EntitySyste
     };
 
     NpcAiSystem(IndexedGraph<DungeonSection> dungeon) {
-        super(Family.all(ViewDistanceComponent.class, TargetComponent.class, PositionComponent.class).get());
+        super(Family.all(ViewDistanceComponent.class, TargetComponent.class, PositionComponent.class, HealthComponent.class).get());
         path = new DefaultGraphPath<>();
         p = new IndexedAStarPathFinder<>(dungeon);
     }
@@ -50,24 +48,19 @@ public class NpcAiSystem extends IteratingSystem implements Listener<EntitySyste
     protected void processEntity(Entity entity, float deltaTime) {
         this.currentEntity = entity;
         posComp = posMapper.get(currentEntity);
-        DungeonSection currentSection = posComp.getOccupiedSection();
-        if (endOfPlayersTurn) {
-            initializeUsedComponents();
-            if (isAbleToDoAnyAction() && seesTarget()) {
-                if (nextToTarget()) {
-                    Gdx.app.log("END OF TURN", "NPC PROCESSING");
-                    AttackComponent attack = getEngine().createComponent(AttackComponent.class);
-                    attack.setEnemy(target.getTarget().getOccupyingEntities().get(0));
-                    entity.add(attack);
-                } else {
-                    findPathToTarget();
-                    if (!pathObstructed()) {
-                        moveTowardsTarget();
-                    }
+        initializeUsedComponents();
+        if (isAbleToDoAnyAction() && seesTarget()) {
+            if (isNextToTarget()) {
+                AttackComponent attack = getEngine().createComponent(AttackComponent.class);
+                attack.setEnemy(target.getTarget().getOccupyingEntities().get(0));
+                entity.add(attack);
+            } else {
+                findPathToTarget();
+                if (!pathObstructed()) {
+                    moveTowardsTarget();
                 }
             }
         }
-        posComp.getPosition().interpolate(currentSection.getPosition(), INTERPOLATION_ALPHA, Interpolation.linear);
     }
 
     private boolean pathObstructed() {
@@ -88,16 +81,13 @@ public class NpcAiSystem extends IteratingSystem implements Listener<EntitySyste
                 path);
     }
 
-    private boolean nextToTarget() {
+    private boolean isNextToTarget() {
         boolean isTargetAtNextDungeonSection = false;
         for (CardinalDirection direction : CardinalDirection.values()) {
             Connection potentialConnection = posComp.getOccupiedSection().getConnection(direction);
             if (potentialConnection != null) {
                 DungeonSection adjacentSection = (DungeonSection) potentialConnection.getToNode();
                 isTargetAtNextDungeonSection = adjacentSection.getPosition().idt(target.getTarget().getPosition());
-                Gdx.app.log("Position cam", target.getTarget().getPosition().toString());
-                Gdx.app.log("Position section", adjacentSection.getPosition().toString());
-                Gdx.app.log("POSITION", Boolean.toString(isTargetAtNextDungeonSection));
             }
             if (isTargetAtNextDungeonSection) return true;
         }
@@ -105,11 +95,13 @@ public class NpcAiSystem extends IteratingSystem implements Listener<EntitySyste
     }
 
     private boolean isAbleToDoAnyAction() {
-        return healthMapper.get(currentEntity).getHealth() > 0;
+        boolean hasSufficientHealth = healthMapper.get(currentEntity).getHealth() > 0;
+        return hasSufficientHealth; // TODO: 16.11.2017  add some other effects, maybe stun or something
     }
+
     private boolean seesTarget() {
         boolean isCloseEnough = viewDistance.getViewDistance() > target.getTarget().getPosition().dst(posComp.getPosition());
-        return true && isCloseEnough; // TODO: 28.08.17 implement line of sight in addition to distance check
+        return isCloseEnough; // TODO: 28.08.17 implement line of sight in addition to distance check
     }
 
     private void initializeUsedComponents() {
@@ -120,8 +112,10 @@ public class NpcAiSystem extends IteratingSystem implements Listener<EntitySyste
 
     @Override
     public void update(float deltaTime) {
-        super.update(deltaTime);
-        endOfPlayersTurn = false;
+        if (endOfPlayersTurn) {
+            super.update(deltaTime);
+            endOfPlayersTurn = false;
+        }
     }
 
     @Override

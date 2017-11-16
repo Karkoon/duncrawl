@@ -1,6 +1,10 @@
 package ashlified.entitycomponentsystem.entitysystems;
 
-import ashlified.entitycomponentsystem.components.*;
+import ashlified.entitycomponentsystem.components.HealthComponent;
+import ashlified.entitycomponentsystem.components.PlayerComponent;
+import ashlified.entitycomponentsystem.components.PositionComponent;
+import ashlified.entitycomponentsystem.components.SpriterModelComponent;
+import ashlified.graphics.spriterutils.SpriterAnimationController;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -19,7 +23,7 @@ public class DeadEntitiesRemoverSystem extends IteratingSystem {
     @Override
     protected void processEntity(final Entity entity, float deltaTime) {
         int entityHealth = healthMapper.get(entity).getHealth();
-        SpriterModelComponent.SpriterAnimationController animationController = spriterMapper.get(entity).getSpriterAnimationController();
+        SpriterAnimationController animationController = spriterMapper.get(entity).getSpriterAnimationController();
         if (entityHealth <= 0 && !animationController.isLocked()) {
             positionMapper.get(entity).getOccupiedSection().getOccupyingEntities().remove(entity);
             getEngine().removeEntity(entity);

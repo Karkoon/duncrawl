@@ -4,9 +4,10 @@ import ashlified.dungeon.DungeonSection;
 import ashlified.entitycomponentsystem.components.*;
 import ashlified.entitycomponentsystem.signals.PlayerTurnEndSignal;
 import ashlified.util.CardinalDirection;
-import com.badlogic.ashley.core.*;
-import com.badlogic.ashley.signals.Listener;
-import com.badlogic.ashley.signals.Signal;
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ai.pfa.Connection;
@@ -14,7 +15,7 @@ import com.badlogic.gdx.ai.pfa.Connection;
 /**
  * Interprets player's keyboard input. Changes the player's position, orientation and looking direction.
  */
-public class KeyboardInput extends InputAdapter implements Listener<EntitySystem> {
+public class KeyboardInput extends InputAdapter {
 
     private Entity controlledEntity;
     private PooledEngine engine;
@@ -22,7 +23,8 @@ public class KeyboardInput extends InputAdapter implements Listener<EntitySystem
     private MovingDirectionComponent movDir;
     private LookingDirectionComponent lookDir;
     private PlayerTurnEndSignal endTurnSignal;
-    private boolean inputLocked = false;
+
+    private ComponentMapper<HealthComponent> healthMapper = ComponentMapper.getFor(HealthComponent.class);
 
     public KeyboardInput(PlayerTurnEndSignal endTurnSignal, Entity controlledEntity, PooledEngine engine) {
         this.endTurnSignal = endTurnSignal;
@@ -38,42 +40,28 @@ public class KeyboardInput extends InputAdapter implements Listener<EntitySystem
 
     @Override
     public boolean keyDown(int keycode) {
-        if (!inputLocked) {
-            CardinalDirection direction = movDir.getDirection();
-            switch (keycode) {
-                case Input.Keys.W:
-                    moveIn(direction);
-                    break;
-                case Input.Keys.S:
-                    moveIn(CardinalDirection.oppositeOf(direction));
-                    break;
-                case Input.Keys.A:
-                    rotateTo(CardinalDirection.leftOf(direction));
-                    break;
-                case Input.Keys.D:
-                    rotateTo(CardinalDirection.rightOf(direction));
-                    break;
-                case Input.Keys.SPACE:
-                    attack(direction);
-                    break;
-                case Input.Keys.COMMA:
-                    endTurnSignal.dispatch(null);
-                    break;
-            }
+        CardinalDirection direction = movDir.getDirection();
+        switch (keycode) {
+            case Input.Keys.W:
+                moveIn(direction);
+                break;
+            case Input.Keys.S:
+                moveIn(CardinalDirection.oppositeOf(direction));
+                break;
+            case Input.Keys.A:
+                rotateTo(CardinalDirection.leftOf(direction));
+                break;
+            case Input.Keys.D:
+                rotateTo(CardinalDirection.rightOf(direction));
+                break;
+            case Input.Keys.SPACE:
+                attack(direction);
+                break;
+            case Input.Keys.COMMA:
+                endTurnSignal.dispatch(null);
+                break;
         }
         return true;
-    }
-
-    private void attack(CardinalDirection direction) {
-        Family enemyFamily = Family.all(SpriterModelComponent.class).get();
-        Connection<DungeonSection> connection = posComp.getOccupiedSection().getConnection(direction);
-        if (connection != null && connection.getToNode().getOccupyingEntities().size() > 0 && enemyFamily.matches(connection.getToNode().getOccupyingEntities().get(0))) {
-            Entity enemy = connection.getToNode().getOccupyingEntities().get(0);
-            AttackComponent attack = engine.createComponent(AttackComponent.class);
-            attack.setEnemy(enemy);
-            controlledEntity.add(attack);
-            endTurnSignal.dispatch(null);
-        }
     }
 
     private void rotateTo(CardinalDirection direction) {
@@ -92,17 +80,26 @@ public class KeyboardInput extends InputAdapter implements Listener<EntitySystem
         }
     }
 
+    private void attack(CardinalDirection direction) {
+        Family enemyFamily = Family.all(SpriterModelComponent.class).get();
+        Connection<DungeonSection> connection = posComp.getOccupiedSection().getConnection(direction);
+        if (connection != null && connection.getToNode().getOccupyingEntities().size() > 0 && enemyFamily.matches(connection.getToNode().getOccupyingEntities().get(0))) {
+            Entity enemy = connection.getToNode().getOccupyingEntities().get(0);
+            if (healthMapper.get(enemy).getHealth() > 0) {
+                AttackComponent attack = engine.createComponent(AttackComponent.class);
+                attack.setEnemy(enemy);
+                controlledEntity.add(attack);
+                endTurnSignal.dispatch(null);
+            }
+        }
+    }
+
     private void moveToSection(DungeonSection section) {
         posComp.getOccupiedSection().getOccupyingEntities().remove(controlledEntity);
         posComp.setOccupiedSection(section);
         posComp.getPosition().set(section.getPosition().x, 6.5f, section.getPosition().z);
         section.addOccupyingObject(controlledEntity);
         endTurnSignal.dispatch(null);
-    }
-
-    @Override
-    public void receive(Signal<EntitySystem> signal, EntitySystem object) {
-        inputLocked = false;
     }
 }
 

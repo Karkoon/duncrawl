@@ -15,12 +15,12 @@ public class EntitySystems {
     private final NpcAiSystem npcAiSystem;
     private final TargetingSystem targetSystem;
     private final CameraUpdateSystem cameraUpdateSystem;
-    private final DeadEntitiesRemoverSystem deadEntitiesRemover;
-
+    private final DeadEntitiesRemoverSystem deadEntitiesRemoverSystem;
+    private final PositionSystem positionSystem;
     private final AttackSystem attackSystem;
 
     public EntitySystems(AssetManager assetManager, ModelInstanceRenderer renderer, Dungeon dungeon, Camera camera) {
-        this.deadEntitiesRemover = new DeadEntitiesRemoverSystem();
+        this.deadEntitiesRemoverSystem = new DeadEntitiesRemoverSystem();
         this.attackSystem = new AttackSystem();
         this.npcRenderingSystem = new FlatImagesDrawingSystem(assetManager, renderer);
         this.modelInstanceRenderingSystem = new ModelInstanceRenderingSystem(renderer);
@@ -29,6 +29,7 @@ public class EntitySystems {
         this.npcAiSystem = new NpcAiSystem(dungeon);
         this.targetSystem = new TargetingSystem();
         this.cameraUpdateSystem = new CameraUpdateSystem(camera);
+        this.positionSystem = new PositionSystem();
     }
 
     public void addSystemsTo(Engine engine) {
@@ -36,19 +37,24 @@ public class EntitySystems {
         engine.addSystem(npcRenderingSystem);
         engine.addSystem(modelAnimationSystem);
         engine.addSystem(modelInstanceRenderingSystem);
-        engine.addSystem(deadEntitiesRemover);
+        engine.addSystem(deadEntitiesRemoverSystem);
         engine.addSystem(lightingSystem);
         engine.addSystem(targetSystem);
         engine.addSystem(npcAiSystem);
         engine.addSystem(cameraUpdateSystem);
+        engine.addSystem(positionSystem);
+    }
+
+    public PositionSystem getPositionSystem() {
+        return positionSystem;
     }
 
     public AttackSystem getAttackSystem() {
         return attackSystem;
     }
 
-    public DeadEntitiesRemoverSystem getDeadEntitiesRemover() {
-        return deadEntitiesRemover;
+    public DeadEntitiesRemoverSystem getDeadEntitiesRemoverSystem() {
+        return deadEntitiesRemoverSystem;
     }
 
     public FlatImagesDrawingSystem getNpcRenderingSystem() {
