@@ -50,7 +50,7 @@ public class ScmlDataWithResourcesLoader extends AsynchronousAssetLoader<SCMLDat
     @Override
     public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, DataAndResourcesParameter parameter) {
         Array<AssetDescriptor> assetDescriptors = new Array<>();
-        assetDescriptors.add(new AssetDescriptor<>(AssetPaths.NPC_MODEL, Model.class));
+        assetDescriptors.add(new AssetDescriptor<>(AssetPaths.PLANE_MODEL, Model.class));
         assetDescriptors.add(new AssetDescriptor<>(AssetPaths.NPC_ATLAS, TextureAtlas.class));
         return assetDescriptors;
     }

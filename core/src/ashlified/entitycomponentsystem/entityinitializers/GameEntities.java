@@ -24,6 +24,7 @@ public class GameEntities {
         createPlayer();
         createInitialEnemyNPCs();
         createChests();
+        createItems();
     }
 
     private void createPlayer() {
@@ -39,10 +40,19 @@ public class GameEntities {
         }
     }
 
+    private void createItems() {
+        ItemEntityConfigurer itemConfigurer = new ItemEntityConfigurer(engine, assetManager);
+        for (int i = 0; i < 30; i++) {
+            for (ItemEntityConfigurer.ItemName itemName : ItemEntityConfigurer.ItemName.values()) {
+                itemConfigurer.configureNewItem(itemName.getValue(), dungeon);
+            }
+        }
+    }
+
     private void createChests() {
         ChestEntityConfigurer chestEntityInitializer = new ChestEntityConfigurer(engine, assetManager);
         for (int i = 0; i < 30; i++) {
-            chestEntityInitializer.addChest(dungeon);
+            chestEntityInitializer.configureNewChest(dungeon);
         }
     }
 }

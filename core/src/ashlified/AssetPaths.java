@@ -7,7 +7,7 @@ public class AssetPaths {
 
     public static final String NPC_DIRECTORY = "npc/";
     public static final String NPC_ATLAS = "npc/npcs.atlas";
-    public static final String NPC_MODEL = "npc/untitled.g3db";
+    public static final String PLANE_MODEL = "npc/untitled.g3db";
     public static final String SCML_FILE = "npc/backup.scml";
     public static final String TEXTURE_DIR = "textures/";
     public static final String WALL_TEXTURE = TEXTURE_DIR + "178.JPG";
@@ -18,6 +18,7 @@ public class AssetPaths {
     public static final String CHEST_MODEL = "textures/chest.g3db";
     public static final String SKIN = "skin/uiskin.json";
     public static final String FLOOR_TEXTURE = TEXTURE_DIR + "floor.png";
+    public static final String ITEM_DIRECTORY = "items/";
 
     private AssetPaths() {
     }

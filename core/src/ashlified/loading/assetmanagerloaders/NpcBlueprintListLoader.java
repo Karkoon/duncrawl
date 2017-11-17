@@ -32,8 +32,8 @@ public class NpcBlueprintListLoader extends AsynchronousAssetLoader<NpcBlueprint
         if (files != null) {
             Json json = new Json();
             for (FileHandle blueprintFileHandle : files) {
-                EnemyNPCEntityConfigurer.EnemyNPCBlueprint blueprint = json.fromJson(EnemyNPCEntityConfigurer.EnemyNPCBlueprint.class, blueprintFileHandle);
-                blueprints.getEnemyNPCBlueprints().add(blueprint);
+                EnemyNPCEntityConfigurer.EnemyNpcBlueprint blueprint = json.fromJson(EnemyNPCEntityConfigurer.EnemyNpcBlueprint.class, blueprintFileHandle);
+                blueprints.getEnemyNpcBlueprints().add(blueprint);
             }
         }
     }
@@ -61,10 +61,10 @@ public class NpcBlueprintListLoader extends AsynchronousAssetLoader<NpcBlueprint
 
     public static class EnemyNPCBlueprintList {
 
-        private ArrayList<EnemyNPCEntityConfigurer.EnemyNPCBlueprint> enemyNPCBlueprints = new ArrayList<>();
+        private ArrayList<EnemyNPCEntityConfigurer.EnemyNpcBlueprint> enemyNpcBlueprints = new ArrayList<>();
 
-        public ArrayList<EnemyNPCEntityConfigurer.EnemyNPCBlueprint> getEnemyNPCBlueprints() {
-            return enemyNPCBlueprints;
+        public ArrayList<EnemyNPCEntityConfigurer.EnemyNpcBlueprint> getEnemyNpcBlueprints() {
+            return enemyNpcBlueprints;
         }
     }
 }
