@@ -1,6 +1,6 @@
 {
-  name: Ring of Strength
-  description: +5 to strength
+  name: "Ring of Strength"
+  description: "+5 to strength"
   strength: 5
   wisdom: 0
   dexterity: 0

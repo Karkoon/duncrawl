@@ -4,14 +4,17 @@ import ashlified.AssetPaths;
 import ashlified.dungeon.Dungeon;
 import ashlified.dungeon.DungeonSection;
 import ashlified.entitycomponentsystem.components.*;
+import ashlified.loading.assetmanagerloaders.BlueprintListLoader;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 
@@ -21,24 +24,27 @@ public class ItemEntityConfigurer {
 
     private PooledEngine engine;
     private AssetManager assetManager;
-    private ArrayList<ItemBlueprint> blueprints = new ArrayList<>();
+    private ArrayList<ItemBlueprint> blueprints;
 
-    public ItemEntityConfigurer(PooledEngine engine, AssetManager assetManager) {
+    ItemEntityConfigurer(PooledEngine engine, AssetManager assetManager) {
         this.engine = engine;
+        this.blueprints = assetManager.get(AssetPaths.ITEM_DIRECTORY, BlueprintListLoader.BlueprintList.class).getBlueprints();
         this.assetManager = assetManager;
     }
 
-    public void configureNewItem(String itemName, Dungeon dungeon) {
+    void configureNewItem(String itemName, Dungeon dungeon) {
         for (ItemBlueprint blueprint : blueprints) {
             if (itemName.equals(blueprint.name)) {
                 StatsComponent stats = engine.createComponent(StatsComponent.class);
                 PositionComponent position = engine.createComponent(PositionComponent.class);
                 ArmorComponent armor = engine.createComponent(ArmorComponent.class);
                 NameComponent name = engine.createComponent(NameComponent.class);
+                DescriptionComponent description = engine.createComponent(DescriptionComponent.class);
                 SpawnRateComponent spawnRateComponent = engine.createComponent(SpawnRateComponent.class);
                 HealthComponent health = engine.createComponent(HealthComponent.class);
 
                 name.setName(blueprint.name);
+                description.setDescription(blueprint.description);
                 DungeonSection dungeonSection = dungeon.getRandomDungeonSection();
                 position.setPosition(dungeonSection.getPosition());
                 position.setOccupiedSection(dungeonSection);
@@ -59,6 +65,7 @@ public class ItemEntityConfigurer {
                         .add(retrieveGraphicalRepresentation(blueprint))
                         .add(armor)
                         .add(name)
+                        .add(description)
                         .add(spawnRateComponent)
                         .add(health);
                 engine.addEntity(entity);
@@ -72,15 +79,17 @@ public class ItemEntityConfigurer {
         ModelInstanceComponent modelInstanceComponent = engine.createComponent(ModelInstanceComponent.class);
         ModelInstance modelInst = new ModelInstance(assetManager.get(AssetPaths.PLANE_MODEL, Model.class));
         Material material = modelInst.materials.first();
-        material.set(new FloatAttribute(FloatAttribute.AlphaTest, 0.5f),
+        material.set(ColorAttribute.createDiffuse(0.8f, 0.8f, 0.8f, 1f),
+                new FloatAttribute(FloatAttribute.AlphaTest, 0.5f),
                 new BlendingAttribute(),
-                TextureAttribute.createDiffuse(assetManager.get(itemBlueprint.name, Texture.class)));
+                TextureAttribute.createDiffuse(assetManager.get("items/Ring of Strength.png", Texture.class)));
         modelInstanceComponent.setInstance(modelInst);
+        Gdx.app.log("ddsds", "adqweqwed");
         return modelInstanceComponent;
     }
 
     public enum ItemName {
-        RING("Ring");
+        RING("Ring of Strength");
 
         private String name;
 

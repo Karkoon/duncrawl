@@ -72,6 +72,7 @@ public class LoadingScreen extends ScreenAdapter {
         assetManager.load(AssetPaths.LEVEL_THEMES_DIR, LevelThemesRandomizer.class);
         assetManager.load(AssetPaths.NPC_DIRECTORY, BlueprintListLoader.BlueprintList.class, new BlueprintListLoader.BlueprintListLoaderParameter(EnemyNpcBlueprint.class));
         assetManager.load(AssetPaths.ITEM_DIRECTORY, BlueprintListLoader.BlueprintList.class, new BlueprintListLoader.BlueprintListLoaderParameter(ItemEntityConfigurer.ItemBlueprint.class));
+        assetManager.load("./items/Ring of Strength.png", Texture.class);
         assetManager.load(AssetPaths.WALL_TEXTURE, Texture.class);
         assetManager.load(AssetPaths.VERTEX_SHADER, String.class);
         assetManager.load(AssetPaths.FRAGMENT_SHADER, String.class);
