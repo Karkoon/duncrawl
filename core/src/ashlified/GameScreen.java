@@ -1,7 +1,7 @@
 package ashlified;
 
 import ashlified.dungeon.Dungeon;
-import ashlified.dungeon.HttpDungeonProvider;
+import ashlified.dungeon.LocalDungeonProvider;
 import ashlified.entitycomponentsystem.components.PlayerComponent;
 import ashlified.entitycomponentsystem.components.PointLightComponent;
 import ashlified.entitycomponentsystem.entityinitializers.GameEntities;
@@ -43,7 +43,7 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void show() {
         engine = new PooledEngine();
-        Dungeon dungeon = new HttpDungeonProvider().getNewDungeon(MathUtils.random(Integer.MAX_VALUE - 1), 50, 20);
+        Dungeon dungeon = new LocalDungeonProvider().getNewDungeon(MathUtils.random(Integer.MAX_VALUE - 1), 50, 20);
         graphics = new Graphics(dungeon, assetManager);
         addEntityListeners();
         GameEntities gameEntities = new GameEntities(engine, dungeon, assetManager);
