@@ -35,9 +35,15 @@ public class Dungeon implements IndexedGraph<DungeonSection> {
 
     public DungeonSection getRandomDungeonSection() {
         DungeonSection randomSection;
+        boolean isValid;
         do {
             randomSection = grid.get(new Random().nextInt(grid.size()));
-        } while (randomSection.getOccupyingEntities().size() != 0);
+            isValid = randomSection.getConnections().size != 2 || randomSection.getConnections().size != 3;
+            for (int i = 0; i < randomSection.getConnections().size; i++) {
+                Connection<DungeonSection> connection = randomSection.getConnections().get(i);
+                isValid &= (connection.getToNode().getConnections().size != 2);
+            }
+        } while (randomSection.getOccupyingEntities().size() != 0 || !isValid);
         return randomSection;
     }
 
