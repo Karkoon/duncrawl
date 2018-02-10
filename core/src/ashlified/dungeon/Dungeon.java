@@ -38,7 +38,8 @@ public class Dungeon implements IndexedGraph<DungeonSection> {
         boolean isValid;
         do {
             randomSection = grid.get(new Random().nextInt(grid.size()));
-            isValid = randomSection.getConnections().size != 2 || randomSection.getConnections().size != 3;
+            int numberOfConnections = randomSection.getConnections().size;
+            isValid = numberOfConnections != 2 || numberOfConnections != 3 || numberOfConnections != 6;
             for (int i = 0; i < randomSection.getConnections().size; i++) {
                 Connection<DungeonSection> connection = randomSection.getConnections().get(i);
                 isValid &= (connection.getToNode().getConnections().size != 2);
