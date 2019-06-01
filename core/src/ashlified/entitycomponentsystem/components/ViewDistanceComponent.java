@@ -8,21 +8,21 @@ import com.badlogic.gdx.utils.Pool;
  */
 public final class ViewDistanceComponent implements Component, Pool.Poolable {
 
-    private int viewDistance;
+  private int viewDistance;
 
-    public ViewDistanceComponent() {
-    }
+  public ViewDistanceComponent() {
+  }
 
-    public int getViewDistance() {
-        return viewDistance;
-    }
+  public int getViewDistance() {
+    return viewDistance;
+  }
 
-    public void setViewDistance(int viewDistance) {
-        this.viewDistance = viewDistance;
-    }
+  public void setViewDistance(int viewDistance) {
+    this.viewDistance = viewDistance;
+  }
 
-    @Override
-    public void reset() {
-        viewDistance = 0;
-    }
+  @Override
+  public void reset() {
+    viewDistance = 0;
+  }
 }

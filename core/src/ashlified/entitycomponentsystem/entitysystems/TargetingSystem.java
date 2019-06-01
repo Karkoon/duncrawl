@@ -15,28 +15,28 @@ import com.badlogic.ashley.systems.IteratingSystem;
  */
 public class TargetingSystem extends IteratingSystem {
 
-    private PositionComponent targetPosition;
-    private ComponentMapper<TargetComponent> targetMapper = ComponentMapper.getFor(TargetComponent.class);
-    private ComponentMapper<PositionComponent> positionMapper = ComponentMapper.getFor(PositionComponent.class);
+  private PositionComponent targetPosition;
+  private ComponentMapper<TargetComponent> targetMapper = ComponentMapper.getFor(TargetComponent.class);
+  private ComponentMapper<PositionComponent> positionMapper = ComponentMapper.getFor(PositionComponent.class);
 
-    public TargetingSystem() {
-        super(Family.all(TargetComponent.class).get());
-    }
+  TargetingSystem() {
+    super(Family.all(TargetComponent.class).get());
+  }
 
-    @Override
-    public void addedToEngine(Engine engine) {
-        obtainPlayerPosition(engine);
-        super.addedToEngine(engine);
-    }
+  @Override
+  public void addedToEngine(Engine engine) {
+    obtainPlayerPosition(engine);
+    super.addedToEngine(engine);
+  }
 
-    private void obtainPlayerPosition(Engine engine) {
-        targetPosition = positionMapper.get(engine.getEntitiesFor(Family.all(PositionComponent.class, MovingDirectionComponent.class)
-                .exclude(SpriterModelComponent.class)
-                .get()).first());
-    }
+  private void obtainPlayerPosition(Engine engine) {
+    targetPosition = positionMapper.get(engine.getEntitiesFor(Family.all(PositionComponent.class, MovingDirectionComponent.class)
+      .exclude(SpriterModelComponent.class)
+      .get()).first());
+  }
 
-    @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-        targetMapper.get(entity).setTarget(targetPosition.getOccupiedSection());
-    }
+  @Override
+  protected void processEntity(Entity entity, float deltaTime) {
+    targetMapper.get(entity).setTarget(targetPosition.getOccupiedSection());
+  }
 }

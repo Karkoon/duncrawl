@@ -1,13 +1,13 @@
 package ashlified;
 
 import ashlified.dungeon.Dungeon;
-import ashlified.dungeon.HttpDungeonProvider;
+import ashlified.dungeon.DungeonProvider;
 import ashlified.entitycomponentsystem.components.PlayerComponent;
 import ashlified.entitycomponentsystem.components.PointLightComponent;
 import ashlified.entitycomponentsystem.entityinitializers.GameEntities;
 import ashlified.entitycomponentsystem.entitylisteners.LightComponentListener;
 import ashlified.entitycomponentsystem.entitysystems.EntitySystems;
-import ashlified.entitycomponentsystem.signals.TurnEndSignal;
+import ashlified.entitycomponentsystem.signals.PlayerTurnEndSignal;
 import ashlified.graphics.Graphics;
 import ashlified.gui.UserInterfaceStage;
 import ashlified.inputprocessors.KeyboardInput;
@@ -30,66 +30,68 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
  */
 public class GameScreen extends ScreenAdapter {
 
-    private Graphics graphics;
-    private PooledEngine engine;
-    private AssetManager assetManager;
-    private TurnEndSignal endTurnSignal = new TurnEndSignal();
-    private UserInterfaceStage userInterface;
+  private Graphics graphics;
+  private PooledEngine engine;
+  private AssetManager assetManager;
+  private Dungeon dungeon;
+  private PlayerTurnEndSignal playerTurnEndSignal = new PlayerTurnEndSignal();
+  private UserInterfaceStage userInterface;
 
-    public GameScreen(AssetManager assetManager) {
-        this.assetManager = assetManager;
-    }
 
-    @Override
-    public void show() {
-        engine = new PooledEngine();
-        Dungeon dungeon = new HttpDungeonProvider().getNewDungeon(MathUtils.random(Integer.MAX_VALUE - 1), 50, 20);
-        graphics = new Graphics(dungeon, assetManager);
-        addEntityListeners();
-        GameEntities gameEntities = new GameEntities(engine, dungeon, assetManager);
-        gameEntities.createInitialEntities();
-        EntitySystems entitySystems = new EntitySystems(assetManager, graphics.getModelInstanceRenderer(), dungeon, graphics.getCamera());
-        entitySystems.addSystemsTo(engine);
-        endTurnSignal.add(entitySystems.getNpcAiSystem());
-        userInterface = new UserInterfaceStage(assetManager.get(AssetPaths.SKIN, Skin.class), engine, endTurnSignal);
-        setInputProcessors();
-    }
+  public GameScreen(AssetManager assetManager, DungeonProvider dungeonProvider) {
+    this.assetManager = assetManager;
+    this.dungeon = dungeonProvider.getNewDungeon(MathUtils.random(Integer.MAX_VALUE - 1), 50, 20);
+  }
 
-    private void setInputProcessors() {
-        Entity player = getControllableEntityFrom(engine);
-        Gdx.input.setInputProcessor(new InputMultiplexer(userInterface, new KeyboardInput(endTurnSignal, player), new TouchInput(player)));
-    }
+  @Override
+  public void show() {
+    engine = new PooledEngine();
+    graphics = new Graphics(dungeon, assetManager);
+    addEntityListeners();
+    GameEntities gameEntities = new GameEntities(engine, dungeon, assetManager);
+    gameEntities.createInitialEntities();
+    EntitySystems entitySystems = new EntitySystems(assetManager, graphics.getModelInstanceRenderer(), dungeon, graphics.getCamera());
+    entitySystems.addSystemsTo(engine);
+    playerTurnEndSignal.add(entitySystems.getNpcAiSystem());
+    userInterface = new UserInterfaceStage(assetManager.get(AssetPaths.SKIN, Skin.class), engine, playerTurnEndSignal);
+    setInputProcessors();
+  }
 
-    private Entity getControllableEntityFrom(Engine engine) {
-        Family family = Family
-                .all(PlayerComponent.class)
-                .get();
-        ImmutableArray<Entity> entities = engine.getEntitiesFor(family);
-        if (entities.size() != 1) {
-            Gdx.app.error("InputSystem", "No controllable entity or more than one entity");
-            Gdx.app.exit();
-        }
-        return entities.first();
-    }
+  private void setInputProcessors() {
+    Entity player = getControllableEntityFrom(engine);
+    KeyboardInput keyboardInput = new KeyboardInput(playerTurnEndSignal, player, engine);
+    Gdx.input.setInputProcessor(new InputMultiplexer(keyboardInput, userInterface, new TouchInput(player)));
+  }
 
-    private void addEntityListeners() {
-        engine.addEntityListener(Family.all(PointLightComponent.class).get(),
-                new LightComponentListener(graphics.getModelInstanceRenderer().getEnvironment()));
+  private Entity getControllableEntityFrom(Engine engine) {
+    Family family = Family.all(PlayerComponent.class).get();
+    ImmutableArray<Entity> entities = engine.getEntitiesFor(family);
+    if (entities.size() != 1) {
+      Gdx.app.error("InputSystem", "No controllable entity or more than one entity");
+      Gdx.app.exit();
     }
+    return entities.first();
+  }
 
-    @Override
-    public void render(float delta) {
-        engine.update(delta);
-        graphics.begin();
-        graphics.render();
-        graphics.end();
-        userInterface.act(delta);
-        userInterface.draw();
-    }
+  private void addEntityListeners() {
+    engine.addEntityListener(
+      Family.all(PointLightComponent.class).get(),
+      new LightComponentListener(graphics.getModelInstanceRenderer().getEnvironment()));
+  }
 
-    @Override
-    public void resize(int width, int height) {
-        graphics.resize(width, height);
-        userInterface.getViewport().update(width, height);
-    }
+  @Override
+  public void render(float delta) {
+    engine.update(delta);
+    graphics.begin();
+    graphics.render();
+    graphics.end();
+    userInterface.act(delta);
+    userInterface.draw();
+  }
+
+  @Override
+  public void resize(int width, int height) {
+    graphics.resize(width, height);
+    userInterface.getViewport().update(width, height);
+  }
 }

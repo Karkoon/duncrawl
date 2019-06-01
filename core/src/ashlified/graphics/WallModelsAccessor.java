@@ -11,21 +11,21 @@ import java.util.EnumMap;
  */
 public class WallModelsAccessor {
 
-    private final EnumMap<WallType, Model> models;
+  private final EnumMap<WallType, Model> models;
 
-    public WallModelsAccessor(LevelTheme theme, AssetManager manager) {
-        WallModelsProvider provider = new RuntimeCreatedWallModelsProvider(manager);
-        this.models = provider.getNewModels(theme);
-    }
+  public WallModelsAccessor(LevelTheme theme, AssetManager manager) {
+    WallModelsProvider provider = new RuntimeCreatedWallModelsProvider(manager);
+    this.models = provider.getNewModels(theme);
+  }
 
-    public Model get(WallType key) {
-        return models.get(key);
-    }
+  public Model get(WallType key) {
+    return models.get(key);
+  }
 
-    /**
-     * Describes different kinds of wall models.
-     */
-    public enum WallType {
-        TWO_SIDES, CORNER, ONE_SIDE, NO_SIDES
-    }
+  /**
+   * Describes different kinds of wall models.
+   */
+  public enum WallType {
+    TWO_SIDES, CORNER, ONE_SIDE, NO_SIDES
+  }
 }

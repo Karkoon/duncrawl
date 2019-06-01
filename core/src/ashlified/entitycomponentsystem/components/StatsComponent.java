@@ -8,38 +8,38 @@ import com.badlogic.gdx.utils.Pool;
  */
 public final class StatsComponent implements Component, Pool.Poolable {
 
-    private int strength;
-    private int dexterity;
-    private int wisdom;
+  private int strength;
+  private int dexterity;
+  private int wisdom;
 
-    public int getStrength() {
-        return strength;
-    }
+  public int getStrength() {
+    return strength;
+  }
 
-    public void setStrength(int strength) {
-        this.strength = strength;
-    }
+  public void setStrength(int strength) {
+    this.strength = strength;
+  }
 
-    public int getDexterity() {
-        return dexterity;
-    }
+  public int getDexterity() {
+    return dexterity;
+  }
 
-    public void setDexterity(int dexterity) {
-        this.dexterity = dexterity;
-    }
+  public void setDexterity(int dexterity) {
+    this.dexterity = dexterity;
+  }
 
-    public int getWisdom() {
-        return wisdom;
-    }
+  public int getWisdom() {
+    return wisdom;
+  }
 
-    public void setWisdom(int wisdom) {
-        this.wisdom = wisdom;
-    }
+  public void setWisdom(int wisdom) {
+    this.wisdom = wisdom;
+  }
 
-    @Override
-    public void reset() {
-        strength = 0;
-        dexterity = 0;
-        wisdom = 0;
-    }
+  @Override
+  public void reset() {
+    strength = 0;
+    dexterity = 0;
+    wisdom = 0;
+  }
 }

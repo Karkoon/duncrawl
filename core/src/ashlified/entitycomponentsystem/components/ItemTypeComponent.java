@@ -8,23 +8,23 @@ import com.badlogic.gdx.utils.Pool;
  */
 public final class ItemTypeComponent implements Component, Pool.Poolable {
 
-    private Type type;
+  private Type type;
 
-    public Type getType() {
-        return type;
-    }
+  public Type getType() {
+    return type;
+  }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
+  public void setType(Type type) {
+    this.type = type;
+  }
 
-    @Override
-    public void reset() {
-        type = null;
-    }
+  @Override
+  public void reset() {
+    type = null;
+  }
 
-    enum Type {
-        ARMOR, BOOT, GLOVE, HELMET, PENDANT, RING, RUBBISH, TROUSERS
-    }
+  public enum Type {
+    ARMOR, BOOT, GLOVE, HELMET, PENDANT, RING, RUBBISH, TROUSERS
+  }
 
 }

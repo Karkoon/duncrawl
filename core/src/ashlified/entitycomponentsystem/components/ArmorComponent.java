@@ -8,18 +8,18 @@ import com.badlogic.gdx.utils.Pool;
  */
 public final class ArmorComponent implements Component, Pool.Poolable {
 
-    private int armor = 0;
+  private int armor = 0;
 
-    public int getArmor() {
-        return armor;
-    }
+  public int getArmor() {
+    return armor;
+  }
 
-    public void setArmor(int armor) {
-        this.armor = armor;
-    }
+  public void setArmor(int armor) {
+    this.armor = armor;
+  }
 
-    @Override
-    public void reset() {
-        armor = 0;
-    }
+  @Override
+  public void reset() {
+    armor = 0;
+  }
 }

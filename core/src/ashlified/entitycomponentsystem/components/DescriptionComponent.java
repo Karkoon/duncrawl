@@ -8,18 +8,18 @@ import com.badlogic.gdx.utils.Pool;
  */
 public final class DescriptionComponent implements Component, Pool.Poolable {
 
-    private String description;
+  private String description;
 
-    public String getDescription() {
-        return description;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    @Override
-    public void reset() {
-        description = null;
-    }
+  @Override
+  public void reset() {
+    description = null;
+  }
 }

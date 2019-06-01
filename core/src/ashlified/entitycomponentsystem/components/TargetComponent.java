@@ -6,18 +6,18 @@ import com.badlogic.gdx.utils.Pool;
 
 public class TargetComponent implements Component, Pool.Poolable {
 
-    private DungeonSection target;
+  private DungeonSection target;
 
-    public DungeonSection getTarget() {
-        return target;
-    }
+  public DungeonSection getTarget() {
+    return target;
+  }
 
-    public void setTarget(DungeonSection target) {
-        this.target = target;
-    }
+  public void setTarget(DungeonSection target) {
+    this.target = target;
+  }
 
-    @Override
-    public void reset() {
-        target = null;
-    }
+  @Override
+  public void reset() {
+    target = null;
+  }
 }

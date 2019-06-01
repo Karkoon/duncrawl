@@ -8,18 +8,18 @@ import com.badlogic.gdx.utils.Pool;
  */
 public final class NameComponent implements Component, Pool.Poolable {
 
-    private String name;
+  private String name;
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    @Override
-    public void reset() {
-        name = null;
-    }
+  @Override
+  public void reset() {
+    name = null;
+  }
 }

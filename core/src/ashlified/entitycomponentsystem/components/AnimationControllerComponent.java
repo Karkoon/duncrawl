@@ -6,18 +6,18 @@ import com.badlogic.gdx.utils.Pool;
 
 public class AnimationControllerComponent implements Component, Pool.Poolable {
 
-    private AnimationController controller;
+  private AnimationController controller;
 
-    public AnimationController getController() {
-        return controller;
-    }
+  public AnimationController getController() {
+    return controller;
+  }
 
-    public void setController(AnimationController controller) {
-        this.controller = controller;
-    }
+  public void setController(AnimationController controller) {
+    this.controller = controller;
+  }
 
-    @Override
-    public void reset() {
-        controller = null;
-    }
+  @Override
+  public void reset() {
+    controller = null;
+  }
 }

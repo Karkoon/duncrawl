@@ -13,48 +13,48 @@ import java.util.EnumMap;
 /**
  * Created by karkoon on 01.02.17.
  * Used in pathfinding a node. Contains connections.
- * It's positions and positions of its neighbours are read to create an accurate model instance.
+ * It's position and positions of its' neighbours are read to create a section model.
  * Contains a list of objects that are currently occupying it to block other NPCs from moving onto it.
  */
 
 public class DungeonSection {
 
-    private ArrayList<Entity> occupyingEntities = new ArrayList<>();
-    private ArrayList<Vector3> adjacentPositions = new ArrayList<>();
-    private Array<Connection<DungeonSection>> adjacentSections = new Array<>();
-    private Vector3 position;
+  private ArrayList<Entity> occupyingEntities = new ArrayList<>();
+  private ArrayList<Vector3> adjacentPositions = new ArrayList<>();
+  private Array<Connection<DungeonSection>> adjacentSections = new Array<>();
+  private Vector3 position;
 
-    private EnumMap<CardinalDirection, DefaultConnection<DungeonSection>> adjacentSectionsMap = new EnumMap<>(CardinalDirection.class);
+  private EnumMap<CardinalDirection, DefaultConnection<DungeonSection>> adjacentSectionsMap = new EnumMap<>(CardinalDirection.class);
 
-    ArrayList<Vector3> getAdjacentSectionPositions() {
-        return adjacentPositions;
-    }
+  ArrayList<Vector3> getAdjacentSectionPositions() {
+    return adjacentPositions;
+  }
 
-    public EnumMap<CardinalDirection, DefaultConnection<DungeonSection>> getConnectionsMap() {
-        return adjacentSectionsMap;
-    }
+  public EnumMap<CardinalDirection, DefaultConnection<DungeonSection>> getConnectionsMap() {
+    return adjacentSectionsMap;
+  }
 
-    public Array<Connection<DungeonSection>> getConnections() {
-        return adjacentSections;
-    }
+  public Array<Connection<DungeonSection>> getConnections() {
+    return adjacentSections;
+  }
 
-    public DefaultConnection<DungeonSection> getConnection(CardinalDirection direction) {
-        return adjacentSectionsMap.get(direction);
-    }
+  public DefaultConnection<DungeonSection> getConnection(CardinalDirection direction) {
+    return adjacentSectionsMap.get(direction);
+  }
 
-    public Vector3 getPosition() {
-        return position;
-    }
+  public Vector3 getPosition() {
+    return position;
+  }
 
-    public void setPosition(Vector3 position) {
-        this.position = position;
-    }
+  public void setPosition(Vector3 position) {
+    this.position = position;
+  }
 
-    public ArrayList<Entity> getOccupyingEntities() {
-        return occupyingEntities;
-    }
+  public ArrayList<Entity> getOccupyingEntities() {
+    return occupyingEntities;
+  }
 
-    public void addOccupyingObject(Entity entity) {
-        occupyingEntities.add(entity);
-    }
+  public void addOccupyingObject(Entity entity) {
+    occupyingEntities.add(entity);
+  }
 }
