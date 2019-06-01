@@ -21,27 +21,31 @@ import com.brashmonkey.spriter.Loader;
  */
 public class PoolPlaneAtlasLoader extends Loader<FlushablePool<ModelInstance>> {
 
-    private Model planeModel;
-    private TextureAtlas atlas;
+  private final Material material;
+  private Model planeModel;
+  private TextureAtlas atlas;
 
-    public PoolPlaneAtlasLoader(Data data, AssetManager assetManager) {
-        super(data);
-        planeModel = assetManager.get(AssetPaths.PLANE_MODEL, Model.class);
-        atlas = assetManager.get(AssetPaths.NPC_ATLAS, TextureAtlas.class);
-    }
 
-    @Override
-    protected FlushablePool<ModelInstance> loadResource(FileReference ref) {
-        final String fileName = data.getFile(ref.folder, ref.file).name;
-        final TextureRegion texRegion = atlas.findRegion(fileName);
-        final Material material = planeModel.materials.first();
-        material.set(ColorAttribute.createDiffuse(0.8f, 0.8f, 0.8f, 1f), new FloatAttribute(FloatAttribute.AlphaTest, 0.5f), new BlendingAttribute());
-        return new FlushablePool<ModelInstance>() {
-            @Override
-            protected ModelInstance newObject() {
-                material.set(TextureAttribute.createDiffuse(texRegion));
-                return new ModelInstance(planeModel);
-            }
-        };
-    }
+  public PoolPlaneAtlasLoader(Data data, AssetManager assetManager) {
+    super(data);
+    planeModel = assetManager.get(AssetPaths.PLANE_MODEL, Model.class);
+    atlas = assetManager.get(AssetPaths.NPC_ATLAS, TextureAtlas.class);
+    material = planeModel.materials.first();
+    material.set(ColorAttribute.createDiffuse(0.8f, 0.8f, 0.8f, 1f), new FloatAttribute(FloatAttribute.AlphaTest, 0.5f), new BlendingAttribute());
+    material.remove(ColorAttribute.Emissive);
+  }
+
+  @Override
+  protected FlushablePool<ModelInstance> loadResource(FileReference ref) {
+    final String fileName = data.getFile(ref.folder, ref.file).name;
+    final TextureRegion texRegion = atlas.findRegion(fileName);
+
+    return new FlushablePool<ModelInstance>() {
+      @Override
+      protected ModelInstance newObject() {
+        material.set(TextureAttribute.createDiffuse(texRegion));
+        return new ModelInstance(planeModel);
+      }
+    };
+  }
 }

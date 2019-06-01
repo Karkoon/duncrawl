@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Pool;
 
 public class InteractionComponent implements Component, Pool.Poolable {
 
-    @Override
-    public void reset() {
-    }
+  @Override
+  public void reset() {
+  }
 }

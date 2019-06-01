@@ -13,31 +13,31 @@ import com.badlogic.gdx.utils.Array;
  */
 public class StringLoader extends AsynchronousAssetLoader<String, StringLoader.StringLoaderParameter> {
 
-    private String text;
+  private String text;
 
-    public StringLoader(FileHandleResolver resolver) {
-        super(resolver);
-    }
+  public StringLoader(FileHandleResolver resolver) {
+    super(resolver);
+  }
 
-    @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle file, StringLoaderParameter parameter) {
-        text = null;
-        text = file.readString();
-    }
+  @Override
+  public void loadAsync(AssetManager manager, String fileName, FileHandle file, StringLoaderParameter parameter) {
+    text = null;
+    text = file.readString();
+  }
 
-    @Override
-    public String loadSync(AssetManager manager, String fileName, FileHandle file, StringLoaderParameter parameter) {
-        String text = this.text;
-        this.text = null;
-        return text;
-    }
+  @Override
+  public String loadSync(AssetManager manager, String fileName, FileHandle file, StringLoaderParameter parameter) {
+    String text = this.text;
+    this.text = null;
+    return text;
+  }
 
-    @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, StringLoaderParameter parameter) {
-        return null;
-    }
+  @Override
+  public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, StringLoaderParameter parameter) {
+    return null;
+  }
 
-    public static class StringLoaderParameter extends AssetLoaderParameters<String> {
+  public static class StringLoaderParameter extends AssetLoaderParameters<String> {
 
-    }
+  }
 }

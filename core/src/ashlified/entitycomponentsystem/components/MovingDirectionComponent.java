@@ -6,18 +6,18 @@ import com.badlogic.gdx.utils.Pool;
 
 public class MovingDirectionComponent implements Pool.Poolable, Component {
 
-    private CardinalDirection direction;
+  private CardinalDirection direction;
 
-    public CardinalDirection getDirection() {
-        return direction;
-    }
+  public CardinalDirection getDirection() {
+    return direction;
+  }
 
-    public void setDirection(CardinalDirection direction) {
-        this.direction = direction;
-    }
+  public void setDirection(CardinalDirection direction) {
+    this.direction = direction;
+  }
 
-    @Override
-    public void reset() {
-        direction = null;
-    }
+  @Override
+  public void reset() {
+    direction = null;
+  }
 }

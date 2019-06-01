@@ -6,18 +6,18 @@ import com.badlogic.gdx.utils.Pool;
 
 public class ModelInstanceComponent implements Component, Pool.Poolable {
 
-    private ModelInstance instance;
+  private ModelInstance modelInstance;
 
-    public ModelInstance getInstance() {
-        return instance;
-    }
+  public ModelInstance getModelInstance() {
+    return modelInstance;
+  }
 
-    public void setInstance(ModelInstance instance) {
-        this.instance = instance;
-    }
+  public void setModelInstance(ModelInstance modelInstance) {
+    this.modelInstance = modelInstance;
+  }
 
-    @Override
-    public void reset() {
-        instance = null;
-    }
+  @Override
+  public void reset() {
+    modelInstance = null;
+  }
 }

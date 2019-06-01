@@ -9,18 +9,18 @@ import com.badlogic.gdx.utils.Pool;
  */
 public final class AttackComponent implements Component, Pool.Poolable {
 
-    public Entity getEnemy() {
-        return enemy;
-    }
+  private Entity enemy;
 
-    public void setEnemy(Entity enemy) {
-        this.enemy = enemy;
-    }
+  public Entity getEnemy() {
+    return enemy;
+  }
 
-    private Entity enemy;
+  public void setEnemy(Entity enemy) {
+    this.enemy = enemy;
+  }
 
-    @Override
-    public void reset() {
-        this.enemy = null;
-    }
+  @Override
+  public void reset() {
+    this.enemy = null;
+  }
 }

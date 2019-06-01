@@ -10,4 +10,5 @@
   endLevel: 10
   spawnRate: 100
   levelTheme: green
+  type: "RING"
 }

@@ -11,15 +11,15 @@ import com.badlogic.ashley.systems.IteratingSystem;
  */
 public class ModelAnimationSystem extends IteratingSystem {
 
-    private ComponentMapper<AnimationControllerComponent> animationMapper = ComponentMapper.getFor(AnimationControllerComponent.class);
+  private ComponentMapper<AnimationControllerComponent> animationMapper = ComponentMapper.getFor(AnimationControllerComponent.class);
 
-    public ModelAnimationSystem() {
-        super(Family.all(AnimationControllerComponent.class).get());
-    }
+  public ModelAnimationSystem() {
+    super(Family.all(AnimationControllerComponent.class).get());
+  }
 
-    @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-        AnimationControllerComponent animComp = animationMapper.get(entity);
-        animComp.getController().update(deltaTime);
-    }
+  @Override
+  protected void processEntity(Entity entity, float deltaTime) {
+    AnimationControllerComponent animComp = animationMapper.get(entity);
+    animComp.getController().update(deltaTime);
+  }
 }

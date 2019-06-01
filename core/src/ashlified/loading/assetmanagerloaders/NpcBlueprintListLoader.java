@@ -17,54 +17,54 @@ import java.util.ArrayList;
  */
 public class NpcBlueprintListLoader extends AsynchronousAssetLoader<NpcBlueprintListLoader.EnemyNPCBlueprintList, NpcBlueprintListLoader.EnemyNPCBlueprintListLoaderParameter> {
 
-    private EnemyNPCBlueprintList blueprints;
+  private EnemyNPCBlueprintList blueprints;
 
-    public NpcBlueprintListLoader(FileHandleResolver resolver) {
-        super(resolver);
-        blueprints = new EnemyNPCBlueprintList();
+  public NpcBlueprintListLoader(FileHandleResolver resolver) {
+    super(resolver);
+    blueprints = new EnemyNPCBlueprintList();
+  }
+
+  @Override
+  public void loadAsync(AssetManager manager, String fileName, FileHandle file, EnemyNPCBlueprintListLoaderParameter parameter) {
+    blueprints = null;
+    blueprints = new EnemyNPCBlueprintList();
+    FileHandle[] files = getBlueprintFiles(file);
+    if (files != null) {
+      Json json = new Json();
+      for (FileHandle blueprintFileHandle : files) {
+        EnemyNPCEntityConfigurer.EnemyNpcBlueprint blueprint = json.fromJson(EnemyNPCEntityConfigurer.EnemyNpcBlueprint.class, blueprintFileHandle);
+        blueprints.getEnemyNpcBlueprints().add(blueprint);
+      }
     }
+  }
 
-    @Override
-    public void loadAsync(AssetManager manager, String fileName, FileHandle file, EnemyNPCBlueprintListLoaderParameter parameter) {
-        blueprints = null;
-        blueprints = new EnemyNPCBlueprintList();
-        FileHandle[] files = getBlueprintFiles(file);
-        if (files != null) {
-            Json json = new Json();
-            for (FileHandle blueprintFileHandle : files) {
-                EnemyNPCEntityConfigurer.EnemyNpcBlueprint blueprint = json.fromJson(EnemyNPCEntityConfigurer.EnemyNpcBlueprint.class, blueprintFileHandle);
-                blueprints.getEnemyNpcBlueprints().add(blueprint);
-            }
-        }
+  private FileHandle[] getBlueprintFiles(FileHandle dir) {
+    String blueprintFileSuffix = "bp";
+    return dir.list(blueprintFileSuffix);
+  }
+
+  @Override
+  public EnemyNPCBlueprintList loadSync(AssetManager manager, String fileName, FileHandle file, EnemyNPCBlueprintListLoaderParameter parameter) {
+    EnemyNPCBlueprintList blueprints = this.blueprints;
+    this.blueprints = null;
+    return blueprints;
+  }
+
+  @Override
+  public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, EnemyNPCBlueprintListLoaderParameter parameter) {
+    return null;
+  }
+
+  static class EnemyNPCBlueprintListLoaderParameter extends AssetLoaderParameters<EnemyNPCBlueprintList> {
+
+  }
+
+  public static class EnemyNPCBlueprintList {
+
+    private ArrayList<EnemyNPCEntityConfigurer.EnemyNpcBlueprint> enemyNpcBlueprints = new ArrayList<>();
+
+    public ArrayList<EnemyNPCEntityConfigurer.EnemyNpcBlueprint> getEnemyNpcBlueprints() {
+      return enemyNpcBlueprints;
     }
-
-    private FileHandle[] getBlueprintFiles(FileHandle dir) {
-        String blueprintFileSuffix = "bp";
-        return dir.list(blueprintFileSuffix);
-    }
-
-    @Override
-    public EnemyNPCBlueprintList loadSync(AssetManager manager, String fileName, FileHandle file, EnemyNPCBlueprintListLoaderParameter parameter) {
-        EnemyNPCBlueprintList blueprints = this.blueprints;
-        this.blueprints = null;
-        return blueprints;
-    }
-
-    @Override
-    public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, EnemyNPCBlueprintListLoaderParameter parameter) {
-        return null;
-    }
-
-    static class EnemyNPCBlueprintListLoaderParameter extends AssetLoaderParameters<EnemyNPCBlueprintList> {
-
-    }
-
-    public static class EnemyNPCBlueprintList {
-
-        private ArrayList<EnemyNPCEntityConfigurer.EnemyNpcBlueprint> enemyNpcBlueprints = new ArrayList<>();
-
-        public ArrayList<EnemyNPCEntityConfigurer.EnemyNpcBlueprint> getEnemyNpcBlueprints() {
-            return enemyNpcBlueprints;
-        }
-    }
+  }
 }

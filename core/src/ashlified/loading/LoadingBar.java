@@ -11,23 +11,23 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  */
 class LoadingBar extends Actor {
 
-    private Animation animation;
-    private TextureRegion reg;
-    private float stateTime;
+  private Animation animation;
+  private TextureRegion reg;
+  private float stateTime;
 
-    LoadingBar(Animation animation) {
-        this.animation = animation;
-        reg = (TextureRegion) animation.getKeyFrame(0);
-    }
+  LoadingBar(Animation animation) {
+    this.animation = animation;
+    reg = (TextureRegion) animation.getKeyFrame(0);
+  }
 
-    @Override
-    public void act(float delta) {
-        stateTime += delta;
-        reg = (TextureRegion) animation.getKeyFrame(stateTime);
-    }
+  @Override
+  public void act(float delta) {
+    stateTime += delta;
+    reg = (TextureRegion) animation.getKeyFrame(stateTime);
+  }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        batch.draw(reg, getX(), getY());
-    }
+  @Override
+  public void draw(Batch batch, float parentAlpha) {
+    batch.draw(reg, getX(), getY());
+  }
 }

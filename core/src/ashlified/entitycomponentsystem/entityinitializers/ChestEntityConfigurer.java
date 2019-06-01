@@ -20,56 +20,56 @@ import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
  */
 class ChestEntityConfigurer {
 
-    private final static int ITEM_CAPACITY = 1;
-    private final PooledEngine engine;
-    private AssetManager assetManager;
+  private final static int ITEM_CAPACITY = 1;
+  private final PooledEngine engine;
+  private AssetManager assetManager;
 
-    ChestEntityConfigurer(Engine engine, AssetManager assetManager) {
-        this.engine = (PooledEngine) engine;
-        this.assetManager = assetManager;
+  ChestEntityConfigurer(Engine engine, AssetManager assetManager) {
+    this.engine = (PooledEngine) engine;
+    this.assetManager = assetManager;
+  }
+
+  void configureNewChest(Dungeon dungeon) {
+    InventoryComponent inventory = engine.createComponent(InventoryComponent.class);
+    ModelInstanceComponent representation = engine.createComponent(ModelInstanceComponent.class);
+    AnimationControllerComponent animation = engine.createComponent(AnimationControllerComponent.class);
+
+    PositionComponent position = engine.createComponent(PositionComponent.class);
+    DungeonSection dungeonSection = dungeon.getRandomDungeonSection();
+    position.setPosition(dungeonSection.getPosition());
+    position.setOccupiedSection(dungeonSection);
+
+    inventory.setMaxItems(ITEM_CAPACITY);
+    //inventory.addUsedItem();
+
+    representation.setModelInstance(new ModelInstance(assetManager.get(AssetPaths.CHEST_MODEL, Model.class)));
+
+    animation.setController(new AnimationController(representation.getModelInstance()));
+    animation.getController().setAnimation(AnimationID.OPEN.value, -1);
+
+    Entity entity = engine.createEntity();
+    entity.add(position);
+    entity.add(inventory);
+    entity.add(representation);
+    entity.add(animation);
+    engine.addEntity(entity);
+
+    dungeonSection.addOccupyingObject(entity);
+  }
+
+
+  /**
+   * Class containing animation ids of the chest for easier access and change. The ids come
+   * from Blender animations.
+   */
+  enum AnimationID {
+
+    OPEN("Armature|Open"), CLOSE("Armature|Close");
+
+    String value;
+
+    AnimationID(String value) {
+      this.value = value;
     }
-
-    void configureNewChest(Dungeon dungeon) {
-        PositionComponent position = engine.createComponent(PositionComponent.class);
-        InventoryComponent inventory = engine.createComponent(InventoryComponent.class);
-        ModelInstanceComponent representation = engine.createComponent(ModelInstanceComponent.class);
-        AnimationControllerComponent animation = engine.createComponent(AnimationControllerComponent.class);
-
-        DungeonSection dungeonSection = dungeon.getRandomDungeonSection();
-        position.setPosition(dungeonSection.getPosition());
-        position.setOccupiedSection(dungeonSection);
-
-        inventory.setMaxItems(ITEM_CAPACITY);
-        //inventory.addUsedItem();
-
-        representation.setInstance(new ModelInstance(assetManager.get(AssetPaths.CHEST_MODEL, Model.class)));
-
-        animation.setController(new AnimationController(representation.getInstance()));
-        animation.getController().setAnimation(AnimationID.OPEN.value, -1);
-
-        Entity entity = engine.createEntity();
-        entity.add(position);
-        entity.add(inventory);
-        entity.add(representation);
-        entity.add(animation);
-        engine.addEntity(entity);
-
-        dungeonSection.addOccupyingObject(entity);
-    }
-
-
-    /**
-     * Class containing animation ids of the chest for easier access and change. The ids come
-     * from Blender animations.
-     */
-    enum AnimationID {
-
-        OPEN("Armature|Open"), CLOSE("Armature|Close");
-
-        String value;
-
-        AnimationID(String value) {
-            this.value = value;
-        }
-    }
+  }
 }

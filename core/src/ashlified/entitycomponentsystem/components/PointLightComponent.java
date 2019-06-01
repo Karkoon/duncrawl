@@ -9,18 +9,18 @@ import com.badlogic.gdx.utils.Pool;
  */
 public class PointLightComponent implements Component, Pool.Poolable {
 
-    private PointLight pointLight;
+  private PointLight pointLight;
 
-    public PointLight getPointLight() {
-        return pointLight;
-    }
+  public PointLight getPointLight() {
+    return pointLight;
+  }
 
-    public void setPointLight(PointLight pointLight) {
-        this.pointLight = pointLight;
-    }
+  public void setPointLight(PointLight pointLight) {
+    this.pointLight = pointLight;
+  }
 
-    @Override
-    public void reset() {
-        pointLight = null;
-    }
+  @Override
+  public void reset() {
+    pointLight = null;
+  }
 }

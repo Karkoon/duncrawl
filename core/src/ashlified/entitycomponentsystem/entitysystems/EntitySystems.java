@@ -8,80 +8,95 @@ import com.badlogic.gdx.graphics.Camera;
 
 public class EntitySystems {
 
-    private final FlatImagesDrawingSystem npcRenderingSystem;
-    private final ModelInstanceRenderingSystem modelInstanceRenderingSystem;
-    private final ModelAnimationSystem modelAnimationSystem;
-    private final LightingSystem lightingSystem;
-    private final NpcAiSystem npcAiSystem;
-    private final TargetingSystem targetSystem;
-    private final CameraUpdateSystem cameraUpdateSystem;
-    private final DeadEntitiesRemoverSystem deadEntitiesRemoverSystem;
-    private final PositionSystem positionSystem;
-    private final AttackSystem attackSystem;
+  private final FlatImagesDrawingSystem npcRenderingSystem;
+  private final ModelInstanceRenderingSystem modelInstanceRenderingSystem;
+  private final ModelAnimationSystem modelAnimationSystem;
+  private final LightingSystem lightingSystem;
+  private final NpcAiSystem npcAiSystem;
+  private final TargetingSystem targetSystem;
+  private final CameraUpdateSystem cameraUpdateSystem;
+  private final DeadEntitiesRemoverSystem deadEntitiesRemoverSystem;
+  private final PositionSystem positionSystem;
+  private final AttackSystem attackSystem;
 
-    public EntitySystems(AssetManager assetManager, ModelInstanceRenderer renderer, Dungeon dungeon, Camera camera) {
-        this.deadEntitiesRemoverSystem = new DeadEntitiesRemoverSystem();
-        this.attackSystem = new AttackSystem();
-        this.npcRenderingSystem = new FlatImagesDrawingSystem(assetManager, renderer);
-        this.modelInstanceRenderingSystem = new ModelInstanceRenderingSystem(renderer);
-        this.modelAnimationSystem = new ModelAnimationSystem();
-        this.lightingSystem = new LightingSystem();
-        this.npcAiSystem = new NpcAiSystem(dungeon);
-        this.targetSystem = new TargetingSystem();
-        this.cameraUpdateSystem = new CameraUpdateSystem(camera);
-        this.positionSystem = new PositionSystem();
-    }
+  private final ItemRendererSystem itemRendererSystem;
+  private final PickUpSystem pickUpSystem;
 
-    public void addSystemsTo(Engine engine) {
-        engine.addSystem(attackSystem);
-        engine.addSystem(npcRenderingSystem);
-        engine.addSystem(modelAnimationSystem);
-        engine.addSystem(modelInstanceRenderingSystem);
-        engine.addSystem(deadEntitiesRemoverSystem);
-        engine.addSystem(lightingSystem);
-        engine.addSystem(targetSystem);
-        engine.addSystem(npcAiSystem);
-        engine.addSystem(cameraUpdateSystem);
-        engine.addSystem(positionSystem);
-    }
+  public EntitySystems(AssetManager assetManager, ModelInstanceRenderer renderer, Dungeon dungeon, Camera camera) {
+    this.deadEntitiesRemoverSystem = new DeadEntitiesRemoverSystem();
+    this.attackSystem = new AttackSystem();
+    this.npcRenderingSystem = new FlatImagesDrawingSystem(assetManager, renderer);
+    this.modelInstanceRenderingSystem = new ModelInstanceRenderingSystem(renderer);
+    this.modelAnimationSystem = new ModelAnimationSystem();
+    this.lightingSystem = new LightingSystem();
+    this.npcAiSystem = new NpcAiSystem(dungeon);
+    this.targetSystem = new TargetingSystem();
+    this.cameraUpdateSystem = new CameraUpdateSystem(camera);
+    this.positionSystem = new PositionSystem();
+    this.itemRendererSystem = new ItemRendererSystem(renderer);
+    this.pickUpSystem = new PickUpSystem();
+  }
 
-    public PositionSystem getPositionSystem() {
-        return positionSystem;
-    }
+  public void addSystemsTo(Engine engine) {
+    engine.addSystem(itemRendererSystem);
+    engine.addSystem(attackSystem);
+    engine.addSystem(npcRenderingSystem);
+    engine.addSystem(modelAnimationSystem);
+    engine.addSystem(modelInstanceRenderingSystem);
+    engine.addSystem(deadEntitiesRemoverSystem);
+    engine.addSystem(lightingSystem);
+    engine.addSystem(targetSystem);
+    engine.addSystem(npcAiSystem);
+    engine.addSystem(cameraUpdateSystem);
+    engine.addSystem(positionSystem);
+    engine.addSystem(pickUpSystem);
+  }
 
-    public AttackSystem getAttackSystem() {
-        return attackSystem;
-    }
+  public PickUpSystem getPickUpSystem() {
+    return pickUpSystem;
+  }
 
-    public DeadEntitiesRemoverSystem getDeadEntitiesRemoverSystem() {
-        return deadEntitiesRemoverSystem;
-    }
+  public ItemRendererSystem getItemRendererSystem() {
+    return itemRendererSystem;
+  }
 
-    public FlatImagesDrawingSystem getNpcRenderingSystem() {
-        return npcRenderingSystem;
-    }
+  public PositionSystem getPositionSystem() {
+    return positionSystem;
+  }
 
-    public ModelInstanceRenderingSystem getModelInstanceRenderingSystem() {
-        return modelInstanceRenderingSystem;
-    }
+  public AttackSystem getAttackSystem() {
+    return attackSystem;
+  }
 
-    public ModelAnimationSystem getModelAnimationSystem() {
-        return modelAnimationSystem;
-    }
+  public DeadEntitiesRemoverSystem getDeadEntitiesRemoverSystem() {
+    return deadEntitiesRemoverSystem;
+  }
 
-    public LightingSystem getLightingSystem() {
-        return lightingSystem;
-    }
+  public FlatImagesDrawingSystem getNpcRenderingSystem() {
+    return npcRenderingSystem;
+  }
 
-    public NpcAiSystem getNpcAiSystem() {
-        return npcAiSystem;
-    }
+  public ModelInstanceRenderingSystem getModelInstanceRenderingSystem() {
+    return modelInstanceRenderingSystem;
+  }
 
-    public TargetingSystem getTargetSystem() {
-        return targetSystem;
-    }
+  public ModelAnimationSystem getModelAnimationSystem() {
+    return modelAnimationSystem;
+  }
 
-    public CameraUpdateSystem getCameraUpdateSystem() {
-        return cameraUpdateSystem;
-    }
+  public LightingSystem getLightingSystem() {
+    return lightingSystem;
+  }
+
+  public NpcAiSystem getNpcAiSystem() {
+    return npcAiSystem;
+  }
+
+  public TargetingSystem getTargetSystem() {
+    return targetSystem;
+  }
+
+  public CameraUpdateSystem getCameraUpdateSystem() {
+    return cameraUpdateSystem;
+  }
 }

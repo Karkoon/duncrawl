@@ -1,49 +1,43 @@
 package ashlified.entitycomponentsystem.entitysystems;
 
-import ashlified.entitycomponentsystem.components.*;
-import ashlified.graphics.spriterutils.AnimationID;
-import ashlified.graphics.spriterutils.SpriterAnimationController;
+import ashlified.entitycomponentsystem.components.AttackActionComponent;
+import ashlified.entitycomponentsystem.components.AttackComponent;
+import ashlified.entitycomponentsystem.components.HealthComponent;
+import ashlified.entitycomponentsystem.components.StatsComponent;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.brashmonkey.spriter.Animation;
 
 public class AttackSystem extends IteratingSystem {
 
-    private ComponentMapper<AttackComponent> attackMapper = ComponentMapper.getFor(AttackComponent.class);
-    private ComponentMapper<StatsComponent> statsMapper = ComponentMapper.getFor(StatsComponent.class);
-    private ComponentMapper<HealthComponent> healthMapper = ComponentMapper.getFor(HealthComponent.class);
+  private ComponentMapper<AttackComponent> attackMapper = ComponentMapper.getFor(AttackComponent.class);
+  private ComponentMapper<StatsComponent> statsMapper = ComponentMapper.getFor(StatsComponent.class);
+  private ComponentMapper<HealthComponent> healthMapper = ComponentMapper.getFor(HealthComponent.class);
+  private ComponentMapper<AttackActionComponent> attackReactionMapper = ComponentMapper.getFor(AttackActionComponent.class);
 
-    private ComponentMapper<SpriterModelComponent> spriterMapper = ComponentMapper.getFor(SpriterModelComponent.class);
 
-    AttackSystem() {
-        super(Family.all(AttackComponent.class,
-                StatsComponent.class,
-                HealthComponent.class).get());
-    }
+  AttackSystem() {
+    super(Family.all(
+      AttackComponent.class,
+      StatsComponent.class,
+      HealthComponent.class).get());
+  }
 
-    @Override
-    protected void processEntity(Entity entity, float deltaTime) {
-        Entity enemy = attackMapper.get(entity).getEnemy();
-        HealthComponent enemyHealth = healthMapper.get(enemy);
-        int entityStrength = statsMapper.get(entity).getStrength();
-        enemyHealth.setHealth(enemyHealth.getHealth() - entityStrength);
+  @Override
+  protected void processEntity(Entity entity, float deltaTime) {
+    Entity enemy = attackMapper.get(entity).getEnemy();
+    HealthComponent enemyHealth = healthMapper.get(enemy);
 
-        if (spriterMapper.has(entity)) {
-            spriterMapper.get(entity).getSpriterAnimationController().attackEvent();
-        }
+    int entityStrength = statsMapper.get(entity).getStrength();
+    enemyHealth.setHealth(enemyHealth.getHealth() - entityStrength);
 
-        if (spriterMapper.has(enemy)) {
-            SpriterAnimationController animationController = spriterMapper.get(enemy).getSpriterAnimationController();
-            if (enemyHealth.getHealth() <= 0) {
-                animationController.damagedEvent();
-                animationController.dieEvent();
-            } else {
-                animationController.damagedEvent();
-            }
-        }
+    AttackActionComponent attackerAction = attackReactionMapper.get(entity);
+    attackerAction.getAction().run();
 
-        entity.remove(AttackComponent.class);
-    }
+    AttackActionComponent enemyReaction = attackReactionMapper.get(enemy);
+    enemyReaction.getReaction().run();
+
+    entity.remove(AttackComponent.class);
+  }
 }

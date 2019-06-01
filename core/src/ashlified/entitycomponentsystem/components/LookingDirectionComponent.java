@@ -6,18 +6,18 @@ import com.badlogic.gdx.utils.Pool;
 
 public class LookingDirectionComponent implements Component, Pool.Poolable {
 
-    private Vector3 lookingDirection;
+  private Vector3 lookingDirection;
 
-    public Vector3 getLookingDirection() {
-        return lookingDirection;
-    }
+  public Vector3 getLookingDirection() {
+    return lookingDirection;
+  }
 
-    public void setLookingDirection(Vector3 lookingDirection) {
-        this.lookingDirection = lookingDirection;
-    }
+  public void setLookingDirection(Vector3 lookingDirection) {
+    this.lookingDirection = lookingDirection;
+  }
 
-    @Override
-    public void reset() {
-        lookingDirection = null;
-    }
+  @Override
+  public void reset() {
+    lookingDirection = null;
+  }
 }

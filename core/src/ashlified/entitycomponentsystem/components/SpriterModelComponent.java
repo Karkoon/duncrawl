@@ -9,18 +9,18 @@ import com.badlogic.gdx.utils.Pool;
  */
 public final class SpriterModelComponent implements Component, Pool.Poolable {
 
-    private SpriterAnimationController spriterAnimationController;
+  private SpriterAnimationController spriterAnimationController;
 
-    public SpriterAnimationController getSpriterAnimationController() {
-        return spriterAnimationController;
-    }
+  public SpriterAnimationController getSpriterAnimationController() {
+    return spriterAnimationController;
+  }
 
-    public void setSpriterAnimationController(SpriterAnimationController spriterAnimationController) {
-        this.spriterAnimationController = spriterAnimationController;
-    }
+  public void setSpriterAnimationController(SpriterAnimationController spriterAnimationController) {
+    this.spriterAnimationController = spriterAnimationController;
+  }
 
-    @Override
-    public void reset() {
-        spriterAnimationController = null;
-    }
+  @Override
+  public void reset() {
+    spriterAnimationController = null;
+  }
 }

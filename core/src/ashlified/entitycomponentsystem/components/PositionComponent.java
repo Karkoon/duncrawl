@@ -10,28 +10,32 @@ import com.badlogic.gdx.utils.Pool;
  */
 public final class PositionComponent implements Component, Pool.Poolable {
 
-    private Vector3 position;
-    private DungeonSection occupiedSection;
+  private Vector3 position;
+  private DungeonSection occupiedSection;
 
-    public DungeonSection getOccupiedSection() {
-        return occupiedSection;
-    }
+  public DungeonSection getOccupiedSection() {
+    return occupiedSection;
+  }
 
-    public void setOccupiedSection(DungeonSection occupiedSection) {
-        this.occupiedSection = occupiedSection;
-    }
+  public void setOccupiedSection(DungeonSection occupiedSection) {
+    this.occupiedSection = occupiedSection;
+  }
 
-    public Vector3 getPosition() {
-        return position;
-    }
+  public Vector3 getPosition() {
+    return position;
+  }
 
-    public void setPosition(Vector3 position) {
-        this.position = position.cpy();
-    }
+  public void setPosition(Vector3 position) {
+    this.position = position.cpy();
+  }
 
-    @Override
-    public void reset() {
-        position = null;
-        occupiedSection = null;
-    }
+  public void setPosition(float x, float y, float z) {
+    this.position = new Vector3(x, y, z);
+  }
+
+  @Override
+  public void reset() {
+    position = null;
+    occupiedSection = null;
+  }
 }
