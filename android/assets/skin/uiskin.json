@@ -168,5 +168,11 @@ com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 		scrollStyle: default,
 		listStyle: dimmed
 	}
+},
+	ashlified.gui.CharacterWindow$InventorySlot$InventorySlotStyle: {
+		default: {
+			background: check-box-off
+			hover: check-box
+		}
 }
 }
