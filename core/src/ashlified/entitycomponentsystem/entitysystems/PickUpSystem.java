@@ -16,20 +16,41 @@ public class PickUpSystem extends IteratingSystem {
   private ComponentMapper<InventoryComponent> inventoryMapper = ComponentMapper.getFor(InventoryComponent.class);
   private ComponentMapper<PositionComponent> posMapper = ComponentMapper.getFor(PositionComponent.class);
 
-  public PickUpSystem() {
+  PickUpSystem() {
     super(Family.all(PickUpIntentComponent.class, InventoryComponent.class).get());
   }
 
   @Override
   protected void processEntity(Entity entity, float deltaTime) {
+    if (isEntityAbleToPickUpItem(entity)) {
+      Entity item = getTargetItemFrom(entity);
+      removeItemFromDungeon(item);
+      addItemToEntityInventory(entity, item);
+      Gdx.app.log("Item picked up", item.toString());
+    }
+  }
+
+  private Entity getTargetItemFrom(Entity entity) {
     PickUpIntentComponent pickUpIntentComponent = pickUpIntentMapper.get(entity);
     Entity item = pickUpIntentComponent.getItem();
-    item.remove(DroppedItemComponent.class); // pick up implies an item?
+    pickUpIntentComponent.reset();
+    entity.remove(PickUpIntentComponent.class);
+    return item;
+  }
+
+  private void addItemToEntityInventory(Entity entity, Entity item) {
+    InventoryComponent inventoryComponent = inventoryMapper.get(entity);
+    inventoryComponent.addItem(item);
+  }
+
+  private void removeItemFromDungeon(Entity item) {
+    item.remove(DroppedItemComponent.class);
     posMapper.get(item).getOccupiedSection().getOccupyingEntities().remove(item);
     item.remove(PositionComponent.class);
-    inventoryMapper.get(entity).addItem(item);
-    entity.remove(PickUpIntentComponent.class);
-    Gdx.app.log("Item picked up", item.toString());
+  }
 
+  private boolean isEntityAbleToPickUpItem(Entity entity) {
+    InventoryComponent inventoryComponent = inventoryMapper.get(entity);
+    return inventoryComponent.getItems().size() != inventoryComponent.getMaxItems();
   }
 }
