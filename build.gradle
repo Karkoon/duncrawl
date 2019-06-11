@@ -9,7 +9,8 @@ buildscript {
         maven { url 'https://raw.github.com/Trixt0r/gdx-spriter/mvn/' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0+'
+        //noinspection GradleDependency
+        classpath 'com.android.tools.build:gradle:3.2.0'
     }
 }
 
@@ -24,7 +25,8 @@ allprojects {
         gdxVersion = '1.9.10-SNAPSHOT'
         ashleyVersion = '1.7.3'
         aiVersion = '1.8.1'
-        daggerVersion = '+'
+        spriterVersion = '1.0.1'
+        daggerVersion = '2.21'
     }
  
     repositories {
@@ -79,7 +81,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        compile "com.brashmonkey.spriter:gdx-spriter:+"
+        compile "com.brashmonkey.spriter:gdx-spriter:$spriterVersion"
         compile "com.google.dagger:dagger:$daggerVersion"
         annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     }
