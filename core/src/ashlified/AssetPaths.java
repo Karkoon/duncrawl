@@ -19,7 +19,7 @@ public class AssetPaths {
   public static final String SKIN = "skin/uiskin.json";
   public static final String FLOOR_TEXTURE = TEXTURE_DIR + "floor.png";
   public static final String ITEM_DIRECTORY = "items/";
-  public static final String PLAYER_IMAGE = "player.png";
+  public static final String ITEM_ATLAS = ITEM_DIRECTORY + "items.atlas";
 
   private AssetPaths() {
   }

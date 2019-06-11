@@ -24,7 +24,7 @@ public final class ItemTypeComponent implements Component, Pool.Poolable {
   }
 
   public enum Type {
-    ARMOR, BOOT, GLOVE, HELMET, PENDANT, RING, RUBBISH, TROUSERS
+    ARMOR, BOOTS, LEFT_WEAPON, RIGHT_WEAPON, HELMET, PENDANT, RING, RUBBISH, TROUSERS, ANY
   }
 
 }

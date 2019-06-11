@@ -81,9 +81,8 @@ public class LoadingScreen extends ScreenAdapter {
     assetManager.load(AssetPaths.SCML_FILE, ScmlDataWithResourcesLoader.SCMLDataWithResources.class);
     assetManager.load(AssetPaths.CHEST_MODEL, Model.class);
     assetManager.load(AssetPaths.ITEM_DIRECTORY, BlueprintListLoader.BlueprintList.class, new BlueprintListLoader.BlueprintListLoaderParameter(ItemEntityConfigurer.ItemBlueprint.class));
-    assetManager.load("items/Ring of Strength.png", Texture.class);
+    assetManager.load(AssetPaths.ITEM_ATLAS, TextureAtlas.class);
     assetManager.load(AssetPaths.SKIN, Skin.class);
-    assetManager.load(AssetPaths.PLAYER_IMAGE, Texture.class);
   }
 
   @Override

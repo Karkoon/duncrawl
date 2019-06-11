@@ -43,9 +43,7 @@ public class GameEntities {
   private void createItems() {
     ItemEntityConfigurer itemConfigurer = new ItemEntityConfigurer(engine, assetManager);
     for (int i = 0; i < 30; i++) {
-      for (ItemEntityConfigurer.ItemName itemName : ItemEntityConfigurer.ItemName.values()) {
-        itemConfigurer.configureNewItem(itemName.getValue(), dungeon);
-      }
+      itemConfigurer.configureNewItem(dungeon);
     }
   }
 

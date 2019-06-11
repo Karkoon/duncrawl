@@ -8,6 +8,7 @@ import ashlified.entitycomponentsystem.components.DescriptionComponent;
 import ashlified.entitycomponentsystem.components.DroppedItemComponent;
 import ashlified.entitycomponentsystem.components.FloatingSpeedComponent;
 import ashlified.entitycomponentsystem.components.HealthComponent;
+import ashlified.entitycomponentsystem.components.ItemIconComponent;
 import ashlified.entitycomponentsystem.components.ItemTypeComponent;
 import ashlified.entitycomponentsystem.components.ModelInstanceComponent;
 import ashlified.entitycomponentsystem.components.NameComponent;
@@ -19,7 +20,7 @@ import ashlified.loading.assetmanagerloaders.BlueprintListLoader;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -42,55 +43,57 @@ public class ItemEntityConfigurer {
     this.assetManager = assetManager;
   }
 
-  void configureNewItem(String itemName, Dungeon dungeon) {
+  void configureNewItem(Dungeon dungeon) {
     for (ItemBlueprint blueprint : blueprints) {
-      if (itemName.equals(blueprint.name)) {
-        StatsComponent stats = engine.createComponent(StatsComponent.class);
-        PositionComponent position = engine.createComponent(PositionComponent.class);
-        ArmorComponent armor = engine.createComponent(ArmorComponent.class);
-        NameComponent name = engine.createComponent(NameComponent.class);
-        DescriptionComponent description = engine.createComponent(DescriptionComponent.class);
-        SpawnRateComponent spawnRateComponent = engine.createComponent(SpawnRateComponent.class);
-        HealthComponent health = engine.createComponent(HealthComponent.class);
-        FloatingSpeedComponent speed = engine.createComponent(FloatingSpeedComponent.class);
-        ItemTypeComponent type = engine.createComponent(ItemTypeComponent.class);
+      StatsComponent stats = engine.createComponent(StatsComponent.class);
+      PositionComponent position = engine.createComponent(PositionComponent.class);
+      ArmorComponent armor = engine.createComponent(ArmorComponent.class);
+      NameComponent name = engine.createComponent(NameComponent.class);
+      DescriptionComponent description = engine.createComponent(DescriptionComponent.class);
+      SpawnRateComponent spawnRateComponent = engine.createComponent(SpawnRateComponent.class);
+      HealthComponent health = engine.createComponent(HealthComponent.class);
+      FloatingSpeedComponent floatingSpeed = engine.createComponent(FloatingSpeedComponent.class);
+      ItemTypeComponent type = engine.createComponent(ItemTypeComponent.class);
+      ItemIconComponent icon = engine.createComponent(ItemIconComponent.class);
 
-        DroppedItemComponent dropped = engine.createComponent(DroppedItemComponent.class);
+      DroppedItemComponent dropped = engine.createComponent(DroppedItemComponent.class);
 
-        name.setName(blueprint.name);
-        description.setDescription(blueprint.description);
-        DungeonSection dungeonSection = dungeon.getRandomDungeonSection();
-        position.setPosition(dungeonSection.getPosition().x, 4.0f, dungeonSection.getPosition().z);
-        position.setOccupiedSection(dungeonSection);
-        stats.setDexterity(blueprint.dexterity);
-        stats.setStrength(blueprint.strength);
-        stats.setWisdom(blueprint.wisdom);
-        armor.setArmor(blueprint.armor);
-        spawnRateComponent.setSpawnRate(blueprint.spawnRate);
-        spawnRateComponent.setStartLevel(blueprint.startLevel);
-        spawnRateComponent.setEndLevel(blueprint.endLevel);
-        spawnRateComponent.setLevelTheme(blueprint.levelTheme);
-        health.setMaxHealth(blueprint.maxHealth);
-        health.setHealth(blueprint.maxHealth);
-        speed.setSpeed(0.2f);
-        type.setType(Enum.valueOf(ItemTypeComponent.Type.class, blueprint.type));
+      name.setName(blueprint.name);
+      description.setDescription(blueprint.description);
+      DungeonSection dungeonSection = dungeon.getRandomDungeonSection();
+      position.setPosition(dungeonSection.getPosition().x, 4.0f, dungeonSection.getPosition().z);
+      position.setOccupiedSection(dungeonSection);
+      stats.setDexterity(blueprint.dexterity);
+      stats.setStrength(blueprint.strength);
+      stats.setWisdom(blueprint.wisdom);
+      armor.setArmor(blueprint.armor);
+      spawnRateComponent.setSpawnRate(blueprint.spawnRate);
+      spawnRateComponent.setStartLevel(blueprint.startLevel);
+      spawnRateComponent.setEndLevel(blueprint.endLevel);
+      spawnRateComponent.setLevelTheme(blueprint.levelTheme);
+      health.setMaxHealth(blueprint.maxHealth);
+      health.setHealth(blueprint.maxHealth);
+      floatingSpeed.setSpeed(0.2f);
+      type.setType(Enum.valueOf(ItemTypeComponent.Type.class, blueprint.type));
+      icon.setIcon(assetManager.get(AssetPaths.ITEM_ATLAS, TextureAtlas.class).findRegion(blueprint.name));
 
-        Entity entity = engine.createEntity();
-        entity.add(stats)
-          .add(position)
-          .add(retrieveGraphicalRepresentation(blueprint))
-          .add(armor)
-          .add(name)
-          .add(description)
-          .add(spawnRateComponent)
-          .add(health)
-          .add(dropped)
-          .add(speed)
-          .add(type);
-        engine.addEntity(entity);
+      Entity entity = engine.createEntity();
+      entity.add(stats)
+        .add(position)
+        .add(retrieveGraphicalRepresentation(blueprint))
+        .add(armor)
+        .add(name)
+        .add(description)
+        .add(spawnRateComponent)
+        .add(health)
+        .add(dropped)
+        .add(floatingSpeed)
+        .add(type)
+        .add(icon);
+      engine.addEntity(entity);
 
-        dungeonSection.addOccupyingObject(entity);
-      }
+      dungeonSection.addOccupyingObject(entity);
+
     }
   }
 
@@ -102,23 +105,9 @@ public class ItemEntityConfigurer {
       ColorAttribute.createDiffuse(0.8f, 0.8f, 0.8f, 1f),
       new FloatAttribute(FloatAttribute.AlphaTest, 0.5f),
       new BlendingAttribute(),
-      TextureAttribute.createDiffuse(assetManager.get("items/Ring of Strength.png", Texture.class)));
+      TextureAttribute.createDiffuse(assetManager.get(AssetPaths.ITEM_ATLAS, TextureAtlas.class).findRegion(itemBlueprint.name)));
     modelInstanceComponent.setModelInstance(modelInst);
     return modelInstanceComponent;
-  }
-
-  public enum ItemName {
-    RING("Ring of Strength");
-
-    private String name;
-
-    ItemName(String name) {
-      this.name = name;
-    }
-
-    public String getValue() {
-      return name;
-    }
   }
 
   public static class ItemBlueprint implements Blueprint {
