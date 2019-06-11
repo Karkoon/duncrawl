@@ -33,8 +33,8 @@ public class KeyboardInput extends InputAdapter {
 
   private ComponentMapper<HealthComponent> healthMapper = ComponentMapper.getFor(HealthComponent.class);
 
-  public KeyboardInput(PlayerTurnEndSignal endTurnSignal, Entity controlledEntity, PooledEngine engine) {
-    this.endTurnSignal = endTurnSignal;
+  public KeyboardInput(Entity controlledEntity, PooledEngine engine) {
+    this.endTurnSignal = new PlayerTurnEndSignal(engine);
     this.controlledEntity = controlledEntity;
     this.engine = engine;
     ComponentMapper<PositionComponent> posMapper = ComponentMapper.getFor(PositionComponent.class);

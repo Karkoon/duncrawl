@@ -2,9 +2,11 @@ package ashlified.gui;
 
 import ashlified.dungeon.DungeonSection;
 import ashlified.entitycomponentsystem.components.AttackComponent;
+import ashlified.entitycomponentsystem.components.DroppedItemComponent;
 import ashlified.entitycomponentsystem.components.HealthComponent;
 import ashlified.entitycomponentsystem.components.LookingDirectionComponent;
 import ashlified.entitycomponentsystem.components.MovingDirectionComponent;
+import ashlified.entitycomponentsystem.components.PickUpIntentComponent;
 import ashlified.entitycomponentsystem.components.PlayerComponent;
 import ashlified.entitycomponentsystem.components.PositionComponent;
 import ashlified.entitycomponentsystem.components.SpriterModelComponent;
@@ -19,11 +21,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import static ashlified.gui.UserInterfaceStage.createFunctionalButton;
+import static ashlified.gui.UserInterface.createFunctionalButton;
 
 class ControlButtonsTable extends Table {
 
-  private static final int BUTTON_SIZE = 140;
+  private static final int BUTTON_SIZE = 50;
 
   private PlayerTurnEndSignal playerTurnEndSignal;
   private PositionComponent currentPosition;
@@ -31,11 +33,11 @@ class ControlButtonsTable extends Table {
   private PooledEngine engine;
   private ComponentMapper<HealthComponent> healthMapper = ComponentMapper.getFor(HealthComponent.class);
 
-  ControlButtonsTable(final Skin skin, final PooledEngine engine, PlayerTurnEndSignal playerTurnEndSignal) {
+  ControlButtonsTable(final Skin skin, final PooledEngine engine) {
     this.controlledEntity = engine.getEntitiesFor(Family.all(PlayerComponent.class).get()).first();
     this.engine = engine;
     currentPosition = controlledEntity.getComponent(PositionComponent.class);
-    this.playerTurnEndSignal = playerTurnEndSignal;
+    this.playerTurnEndSignal = new PlayerTurnEndSignal(engine);
 
     final MovingDirectionComponent directionComponent = controlledEntity.getComponent(MovingDirectionComponent.class);
     final LookingDirectionComponent lookingDirectionComponent = controlledEntity.getComponent(LookingDirectionComponent.class);
@@ -51,7 +53,7 @@ class ControlButtonsTable extends Table {
       lookingDirectionComponent.setLookingDirection(directionComponent.getDirection().value.cpy());
     });
 
-    Button attackButton = createFunctionalButton(skin, () -> attack(directionComponent.getDirection()));
+    Button actionButton = createFunctionalButton(skin, () -> processActionButton(directionComponent.getDirection()));
 
     add();
     add(forwardButton).width(BUTTON_SIZE).height(BUTTON_SIZE);
@@ -59,12 +61,18 @@ class ControlButtonsTable extends Table {
     add(leftButton).width(BUTTON_SIZE).height(BUTTON_SIZE);
     add(backButton).width(BUTTON_SIZE).height(BUTTON_SIZE);
     add(rightButton).width(BUTTON_SIZE).height(BUTTON_SIZE);
-    add(attackButton).width(BUTTON_SIZE * 2).height(BUTTON_SIZE * 0.75f).padLeft(50);
+    add(actionButton).width(BUTTON_SIZE * 2).height(BUTTON_SIZE * 0.75f).padLeft(50);
     add().expandX().fillX();
 
   }
 
-  private void attack(CardinalDirection direction) {
+  private void processActionButton(CardinalDirection direction) {
+    if (!attack(direction)) {
+      pickUp(direction);
+    }
+  }
+
+  private boolean attack(CardinalDirection direction) {
     Family enemyFamily = Family.all(SpriterModelComponent.class).get();
     Connection<DungeonSection> connection = currentPosition.getOccupiedSection().getConnection(direction);
     if (connection != null && connection.getToNode().getOccupyingEntities().size() > 0 && enemyFamily.matches(connection.getToNode().getOccupyingEntities().get(0))) {
@@ -75,7 +83,23 @@ class ControlButtonsTable extends Table {
         controlledEntity.add(attack);
         playerTurnEndSignal.dispatch(null);
       }
+      return true;
     }
+    return false;
+  }
+
+  private boolean pickUp(CardinalDirection direction) {
+    Family itemFamily = Family.all(DroppedItemComponent.class).get();
+    Connection<DungeonSection> connection = currentPosition.getOccupiedSection().getConnection(direction);
+    if (connection != null && connection.getToNode().getOccupyingEntities().size() > 0 && itemFamily.matches(connection.getToNode().getOccupyingEntities().get(0))) {
+      Entity item = connection.getToNode().getOccupyingEntities().get(0);
+      PickUpIntentComponent pickUpIntent = engine.createComponent(PickUpIntentComponent.class);
+      pickUpIntent.setItem(item);
+      controlledEntity.add(pickUpIntent);
+      playerTurnEndSignal.dispatch(null);
+      return true;
+    }
+    return false;
   }
 
   private void moveIn(CardinalDirection direction) {
