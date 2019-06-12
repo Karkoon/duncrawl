@@ -66,23 +66,27 @@ public class CharacterWindow extends Window {
       InventorySlot rightArm = new InventorySlot(style, ItemTypeComponent.Type.RIGHT_WEAPON);
       InventorySlot legs = new InventorySlot(style, ItemTypeComponent.Type.TROUSERS);
       InventorySlot feet = new InventorySlot(style, ItemTypeComponent.Type.BOOTS);
+      InventorySlot pendant = new InventorySlot(style, ItemTypeComponent.Type.PENDANT);
+      InventorySlot ring = new InventorySlot(style, ItemTypeComponent.Type.RING);
 
-      List<InventorySlot> inventorySlots = Arrays.asList(head, leftArm, chest, rightArm, legs, feet);
+      List<InventorySlot> inventorySlots = Arrays.asList(head, leftArm, chest, rightArm, legs, feet, pendant, ring);
 
       for (InventorySlot slot : inventorySlots) {
         dragAndDrop.addTarget(new InventorySlot.InventorySlotTarget(slot));
       }
 
-      add(head).colspan(3).padBottom(10);
-      row().padBottom(-30);
-      add(chest).size(70).colspan(3);
-      row().padBottom(-10);
-      add(leftArm);
-      add(rightArm).padLeft(110);
-      row().padBottom(30);
-      add(legs).colspan(3);
+      add(head).colspan(2).padBottom(9f);
+      row().padBottom(-20);
+      add(chest).size(70).colspan(2);
+      row().padBottom(10);
+      add(leftArm).padRight(60);
+      add(rightArm).padLeft(60);
+      row().padBottom(10);
+      add(pendant).left();
+      add(legs).padLeft(-110).padTop(-30);
       row();
-      add(feet).colspan(3);
+      add(ring).left();
+      add(feet).padLeft(-110);
     }
   }
 
