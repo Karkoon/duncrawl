@@ -13,6 +13,10 @@ Current features:
 
 Project works with gradle 4.6 and JDK8.
 
+Command to run Desktop version 
+
+    ./gradlew desktop:run
+
 At first it looked like this:
 
 ![first_image](https://i.imgur.com/TtIzxXw.png)
