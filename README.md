@@ -11,6 +11,8 @@ Current features:
   <li>You can't actually die right now.</li>
 </ul>
 
+Project works with gradle 4.6 and JDK8.
+
 At first it looked like this:
 
 ![first_image](https://i.imgur.com/TtIzxXw.png)
